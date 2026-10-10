@@ -1,0 +1,11 @@
+# Godot
+.godot/
+/android/
+*.tmp
+.DS_Store
+
+# Builds
+/build/
+*.apk
+*.aab
+*.pck

@@ -1,0 +1,130 @@
+{
+	"books": [
+		{
+			"id": "g3_arabic",
+			"grade": 3,
+			"subject": "arabic",
+			"source": "Books/اللغة العربية ٣ جميع المتمازجة غزة.pdf",
+			"file": "res://data/books/g3_arabic.json"
+		},
+		{
+			"id": "g3_english",
+			"grade": 3,
+			"subject": "english",
+			"source": "Books/انجليزي ٣ متمازجة غزة.pdf",
+			"file": "res://data/books/g3_english.json"
+		},
+		{
+			"id": "g3_math",
+			"grade": 3,
+			"subject": "math",
+			"source": "Books/رياضيات ٣ جميع المتمازجة غزة.pdf",
+			"file": "res://data/books/g3_math.json"
+		},
+		{
+			"id": "g3_science",
+			"grade": 3,
+			"subject": "science",
+			"source": "Books/العلوم والحياة ٣ وحدات متمازجة غزة.pdf",
+			"file": "res://data/books/g3_science.json"
+		},
+		{
+			"id": "g5_arabic",
+			"grade": 5,
+			"subject": "arabic",
+			"source": "Books/عربي ٥ وحدات متمازجة غزة.pdf",
+			"file": "res://data/books/g5_arabic.json"
+		},
+		{
+			"id": "g5_english",
+			"grade": 5,
+			"subject": "english",
+			"source": "Books/انجليزي ٥ متمازجة غزة.pdf",
+			"file": "res://data/books/g5_english.json"
+		},
+		{
+			"id": "g5_math",
+			"grade": 5,
+			"subject": "math",
+			"source": "Books/رياضيات ٥ جميع المتمازجة غزة.pdf",
+			"file": "res://data/books/g5_math.json"
+		},
+		{
+			"id": "g5_science",
+			"grade": 5,
+			"subject": "science",
+			"source": "Books/العلوم والحياة ٥ وحدات متمازجة غزة.pdf",
+			"file": "res://data/books/g5_science.json"
+		},
+		{
+			"id": "g8_arabic",
+			"grade": 8,
+			"subject": "arabic",
+			"source": "Books/اللغة العربية ٨ جميع المتمازجة غزة.pdf",
+			"file": "res://data/books/g8_arabic.json"
+		},
+		{
+			"id": "g8_english",
+			"grade": 8,
+			"subject": "english",
+			"source": "Books/انجليزي ٨ متمازجة غزة.pdf",
+			"file": "res://data/books/g8_english.json"
+		},
+		{
+			"id": "g8_math",
+			"grade": 8,
+			"subject": "math",
+			"source": "Books/رياضيات ٨ جميع المتمازجة غزة.pdf",
+			"file": "res://data/books/g8_math.json"
+		},
+		{
+			"id": "g8_science",
+			"grade": 8,
+			"subject": "science",
+			"source": "Books/العلوم الحياتية ٨ جميع المتمازجة غزة.pdf",
+			"file": "res://data/books/g8_science.json"
+		},
+		{
+			"id": "g10_arabic",
+			"grade": 10,
+			"subject": "arabic",
+			"source": "Books/عربي ١٠ متمازجة غزة.pdf",
+			"file": "res://data/books/g10_arabic.json"
+		},
+		{
+			"id": "g10_english",
+			"grade": 10,
+			"subject": "english",
+			"source": "Books/انجليزي ١٠ متمازجة غزة.pdf",
+			"file": "res://data/books/g10_english.json"
+		},
+		{
+			"id": "g10_math",
+			"grade": 10,
+			"subject": "math",
+			"source": "Books/رياضيات ١٠ متمازجة غزة.pdf",
+			"file": "res://data/books/g10_math.json"
+		},
+		{
+			"id": "g10_biology",
+			"grade": 10,
+			"subject": "biology",
+			"source": "Books/العلوم الحياتية ١٠ جميع المتمازجة غزة.pdf",
+			"file": "res://data/books/g10_biology.json"
+		},
+		{
+			"id": "g10_physics",
+			"grade": 10,
+			"subject": "physics",
+			"source": "Books/فيزياء ١٠ جميع الفترات غزة.pdf",
+			"file": "res://data/books/g10_physics.json"
+		},
+		{
+			"id": "g10_chemistry",
+			"grade": 10,
+			"subject": "chemistry",
+			"source": "Books/كيمياء ١٠ المتمازجة غزة.pdf",
+			"file": "res://data/books/g10_chemistry.json"
+		}
+	]
+}
