@@ -1,0 +1,1819 @@
+{
+	"id": "g3_english",
+	"title": "English - Grade 3",
+	"lang": "en",
+	"units": [
+		{
+			"id": "u1",
+			"title": "Units 1-4: People, jobs, food and animals",
+			"lessons": [
+				{
+					"id": "l1",
+					"title": "Unit 1: All about me",
+					"pages": [
+						4,
+						6
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "What's your name?",
+							"choices": [
+								"My name's Hamzah.",
+								"I'm 8.",
+								"I'm fine.",
+								"I'm from Jerusalem."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How old are you?",
+							"choices": [
+								"I'm 8.",
+								"My name's Walid.",
+								"I'm from Gaza.",
+								"I'm fine."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where are you from?",
+							"choices": [
+								"I'm from Jerusalem.",
+								"I'm 9.",
+								"I'm fine, thanks.",
+								"My name's Hala."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How are you?",
+							"choices": [
+								"Fine, thanks.",
+								"I'm from Haifa.",
+								"My name's Manar.",
+								"I'm 7."
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match the question and the answer.",
+							"pairs": [
+								[
+									"What's your name?",
+									"My name's Walid."
+								],
+								[
+									"How old are you?",
+									"I'm 9."
+								],
+								[
+									"Where are you from?",
+									"I'm from Bethlehem."
+								],
+								[
+									"How are you?",
+									"I'm fine."
+								]
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "Hala is a girl. ___ name is Hala.",
+							"choices": [
+								"Her",
+								"His"
+							],
+							"answer": 0,
+							"explain": "We say 'her' for a girl and 'his' for a boy."
+						},
+						{
+							"type": "mcq",
+							"q": "Walid is a boy. ___ name is Walid.",
+							"choices": [
+								"His",
+								"Her"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Hala is 8. ___ 8.",
+							"choices": [
+								"She's",
+								"He's"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Walid is from Bethlehem. ___ from Bethlehem.",
+							"choices": [
+								"He's",
+								"She's"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What's ___ name? Her name's Jamila.",
+							"choices": [
+								"her",
+								"his",
+								"your"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I ___ black hair and brown eyes.",
+							"choices": [
+								"have",
+								"has"
+							],
+							"answer": 0,
+							"explain": "I have ... / He has ... / She has ..."
+						},
+						{
+							"type": "mcq",
+							"q": "She ___ blonde hair and blue eyes.",
+							"choices": [
+								"has",
+								"have"
+							],
+							"answer": 0
+						}
+					]
+				},
+				{
+					"id": "l2",
+					"title": "Unit 2: He's a doctor",
+					"pages": [
+						7,
+						9
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Who helps sick people in a hospital?",
+							"choices": [
+								"a doctor",
+								"a farmer",
+								"a driver",
+								"a policeman"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Who looks after your teeth?",
+							"choices": [
+								"a dentist",
+								"a teacher",
+								"a farmer",
+								"a driver"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Who drives a bus or a car?",
+							"choices": [
+								"a driver",
+								"a nurse",
+								"a dentist",
+								"a teacher"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Who teaches children at school?",
+							"choices": [
+								"a teacher",
+								"a farmer",
+								"a policeman",
+								"a dentist"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Who grows fruit and vegetables?",
+							"choices": [
+								"a farmer",
+								"a doctor",
+								"a nurse",
+								"a driver"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What's his job?",
+							"choices": [
+								"He's a farmer.",
+								"He's my uncle.",
+								"He's 8.",
+								"He's from Gaza."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Who's she?",
+							"choices": [
+								"She's my aunt.",
+								"She's a nurse.",
+								"She's fine.",
+								"She's 9 o'clock."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which word is a job?",
+							"choices": [
+								"nurse",
+								"cousin",
+								"uncle",
+								"grandmother"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which word is a family member?",
+							"choices": [
+								"cousin",
+								"dentist",
+								"driver",
+								"policeman"
+							],
+							"answer": 0
+						},
+						{
+							"type": "order",
+							"q": "Put the words in order.",
+							"items": [
+								"He's",
+								"my",
+								"uncle."
+							]
+						},
+						{
+							"type": "match",
+							"q": "Match the number and the word.",
+							"pairs": [
+								[
+									"1",
+									"one"
+								],
+								[
+									"2",
+									"two"
+								],
+								[
+									"3",
+									"three"
+								],
+								[
+									"5",
+									"five"
+								]
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "How many cousins do you have?",
+							"choices": [
+								"I have five cousins.",
+								"I'm five.",
+								"My cousin is a driver.",
+								"I'm from Gaza."
+							],
+							"answer": 0
+						}
+					]
+				},
+				{
+					"id": "l3",
+					"title": "Unit 3: At the market",
+					"pages": [
+						10,
+						12
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Which one is a fruit?",
+							"choices": [
+								"banana",
+								"carrot",
+								"onion",
+								"potato"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which one is a vegetable?",
+							"choices": [
+								"carrot",
+								"apple",
+								"grapes",
+								"melon"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "This is ___ orange.",
+							"choices": [
+								"an",
+								"a"
+							],
+							"answer": 0,
+							"explain": "We say 'an' before a, e, i, o, u sounds: an orange, an onion."
+						},
+						{
+							"type": "mcq",
+							"q": "This is ___ onion.",
+							"choices": [
+								"an",
+								"a"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "This is ___ tomato.",
+							"choices": [
+								"a",
+								"an"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What do you say at the market?",
+							"choices": [
+								"I'd like carrots and onions, please.",
+								"My head hurts.",
+								"It's sunny.",
+								"Let's go on the slide."
+							],
+							"answer": 0
+						},
+						{
+							"type": "order",
+							"q": "Put the market talk in order.",
+							"items": [
+								"I'd like carrots and potatoes.",
+								"Here you are.",
+								"Thank you."
+							]
+						},
+						{
+							"type": "tf",
+							"q": "Onions and carrots are vegetables.",
+							"answer": true
+						},
+						{
+							"type": "mcq",
+							"q": "Apples are 4 dinars. Fish is 9 dinars. How much are they together?",
+							"choices": [
+								"13 dinars",
+								"5 dinars",
+								"11 dinars",
+								"14 dinars"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Apples 4 D, carrots 3 D and fish 9 D. How much is that?",
+							"choices": [
+								"16 dinars",
+								"13 dinars",
+								"15 dinars",
+								"12 dinars"
+							],
+							"answer": 0,
+							"explain": "4 + 3 + 9 = 16"
+						},
+						{
+							"type": "match",
+							"q": "Match the English word and the Arabic word.",
+							"pairs": [
+								[
+									"apple",
+									"تفاحة"
+								],
+								[
+									"onion",
+									"بصلة"
+								],
+								[
+									"grapes",
+									"عنب"
+								],
+								[
+									"potato",
+									"بطاطا"
+								]
+							]
+						}
+					]
+				},
+				{
+					"id": "l4",
+					"title": "Unit 4: At the zoo",
+					"pages": [
+						13,
+						15
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "How many legs does a snake have?",
+							"choices": [
+								"no legs",
+								"two legs",
+								"four legs",
+								"six legs"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How many legs does a fox have?",
+							"choices": [
+								"four",
+								"two",
+								"no legs",
+								"six"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which animal is very big and grey?",
+							"choices": [
+								"elephant",
+								"fox",
+								"monkey",
+								"snake"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which animal is very big with a very long neck?",
+							"choices": [
+								"giraffe",
+								"fox",
+								"snake",
+								"monkey"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The tiger is ___ and black.",
+							"choices": [
+								"orange",
+								"blue",
+								"green",
+								"pink"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Is the fox big or small?",
+							"choices": [
+								"small",
+								"big"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "The elephant is slow.",
+							"answer": true
+						},
+						{
+							"type": "tf",
+							"q": "The tiger is big and fast.",
+							"answer": true
+						},
+						{
+							"type": "mcq",
+							"q": "I'm very big. I have four legs. I'm slow. I'm grey. What am I?",
+							"choices": [
+								"an elephant",
+								"a snake",
+								"a fox",
+								"a monkey"
+							],
+							"answer": 0
+						},
+						{
+							"type": "order",
+							"q": "Put the numbers in order.",
+							"items": [
+								"one",
+								"two",
+								"three",
+								"four",
+								"five"
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "What comes after twelve?",
+							"choices": [
+								"thirteen",
+								"eleven",
+								"twenty",
+								"fifteen"
+							],
+							"answer": 0
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "u2",
+			"title": "Units 5-7: Health, my day and weather",
+			"lessons": [
+				{
+					"id": "l5",
+					"title": "Unit 5: I don't feel well",
+					"pages": [
+						20,
+						22
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "I don't feel well.",
+							"choices": [
+								"What's the matter?",
+								"Here you are.",
+								"Let's go!",
+								"It's sunny."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "One tooth, two ___",
+							"choices": [
+								"teeth",
+								"tooths",
+								"tooth",
+								"feet"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "One foot, two ___",
+							"choices": [
+								"feet",
+								"foots",
+								"foot",
+								"teeth"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "My tooth ___.",
+							"choices": [
+								"hurts",
+								"hurt"
+							],
+							"answer": 0,
+							"explain": "One thing: hurts. Two or more: hurt."
+						},
+						{
+							"type": "mcq",
+							"q": "My feet ___.",
+							"choices": [
+								"hurt",
+								"hurts"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "My tooth hurts. Go to the ___.",
+							"choices": [
+								"dentist",
+								"farmer",
+								"zoo",
+								"market"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I'm very tired.",
+							"choices": [
+								"Have a rest.",
+								"Go to school.",
+								"Play football.",
+								"Eat ice cream."
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match to make advice.",
+							"pairs": [
+								[
+									"Go to the",
+									"doctor."
+								],
+								[
+									"Take this",
+									"medicine."
+								],
+								[
+									"Have a",
+									"rest."
+								],
+								[
+									"Go to",
+									"bed."
+								]
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "Which is a part of the body?",
+							"choices": [
+								"stomach",
+								"medicine",
+								"rest",
+								"dentist"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What do we hear with?",
+							"choices": [
+								"ears",
+								"nose",
+								"feet",
+								"teeth"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "We say 'My head hurts' when we have a headache.",
+							"answer": true
+						}
+					]
+				},
+				{
+					"id": "l6",
+					"title": "Unit 6: My day",
+					"pages": [
+						23,
+						25
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "What do you do first in the morning?",
+							"choices": [
+								"I get up.",
+								"I go to bed.",
+								"I do homework.",
+								"I watch cartoons."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What do you do at night?",
+							"choices": [
+								"I go to bed.",
+								"I get up.",
+								"I go to school.",
+								"I have breakfast."
+							],
+							"answer": 0
+						},
+						{
+							"type": "order",
+							"q": "Put my day in order.",
+							"items": [
+								"I get up.",
+								"I go to school.",
+								"I do homework.",
+								"I go to bed."
+							]
+						},
+						{
+							"type": "order",
+							"q": "Put the times of day in order.",
+							"items": [
+								"morning",
+								"afternoon",
+								"evening",
+								"night"
+							]
+						},
+						{
+							"type": "order",
+							"q": "Put the words in order.",
+							"items": [
+								"I",
+								"play",
+								"computer",
+								"games."
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "I ___ homework.",
+							"choices": [
+								"do",
+								"go",
+								"get",
+								"watch"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I ___ cartoons.",
+							"choices": [
+								"watch",
+								"do",
+								"get",
+								"go"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I ___ up.",
+							"choices": [
+								"get",
+								"do",
+								"play",
+								"watch"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I ___ computer games.",
+							"choices": [
+								"play",
+								"do",
+								"go",
+								"get"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I play computer games ___ the afternoon.",
+							"choices": [
+								"in",
+								"at",
+								"on"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I go to bed ___ night.",
+							"choices": [
+								"at",
+								"in",
+								"on"
+							],
+							"answer": 0,
+							"explain": "in the morning, in the afternoon, in the evening, at night."
+						}
+					]
+				},
+				{
+					"id": "l7",
+					"title": "Unit 7: It's sunny",
+					"pages": [
+						26,
+						28
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "What's the weather?",
+							"choices": [
+								"It's rainy.",
+								"It's Sunday.",
+								"It's 6 o'clock.",
+								"I'm fine."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "There is a lot of rain. It's ___.",
+							"choices": [
+								"rainy",
+								"sunny",
+								"hot",
+								"windy"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The sun is in the sky. It's ___.",
+							"choices": [
+								"sunny",
+								"rainy",
+								"cloudy",
+								"cold"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The wind is strong. It's ___.",
+							"choices": [
+								"windy",
+								"sunny",
+								"hot",
+								"rainy"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "There are many clouds. It's ___.",
+							"choices": [
+								"cloudy",
+								"sunny",
+								"windy",
+								"hot"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What is the opposite of hot?",
+							"choices": [
+								"cold",
+								"sunny",
+								"windy",
+								"big"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which one is a place?",
+							"choices": [
+								"the beach",
+								"cloudy",
+								"windy",
+								"cold"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where are they? They're ___ the sand.",
+							"choices": [
+								"on",
+								"next",
+								"at"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where is he? He's ___ to the trees.",
+							"choices": [
+								"next",
+								"on",
+								"in"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "She's ___ the umbrella.",
+							"choices": [
+								"under",
+								"next",
+								"at"
+							],
+							"answer": 0
+						},
+						{
+							"type": "order",
+							"q": "Put the words in order.",
+							"items": [
+								"It's",
+								"sunny",
+								"at",
+								"the",
+								"river."
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "u3",
+			"title": "Units 8-10: Time, playground and Open Day",
+			"lessons": [
+				{
+					"id": "l8",
+					"title": "Unit 8: What's the time?",
+					"pages": [
+						32,
+						34
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "What day is it?",
+							"choices": [
+								"It's Sunday.",
+								"It's sunny.",
+								"It's two o'clock.",
+								"It's my book."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What day comes after Sunday?",
+							"choices": [
+								"Monday",
+								"Saturday",
+								"Friday",
+								"Thursday"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What day comes after Wednesday?",
+							"choices": [
+								"Thursday",
+								"Tuesday",
+								"Monday",
+								"Friday"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What day comes before Saturday?",
+							"choices": [
+								"Friday",
+								"Sunday",
+								"Monday",
+								"Thursday"
+							],
+							"answer": 0
+						},
+						{
+							"type": "order",
+							"q": "Put the days in order.",
+							"items": [
+								"Sunday",
+								"Monday",
+								"Tuesday",
+								"Wednesday",
+								"Thursday"
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "How many days are in a week?",
+							"choices": [
+								"seven",
+								"five",
+								"six",
+								"twelve"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which word is spelled right?",
+							"choices": [
+								"Wednesday",
+								"Wensday",
+								"Wednsday",
+								"Wedensday"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What's the time?",
+							"choices": [
+								"It's one o'clock.",
+								"It's Monday.",
+								"It's cold.",
+								"It's a clock."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I have ___ at seven o'clock in the morning.",
+							"choices": [
+								"breakfast",
+								"dinner",
+								"bed",
+								"school"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "When does Walid get up? He ___ up at six o'clock.",
+							"choices": [
+								"gets",
+								"get"
+							],
+							"answer": 0,
+							"explain": "I get up. He gets up. She gets up."
+						},
+						{
+							"type": "mcq",
+							"q": "What comes after eleven o'clock?",
+							"choices": [
+								"twelve o'clock",
+								"ten o'clock",
+								"one o'clock",
+								"nine o'clock"
+							],
+							"answer": 0
+						}
+					]
+				},
+				{
+					"id": "l9",
+					"title": "Unit 9: At the playground",
+					"pages": [
+						35,
+						37
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Which one is in the playground?",
+							"choices": [
+								"slide",
+								"medicine",
+								"market",
+								"kitchen"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Let's go ___ the slide.",
+							"choices": [
+								"on",
+								"in"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Let's go ___ the sandpit.",
+							"choices": [
+								"in",
+								"on"
+							],
+							"answer": 0,
+							"explain": "We go IN the sandpit and ON the slide, swings and seesaw."
+						},
+						{
+							"type": "mcq",
+							"q": "Let's go ___ the swings.",
+							"choices": [
+								"on",
+								"in"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Put the letters in order: ngisws",
+							"choices": [
+								"swings",
+								"wings",
+								"sings",
+								"slings"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Put the letters in order: deisl",
+							"choices": [
+								"slide",
+								"sidel",
+								"lides",
+								"dials"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Put the letters in order: sawsee",
+							"choices": [
+								"seesaw",
+								"sawsee",
+								"seasaw",
+								"saw"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which playground word is spelled right?",
+							"choices": [
+								"roundabout",
+								"rondabout",
+								"roundabot",
+								"rounabout"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Bilal and Walid like the seesaw. ___ like the seesaw.",
+							"choices": [
+								"They",
+								"He",
+								"She"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Manar likes the swings. ___ likes the swings.",
+							"choices": [
+								"She",
+								"He",
+								"They"
+							],
+							"answer": 0
+						},
+						{
+							"type": "order",
+							"q": "Put the words in order.",
+							"items": [
+								"Let's",
+								"go",
+								"on",
+								"the",
+								"swings."
+							]
+						}
+					]
+				},
+				{
+					"id": "l10",
+					"title": "Unit 10: Open Day",
+					"pages": [
+						38,
+						40
+					],
+					"questions": [
+						{
+							"type": "match",
+							"q": "Match the words.",
+							"pairs": [
+								[
+									"dance",
+									"dabka"
+								],
+								[
+									"draw",
+									"pictures"
+								],
+								[
+									"play",
+									"music"
+								],
+								[
+									"show",
+									"our work"
+								]
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "act in a ___",
+							"choices": [
+								"play",
+								"music",
+								"dabka",
+								"picture"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "She ___ music.",
+							"choices": [
+								"plays",
+								"play"
+							],
+							"answer": 0,
+							"explain": "He / She + verb + s: she plays, he dances."
+						},
+						{
+							"type": "mcq",
+							"q": "I ___.",
+							"choices": [
+								"sing",
+								"sings"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "They ___ in a play.",
+							"choices": [
+								"act",
+								"acts"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "He ___ dabka.",
+							"choices": [
+								"dances",
+								"dance"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "We ___.",
+							"choices": [
+								"paint",
+								"paints"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "You ___ a picture.",
+							"choices": [
+								"draw",
+								"draws"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What do you do at the Open Day?",
+							"choices": [
+								"We dance dabka.",
+								"It's sunny.",
+								"My head hurts.",
+								"I'm 8."
+							],
+							"answer": 0
+						},
+						{
+							"type": "order",
+							"q": "Put the words in order.",
+							"items": [
+								"He",
+								"acts",
+								"in",
+								"a",
+								"play."
+							]
+						},
+						{
+							"type": "tf",
+							"q": "Dabka is a dance.",
+							"answer": true
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "u4",
+			"title": "Units 11-14: Clothes, free time and favourites",
+			"lessons": [
+				{
+					"id": "l11",
+					"title": "Unit 11: I'm wearing a scarf",
+					"pages": [
+						44,
+						45
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "What do you wear on your feet?",
+							"choices": [
+								"trainers",
+								"a scarf",
+								"a shirt",
+								"a jacket"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What do you wear around your neck when it's cold?",
+							"choices": [
+								"a scarf",
+								"slippers",
+								"trainers",
+								"a t-shirt"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What do you wear to bed?",
+							"choices": [
+								"pyjamas",
+								"a jacket",
+								"trainers",
+								"a scarf"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What do you wear at home on your feet?",
+							"choices": [
+								"slippers",
+								"a scarf",
+								"a sweater",
+								"jeans"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which one is NOT clothes?",
+							"choices": [
+								"kite",
+								"jeans",
+								"sweater",
+								"jacket"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What are you wearing?",
+							"choices": [
+								"I'm wearing a tracksuit.",
+								"I'm from Gaza.",
+								"It's windy.",
+								"I like fish."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What's she wearing?",
+							"choices": [
+								"She's wearing a dress.",
+								"She's a nurse.",
+								"She's 8.",
+								"She likes the slide."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Walid is going to school. He's wearing ___.",
+							"choices": [
+								"trousers, a shirt and a jacket",
+								"pyjamas",
+								"slippers",
+								"a swimming suit"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "a purple ___",
+							"choices": [
+								"sweater",
+								"rainy",
+								"jump",
+								"dentist"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "Trainers are good for running.",
+							"answer": true
+						}
+					]
+				},
+				{
+					"id": "l12",
+					"title": "Unit 12: They're jumping!",
+					"pages": [
+						46,
+						47
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "What do you do in your free time?",
+							"choices": [
+								"I play the drums.",
+								"I'm from Jordan.",
+								"It's cold.",
+								"My foot hurts."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "We fly a ___.",
+							"choices": [
+								"kite",
+								"drum",
+								"music",
+								"game"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I listen ___ music.",
+							"choices": [
+								"to",
+								"on",
+								"in",
+								"at"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I play the ___.",
+							"choices": [
+								"drums",
+								"kite",
+								"run",
+								"jump"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What does Walid do? He ___.",
+							"choices": [
+								"runs",
+								"run"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Put the letters in order: pumj",
+							"choices": [
+								"jump",
+								"pump",
+								"jumb",
+								"mupj"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Put the letters in order: urn",
+							"choices": [
+								"run",
+								"urn",
+								"nur",
+								"rum"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I'm swimming. She's ___.",
+							"choices": [
+								"running",
+								"run",
+								"runs"
+							],
+							"answer": 0,
+							"explain": "Now: I'm swimming, she's running, they're jumping."
+						},
+						{
+							"type": "mcq",
+							"q": "They ___ jumping.",
+							"choices": [
+								"are",
+								"is",
+								"am"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I ___ swimming.",
+							"choices": [
+								"am",
+								"is",
+								"are"
+							],
+							"answer": 0
+						}
+					]
+				},
+				{
+					"id": "l13",
+					"title": "Unit 13: I'm Palestinian",
+					"pages": [
+						48,
+						49
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "I'm from Palestine. I'm ___.",
+							"choices": [
+								"Palestinian",
+								"British",
+								"Egyptian",
+								"Jordan"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Anna is from Britain. She's ___.",
+							"choices": [
+								"British",
+								"Palestinian",
+								"London",
+								"Britain"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Anna lives in ___.",
+							"choices": [
+								"London",
+								"Bethlehem",
+								"Gaza",
+								"Amman"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where's Anna from?",
+							"choices": [
+								"She's from Britain.",
+								"She's eight.",
+								"She's fine.",
+								"She's wearing a scarf."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "People in Palestine speak ___.",
+							"choices": [
+								"Arabic",
+								"English",
+								"French"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "People in Britain speak ___.",
+							"choices": [
+								"English",
+								"Arabic",
+								"Chinese"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Put the letters in order: netilapes",
+							"choices": [
+								"Palestine",
+								"Planets",
+								"Pastelin",
+								"Lipstane"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What is the capital of Jordan?",
+							"choices": [
+								"Amman",
+								"Irbid",
+								"London",
+								"Cairo"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match the question and the answer.",
+							"pairs": [
+								[
+									"What's your name?",
+									"I'm Rania."
+								],
+								[
+									"Where do you live?",
+									"I live in Ramallah."
+								],
+								[
+									"Are you British?",
+									"No, I'm Palestinian."
+								],
+								[
+									"How old are you?",
+									"I'm eight."
+								]
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "Which one is a country?",
+							"choices": [
+								"Egypt",
+								"Arabic",
+								"English",
+								"London"
+							],
+							"answer": 0
+						}
+					]
+				},
+				{
+					"id": "l14",
+					"title": "Unit 14: My favourite ...",
+					"pages": [
+						50,
+						52
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "What's your favourite sport?",
+							"choices": [
+								"My favourite sport is football.",
+								"My favourite colour is blue.",
+								"I'm wearing jeans.",
+								"It's hot."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which one is a sport?",
+							"choices": [
+								"volleyball",
+								"seesaw",
+								"sweater",
+								"carrot"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "My favourite ___ is blue.",
+							"choices": [
+								"colour",
+								"sport",
+								"food",
+								"animal"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "My favourite ___ is ice cream.",
+							"choices": [
+								"food",
+								"sport",
+								"colour",
+								"toy"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I ___ table tennis.",
+							"choices": [
+								"like",
+								"likes"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Hala ___ running.",
+							"choices": [
+								"likes",
+								"like"
+							],
+							"answer": 0,
+							"explain": "He / She likes. I / We / They like."
+						},
+						{
+							"type": "mcq",
+							"q": "He ___ like basketball.",
+							"choices": [
+								"doesn't",
+								"don't"
+							],
+							"answer": 0,
+							"explain": "I don't like. He / She doesn't like."
+						},
+						{
+							"type": "mcq",
+							"q": "We ___ football.",
+							"choices": [
+								"like",
+								"likes"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "My favourite sport ___ volleyball.",
+							"choices": [
+								"is",
+								"are"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I like swimming. It's ___.",
+							"choices": [
+								"fun",
+								"boring",
+								"difficult"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which sport is spelled right?",
+							"choices": [
+								"basketball",
+								"baskitball",
+								"basketbal",
+								"baskettball"
+							],
+							"answer": 0
+						}
+					]
+				}
+			]
+		}
+	]
+}

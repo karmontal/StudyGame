@@ -45,7 +45,7 @@ func _unit_card(u: Dictionary) -> PanelContainer:
 		test.name = "UnitTest_" + u.id
 		test.pressed.connect(func():
 			main.goto("quiz", {"questions": unit_qs, "count": 10, "title": u.title, "book": book_id,
-				"back": "map", "back_args": {"book": book_id}}))
+				"unit": u.id, "kind": "unit", "back": "map", "back_args": {"book": book_id}}))
 		v.add_child(test)
 	return card
 
@@ -82,7 +82,7 @@ func _lesson_row(u: Dictionary, l: Dictionary, number: int) -> Button:
 		h.add_child(stars)
 		b.pressed.connect(func():
 			main.goto("quiz", {"questions": qs, "title": l.title, "lesson_key": key, "book": book_id,
-				"back": "map", "back_args": {"book": book_id}}))
+				"unit": key.split("/")[1], "kind": "lesson", "back": "map", "back_args": {"book": book_id}}))
 	for c in h.get_children():
 		c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	h.mouse_filter = Control.MOUSE_FILTER_IGNORE

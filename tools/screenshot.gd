@@ -1,7 +1,8 @@
 extends Node
 ## Renders a screen and saves a PNG (needs a display or xvfb, not --headless). Example:
 ##   xvfb-run -s "-screen 0 1080x1920x24" godot --path . --rendering-driver opengl3 res://tools/screenshot.tscn -- quiz out.png nada g3_science
-## Screens: profiles, books, map, quiz, feedback, result. Optional: profile id, book id.
+## Screens: profiles, books, map, quiz, feedback, result, speed, speed_end, badges, album.
+## Optional: profile id, book id.
 
 func _ready() -> void:
 	var args := OS.get_cmdline_user_args()
@@ -21,6 +22,11 @@ func _ready() -> void:
 	var l: Dictionary = u.lessons[0]
 	var key := Profiles.lesson_key(book_id, u.id, l.id)
 	Profiles.record_quiz(key, 2, [])
+	var all_right := []
+	for i in 8:
+		all_right.append({"key": "", "correct": true})
+	var summary := Profiles.finish_round("lesson", key, 3, all_right, book_id, u.id)
+	Profiles.info().coins = 260
 	var qs := Content.lesson_questions(book_id, u.id, l.id)
 	match which:
 		"books":
@@ -37,7 +43,17 @@ func _ready() -> void:
 			if which == "quiz":
 				main.screen._next()
 		"result":
-			main.goto("result", {"stars": 2, "correct": 6, "total": 8, "quiz_args": {"title": l.title, "lesson_key": key, "back": "map", "back_args": {"book": book_id}}})
+			main.goto("result", {"stars": 3, "correct": 8, "total": 8, "summary": summary, "quiz_args": {"title": l.title, "lesson_key": key, "back": "map", "back_args": {"book": book_id}}})
+		"speed", "speed_end":
+			main.goto("speed")
+			await _frames(3)
+			main.screen.start()
+			if which == "speed_end":
+				main.screen.answer_current(int(main.screen.current_question().get("answer", 0)) if main.screen.current_question().type == "mcq" else main.screen.current_question().answer)
+				await get_tree().create_timer(0.5).timeout
+				main.screen.end_now()
+		"profiles", "badges", "album":
+			main.goto(which)
 	await _frames(60)
 	var img := get_viewport().get_texture().get_image()
 	img.save_png(out)

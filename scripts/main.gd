@@ -7,6 +7,9 @@ const SCREENS := {
 	"map": preload("res://scripts/ui/map_screen.gd"),
 	"quiz": preload("res://scripts/ui/quiz_screen.gd"),
 	"result": preload("res://scripts/ui/result_screen.gd"),
+	"speed": preload("res://scripts/ui/speed_screen.gd"),
+	"badges": preload("res://scripts/ui/badges_screen.gd"),
+	"album": preload("res://scripts/ui/album_screen.gd"),
 }
 
 var screen: Screen

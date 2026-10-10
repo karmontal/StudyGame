@@ -13,6 +13,9 @@ var feedback: PanelContainer
 var _answered := false
 var _rtl := true
 var _sfx: AudioStreamPlayer
+var _coin_label: Label
+var _round_coins := 0
+var _combo := 0
 
 
 func build() -> void:
@@ -21,8 +24,15 @@ func build() -> void:
 	color = Color(p.color)
 	session = QuizSession.new(args.questions, int(args.get("count", QuizSession.MAX_QUESTIONS)))
 	var content := page(args.get("title", ""), color)
+	var top := UI.hbox(16)
+	content.add_child(top)
 	progress_label = UI.label("", 34, UI.MUTED)
-	content.add_child(progress_label)
+	progress_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top.add_child(progress_label)
+	var coins := CoinIcon.with_amount(0, 36)
+	coins.name = "RoundCoins"
+	_coin_label = coins.get_node("Amount")
+	top.add_child(coins)
 	var seed_value := hash(str(args.get("lesson_key", args.get("title", ""))))
 	if young:
 		reward = PictureReveal.make(session.count(), seed_value)
@@ -238,6 +248,12 @@ func _submit(value: Variant) -> bool:
 	var q := session.current()
 	var i := session.index
 	var ok := session.answer(value)
+	if ok:
+		_combo += 1
+		_round_coins += Rewards.COIN_PER_CORRECT + (Rewards.COMBO_BONUS if _combo >= 3 else 0)
+		_coin_label.text = "+%d" % _round_coins
+	else:
+		_combo = 0
 	if young:
 		if ok:
 			(reward as PictureReveal).reveal(i)
@@ -256,6 +272,10 @@ func _show_feedback(q: Dictionary, ok: bool) -> void:
 	var praise := ["أحسنت!", "ممتاز!", "رائع!", "برافو عليك!"]
 	if ok:
 		v.add_child(UI.label(praise[randi() % praise.size()] if _rtl else "Well done!", 52, UI.GOOD.darkened(0.3)))
+		if _combo >= 3:
+			var combo := UI.label("سلسلة %d صح ورا بعض! مكافأة +%d" % [_combo, Rewards.COMBO_BONUS], 36, Color("#E67E22"))
+			combo.name = "Combo"
+			v.add_child(combo)
 	else:
 		v.add_child(UI.label("ولا يهمك، الإجابة الصحيحة:" if _rtl else "Not quite. The right answer:", 40, UI.BAD.darkened(0.2)))
 		v.add_child(UI.label(QuizSession.correct_text(q), 42, UI.TEXT))
@@ -290,9 +310,10 @@ func _next() -> void:
 
 func _finish() -> void:
 	var earned := session.stars()
-	Profiles.record_quiz(args.get("lesson_key", ""), earned, session.results)
+	var summary := Profiles.finish_round(args.get("kind", "lesson"), args.get("lesson_key", ""), earned,
+		session.results, args.get("book", ""), args.get("unit", ""))
 	main.goto("result", {"stars": earned, "correct": session.correct_count(), "total": session.count(),
-		"quiz_args": args})
+		"quiz_args": args, "summary": summary})
 
 
 func _play(ok: bool) -> void:

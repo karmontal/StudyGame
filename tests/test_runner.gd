@@ -19,7 +19,10 @@ func _ready() -> void:
 	_test_session_tf_match_order()
 	_test_stars()
 	_test_progress_and_save()
+	_test_reward_rules()
+	_test_finish_round()
 	await _test_ui_flow()
+	await _test_challenges_ui()
 	Profiles.delete_save()
 	print("\n%d checks, %d failures" % [_checks, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
@@ -210,6 +213,154 @@ func _test_ui_flow() -> void:
 		main.screen.go_back()
 		await get_tree().process_frame
 		eq(str(main.screen.name), "map", "%s: result goes back to map" % p.id)
+	main.queue_free()
+	Profiles.delete_save()
+
+
+func _results(pattern: String) -> Array:
+	var out := []
+	for c in pattern:
+		out.append({"key": "", "correct": c == "1"})
+	return out
+
+
+func _test_reward_rules() -> void:
+	# 8 right: 80 for answers, combo bonus from the 3rd on (6 x 5), 3 stars x 5, perfect 20.
+	var pay := Rewards.round_coins(_results("11111111"), 3)
+	eq(pay.total, 80 + 30 + 15 + 20, "coins for a perfect round")
+	pay = Rewards.round_coins(_results("11011100"), 1)
+	eq(pay.total, 50 + 5 + 5, "coins for a mixed round (combo resets on a wrong answer)")
+	eq(Rewards.round_coins(_results("111"), 0, "speed").total, 30 + 5, "speed rounds get no star or perfect bonus")
+	eq(Rewards.round_coins(_results("10"), 0, "daily").total, 10 + Rewards.DAILY_BONUS, "daily bonus")
+	eq(Rewards.best_combo(_results("1101110")), 3, "best combo")
+	eq(Rewards.level_for(0), 1, "level 1 at 0 xp")
+	eq(Rewards.level_for(Rewards.XP_PER_LEVEL - 1), 1, "still level 1 just below the threshold")
+	eq(Rewards.level_for(Rewards.XP_PER_LEVEL), 2, "level 2 at the threshold")
+	eq(Rewards.streak_bonus(2), 20, "streak bonus grows per day")
+	eq(Rewards.streak_bonus(30), Rewards.STREAK_BONUS_MAX, "streak bonus is capped")
+	for b in Rewards.BADGES:
+		check(Rewards.badge(b.id).name != "", "badge %s has a name" % b.id)
+
+
+func _test_finish_round() -> void:
+	Profiles.delete_save()
+	Profiles.select("lamees")
+	Profiles.today_override = "2026-10-12"  # a Monday
+	var s := Profiles.finish_round("lesson", "g10_chemistry/u1/l1", 3, _results("11111111"))
+	var badges: Array = s.new_badges
+	check(badges.has("first_round") and badges.has("perfect") and badges.has("combo5"), "first perfect round earns its badges")
+	eq(s.coins, 145 + 10 + 3 * Profiles.BADGE_COINS, "round + day-1 streak + badge coins")
+	eq(Profiles.coins(), s.coins, "coins added to the balance")
+	eq(s.streak, 1, "streak starts at 1")
+	eq(Profiles.stars("g10_chemistry/u1/l1"), 3, "finish_round still records stars")
+	s = Profiles.finish_round("lesson", "g10_chemistry/u1/l1", 1, _results("10100000"))
+	eq(s.streak, 1, "a second round the same day keeps the streak")
+	check(not s.lines.any(func(l): return l[0] == "أيام متتالية"), "streak bonus only on the first round of the day")
+	Profiles.today_override = "2026-10-13"
+	eq(Profiles.finish_round("review", "", 0, _results("1")).streak, 2, "next day extends the streak")
+	Profiles.today_override = "2026-10-14"
+	eq(Profiles.live_streak(), 2, "streak still shows the day after")
+	Profiles.today_override = "2026-10-16"
+	eq(Profiles.live_streak(), 0, "missing a day breaks the streak")
+	eq(Profiles.finish_round("review", "", 0, _results("1")).streak, 1, "streak restarts after a missed day")
+	check(not Profiles.daily_done(), "daily challenge not done yet")
+	s = Profiles.finish_round("daily", "", 3, _results("111111"))
+	check(Profiles.daily_done(), "daily challenge done today")
+	check(s.new_badges.has("daily1"), "daily badge")
+	eq(Profiles.stars("daily/2026-10-16"), 0, "daily rounds don't store lesson stars")
+	s = Profiles.finish_round("speed", "", 0, _results("111111111111"))
+	check(s.new_best and s.speed_best == 12, "speed best saved")
+	check(s.new_badges.has("speed10"), "speed badge")
+	check(not Profiles.finish_round("speed", "", 0, _results("11")).new_best, "lower speed score is not a record")
+	check(Profiles.week_coins("lamees") > 0, "coins count for this week")
+	eq(Profiles.week_coins("nada"), 0, "other kids start the week at 0")
+	Profiles.today_override = "2026-10-19"  # next Monday
+	eq(Profiles.week_coins("lamees"), 0, "weekly board resets on Monday")
+	# Stickers
+	var st: Dictionary = Profiles.sticker_catalog[0]
+	Profiles.info().coins = int(st.price) - 1
+	eq(Profiles.buy_sticker(st.id), null, "can't buy without enough coins")
+	Profiles.info().coins = int(st.price) + 5
+	check(Profiles.buy_sticker(st.id) != null, "buy a sticker")
+	eq(Profiles.coins(), 5, "sticker price taken from coins")
+	check(Profiles.has_sticker(st.id), "sticker owned")
+	eq(Profiles.buy_sticker(st.id), null, "can't buy the same sticker twice")
+	# Everything survives a reload, including old saves without the new fields.
+	var xp := int(Profiles.info().xp)
+	Profiles.load_save()
+	eq(int(Profiles.info("lamees").xp), xp, "xp saved")
+	check(Profiles.info("lamees").stickers.has(st.id), "stickers saved")
+	eq(int(Profiles.info("lamees").streak.days), 1, "streak saved")
+	Profiles.progress["mufeed"] = {"stars": {}, "review": {}, "answered": 3, "correct": 2}
+	eq(Profiles.coins("mufeed"), 0, "old save gets default coins")
+	eq(Profiles.info("mufeed").streak.last, "", "old save gets an empty streak")
+	Profiles.today_override = ""
+	Profiles.delete_save()
+
+
+func _test_challenges_ui() -> void:
+	var main: Node = MAIN_SCENE.instantiate()
+	add_child(main)
+	await get_tree().process_frame
+	for p in Profiles.profiles:
+		if Content.grade_questions(int(p.grade)).is_empty():
+			continue
+		Profiles.select(p.id)
+		main.goto("books")
+		await get_tree().process_frame
+		check(main.find_child("Status", true, false) != null, "%s: status card on books screen" % p.id)
+		var daily: Button = main.find_child("Daily", true, false)
+		check(daily != null and not daily.disabled, "%s: daily challenge open" % p.id)
+		daily.pressed.emit()
+		await get_tree().process_frame
+		eq(str(main.screen.name), "quiz", "%s: daily opens a quiz" % p.id)
+		var guard := 0
+		while str(main.screen.name) == "quiz" and guard < 20:
+			guard += 1
+			await _answer_right(main.screen)
+			(main.screen.find_child("Next", true, false) as Button).pressed.emit()
+			await get_tree().process_frame
+		eq(str(main.screen.name), "result", "%s: daily ends on result" % p.id)
+		check(main.screen.find_child("Coins", true, false) != null, "%s: result shows coins" % p.id)
+		check(main.screen.find_child("Again", true, false) == null, "%s: daily can't be replayed for coins" % p.id)
+		main.screen.go_back()
+		await get_tree().process_frame
+		check((main.find_child("Daily", true, false) as Button).disabled, "%s: daily done for today" % p.id)
+		# Speed challenge
+		(main.find_child("Speed", true, false) as Button).pressed.emit()
+		await get_tree().process_frame
+		eq(str(main.screen.name), "speed", "%s: speed screen opens" % p.id)
+		var speed = main.screen
+		(speed.find_child("Start", true, false) as Button).pressed.emit()
+		await get_tree().process_frame
+		for i in 3:
+			var q: Dictionary = speed.current_question()
+			speed.answer_current(int(q.answer) if q.type == "mcq" else q.answer)
+			await get_tree().create_timer(0.45).timeout
+		eq(speed.correct_count(), 3, "%s: speed answers counted" % p.id)
+		speed.end_now()
+		await get_tree().process_frame
+		check(speed.find_child("FinalScore", true, false) != null, "%s: speed final score" % p.id)
+		eq(int(Profiles.info().speed_best), 3, "%s: speed best saved" % p.id)
+		# Badges and album
+		main.goto("badges")
+		await get_tree().process_frame
+		check(main.find_child("Badge_first_round", true, false) != null, "%s: badges screen lists badges" % p.id)
+		main.goto("album")
+		await get_tree().process_frame
+		var st: Dictionary = Profiles.sticker_catalog[1]
+		Profiles.info().coins = int(st.price)
+		main.goto("album")
+		await get_tree().process_frame
+		var buy: Button = main.find_child("Buy_" + st.id, true, false)
+		check(buy != null and not buy.disabled, "%s: can afford a sticker" % p.id)
+		buy.pressed.emit()
+		await get_tree().process_frame
+		check(Profiles.has_sticker(st.id), "%s: sticker bought from the album" % p.id)
+		check(main.find_child("Buy_" + st.id, true, false) == null, "%s: bought sticker has no buy button" % p.id)
+	main.goto("profiles")
+	await get_tree().process_frame
+	check(main.find_child("Leader", true, false) != null, "weekly leader shown on the profile screen")
 	main.queue_free()
 	Profiles.delete_save()
 

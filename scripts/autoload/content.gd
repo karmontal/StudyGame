@@ -90,6 +90,29 @@ func unit_questions(book_id: String, unit_id: String) -> Array[Dictionary]:
 	return out
 
 
+## Every question from the books of one grade (for the daily and speed challenges).
+## `types` limits the question types; empty means all.
+func grade_questions(grade: int, types: Array = []) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for meta in books_for_grade(grade):
+		for u in book(meta.id).get("units", []):
+			for q in unit_questions(meta.id, u.id):
+				if types.is_empty() or q.type in types:
+					out.append(q)
+	return out
+
+
+## The same handful of questions all day for one kid, different the next day.
+func daily_questions(grade: int, date: String, profile_id: String, count: int = 6) -> Array[Dictionary]:
+	var pool := grade_questions(grade)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(date + "/" + profile_id)
+	var out: Array[Dictionary] = []
+	while not pool.is_empty() and out.size() < count:
+		out.append(pool.pop_at(rng.randi_range(0, pool.size() - 1)))
+	return out
+
+
 func question_by_key(key: String) -> Dictionary:
 	var parts := key.split("/")
 	if parts.size() != 4:
