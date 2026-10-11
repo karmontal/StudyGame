@@ -17,3 +17,7 @@
   `godot --headless --path . res://tests/test_runner.tscn` (must exit 0).
 - Android APK is built in CI (`.github/workflows/android.yml`); the cloud container cannot reach the
   Android SDK or the Higgsfield CDN.
+- Sound: `Sfx` autoload plays `assets/sfx/*.wav` (made by `tools/make_sfx.py`) and reads questions aloud with
+  the phone's TTS (`Sfx.speak`). `Settings` (user://settings.cfg) holds the sound switch and dashboard address.
+- Parent dashboard: `server/` (FastAPI + SQLite, `cd server && pytest -q`). Game side is the `Sync` autoload;
+  `Profiles.finish_round()` queues every round. The contract is `docs/sync_api.md`; change both sides together.

@@ -1,0 +1,9 @@
+{% macro stars(n, size='') -%}
+<span class="stars {{ size }}" aria-label="{{ n }} من 3 نجوم">{% for i in range(3) %}<span class="{{ 'full' if i < n else 'empty' }}">★</span>{% endfor %}</span>
+{%- endmacro %}
+
+{% macro status(a) -%}
+{% if a.status == 'open' %}<span class="pill open">مفتوح</span>
+{% elif a.status == 'done' %}<span class="pill done">أنجزه · بانتظار الجائزة</span>
+{% else %}<span class="pill given">تم تسليم الجائزة</span>{% endif %}
+{%- endmacro %}

@@ -6,6 +6,9 @@ func build() -> void:
 	var p := Profiles.current()
 	var content := page("أهلاً %s!" % p.name, Color(p.color))
 	content.add_child(_status_card(p))
+	var tasks := Sync.assignments_for(p.id)
+	if not tasks.is_empty():
+		content.add_child(_tasks(tasks, Color(p.color)))
 	content.add_child(_challenges(p))
 	content.add_child(UI.label("اختار المادة", 44, UI.TEXT))
 	var grid := GridContainer.new()
@@ -129,6 +132,40 @@ func _challenges(p: Dictionary) -> GridContainer:
 	album.pressed.connect(func(): main.goto("album"))
 	grid.add_child(album)
 	return grid
+
+
+## Tests the parent assigned from the dashboard, with the real-world reward they promised.
+func _tasks(tasks: Array, color: Color) -> PanelContainer:
+	var card := UI.card(Color("#FFF7E0"))
+	card.name = "Tasks"
+	var v := UI.vbox(16)
+	card.add_child(v)
+	v.add_child(UI.label("مهام من بابا", 44, Color("#B07D00")))
+	for a in tasks:
+		var done: bool = a.get("done_at") != null
+		var qs := Sync.assignment_questions(a)
+		var b := UI.button("", Color("#27AE60") if done else color, 36, 150)
+		b.name = "Task_" + str(a.id)
+		b.disabled = done or qs.is_empty()
+		var col := UI.vbox(2)
+		col.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		col.alignment = BoxContainer.ALIGNMENT_CENTER
+		col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		b.add_child(col)
+		var sub := "تمّت! بانتظار المكافأة: %s" % a.get("reward", "") if done else \
+			"المطلوب %d نجوم · المكافأة: %s" % [int(a.get("min_stars", 1)), a.get("reward", "")]
+		for l in [UI.label(str(a.get("title", "")), 40, Color.WHITE), UI.label(sub, 28, Color(1, 1, 1, 0.92))]:
+			l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			col.add_child(l)
+		b.custom_minimum_size.y = 170
+		b.pressed.connect(func():
+			main.goto("quiz", {"questions": qs, "count": mini(int(a.get("count", 10)), qs.size()),
+				"title": str(a.get("title", "")), "kind": "assignment", "lesson_key": "assignment/" + str(a.id),
+				"back": "books", "back_args": {}}))
+		v.add_child(b)
+		if str(a.get("note", "")) != "":
+			v.add_child(UI.label(str(a.note), 30, UI.MUTED))
+	return card
 
 
 func _big_button(node_name: String, title: String, sub: String, color: Color) -> Button:

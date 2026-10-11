@@ -1,0 +1,16 @@
+services:
+  studygame:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      STUDYGAME_DB: /app/data/studygame.db
+      STUDYGAME_CONTENT: /content
+    volumes:
+      - studygame-db:/app/data
+      - ../data:/content:ro          # the game's curriculum (books, subjects, stickers)
+    ports:
+      - "127.0.0.1:8000:8000"        # only reachable through the HTTPS proxy (Caddy) on this machine
+
+volumes:
+  studygame-db:

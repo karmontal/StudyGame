@@ -10,6 +10,7 @@ const SCREENS := {
 	"speed": preload("res://scripts/ui/speed_screen.gd"),
 	"badges": preload("res://scripts/ui/badges_screen.gd"),
 	"album": preload("res://scripts/ui/album_screen.gd"),
+	"parents": preload("res://scripts/ui/parents_screen.gd"),
 }
 
 var screen: Screen

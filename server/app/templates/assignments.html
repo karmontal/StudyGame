@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "macros.html" import stars, status %}
+{% block title %}الاختبارات{% endblock %}
+{% block body %}
+<div class="title-row"><h1>الاختبارات</h1><a class="btn" href="/assignments/new">اختبار جديد</a></div>
+{% for a in items %}
+<div class="card assignment {{ a.status }}">
+  <div class="title-row">
+    <div><strong>{{ a.title }}</strong><br><span class="muted">{{ a.kid or a.profile }} · {{ a.created_at | fmt_time }}</span></div>
+    {{ status(a) }}
+  </div>
+  <p class="muted">{{ a.lessons | join('، ') }}</p>
+  <p>{{ a.count }} سؤال · المطلوب {{ stars(a.min_stars) }} على الأقل
+    {% if a.reward %}<br>الجائزة: <strong>{{ a.reward }}</strong>{% endif %}
+    {% if a.note %}<br>رسالة: {{ a.note }}{% endif %}</p>
+  {% if a.best_stars or a.done_at %}
+  <p>أفضل نتيجة: {{ stars(a.best_stars) }}{% if a.done_at %} · أنجزه {{ a.done_at | fmt_time }}{% endif %}
+    {% if a.reward_given_at %} · سُلّمت الجائزة {{ a.reward_given_at | fmt_time }}{% endif %}</p>
+  {% endif %}
+  <div class="actions">
+    {% if a.status == 'done' %}
+    <form method="post" action="/assignments/{{ a.id }}/reward"><input type="hidden" name="csrf" value="{{ csrf }}">
+      <button class="btn">سلّمت الجائزة</button></form>
+    {% endif %}
+    <form method="post" action="/assignments/{{ a.id }}/delete" onsubmit="return confirm('حذف هذا الاختبار؟')">
+      <input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn danger">حذف</button></form>
+  </div>
+</div>
+{% else %}
+<p class="muted">لا يوجد اختبارات بعد. أضف اختباراً على دروس معيّنة وحدد جائزة.</p>
+{% endfor %}
+{% endblock %}

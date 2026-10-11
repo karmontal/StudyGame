@@ -20,3 +20,18 @@ jobs:
         run: ./godot --headless --path . --import
       - name: Run tests
         run: ./godot --headless --path . res://tests/test_runner.tscn
+
+  server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -r requirements-dev.txt
+      - name: Run dashboard tests
+        run: pytest -q

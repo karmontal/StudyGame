@@ -24,6 +24,7 @@ Settings="*res://scripts/autoload/settings.gd"
 Sfx="*res://scripts/autoload/sfx.gd"
 Content="*res://scripts/autoload/content.gd"
 Profiles="*res://scripts/autoload/profiles.gd"
+Sync="*res://scripts/autoload/sync.gd"
 
 [audio]
 

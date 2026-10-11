@@ -15,6 +15,20 @@ func build() -> void:
 		grid.add_child(_card(p, p.id == leader))
 	content.add_child(UI.label("العملات تنحسب كل أسبوع من جديد، يوم الإثنين", 30, UI.MUTED))
 	content.add_child(_sound_toggle())
+	content.add_child(_parents_button())
+
+
+## The parents' settings open only after holding the button, so the kids don't wander in.
+func _parents_button() -> Button:
+	var b := UI.button("للأهل (اضغط مطوّلاً)", Color("#7F8C8D"), 30, 90)
+	b.name = "Parents"
+	b.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	b.custom_minimum_size.x = 420
+	b.button_down.connect(func():
+		await get_tree().create_timer(1.5).timeout
+		if is_instance_valid(b) and b.is_inside_tree() and b.button_pressed:
+			main.goto("parents"))
+	return b
 
 
 ## Sound on/off for effects and reading aloud.

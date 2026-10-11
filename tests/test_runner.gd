@@ -14,6 +14,8 @@ func _ready() -> void:
 	Profiles.delete_save()
 	Settings.path = "user://test_settings.cfg"
 	Settings.reset()
+	Sync.path = "user://test_sync.json"
+	Sync.reset()
 	_test_curriculum_index()
 	_test_all_books_valid()
 	_test_validator_catches_mistakes()
@@ -26,6 +28,7 @@ func _ready() -> void:
 	await _test_ui_flow()
 	await _test_challenges_ui()
 	await _test_sound()
+	await _test_sync_and_tasks()
 	Profiles.delete_save()
 	print("\n%d checks, %d failures" % [_checks, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
@@ -459,4 +462,73 @@ func _test_sound() -> void:
 	check(Settings.sound_on(), "sound switch turns it back on")
 	main.queue_free()
 	await get_tree().process_frame
+	Settings.reset()
+
+
+func _test_sync_and_tasks() -> void:
+	Profiles.delete_save()
+	Sync.reset()
+	check(not Sync.configured(), "sync is off until the parent sets a server")
+	var nada := "nada"
+	Profiles.select(nada)
+	var book_id := _first_book_with_data(3)
+	var u: Dictionary = Content.book(book_id).units[0]
+	var l: Dictionary = u.lessons[0]
+	var key := Profiles.lesson_key(book_id, u.id, l.id)
+	var qs := Content.lesson_questions(book_id, u.id, l.id)
+	Profiles.finish_round("lesson", key, 2, [{"key": qs[0].key, "correct": true}, {"key": qs[1].key, "correct": false}], book_id, u.id)
+	eq(Sync.events.size(), 1, "a finished round is queued for the dashboard")
+	var e: Dictionary = Sync.events[0]
+	eq(e.kind, "lesson", "event kind")
+	eq(e.lesson_key, key, "event lesson key")
+	eq(e.title, l.title, "event has the lesson title")
+	eq([e.correct, e.total, e.stars], [1, 2, 2], "event counts")
+	eq(e.wrong, [qs[1].key], "event lists wrong questions")
+	check(RegEx.create_from_string("^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d$").search(e.at) != null, "event time format")
+	var body := Sync.build_body()
+	eq(body.profiles.size(), Profiles.profiles.size(), "sync body has every kid")
+	eq(int(body.summary[nada].stars[key]), 2, "sync summary has stars")
+	check(str(body.device).begins_with("dev-"), "sync body has a device id")
+	# The server answers with an assignment for Nada.
+	Sync.apply_response({"ok": true, "assignments": [{"id": "a1", "profile": nada, "title": "اختبار بابا",
+		"note": "", "reward": "آيس كريم", "lesson_keys": [key], "count": 4, "min_stars": 2,
+		"created_at": "2026-10-11T09:00:00", "done_at": null, "best_stars": 0}]}, [e.id])
+	eq(Sync.events.size(), 0, "sent rounds leave the queue")
+	eq(Sync.assignments_for("lamees").size(), 0, "assignments are per kid")
+	var main: Node = MAIN_SCENE.instantiate()
+	add_child(main)
+	await get_tree().process_frame
+	main.goto("books")
+	await get_tree().process_frame
+	var task: Button = main.find_child("Task_a1", true, false)
+	check(task != null and not task.disabled, "task from dad shows on the books screen")
+	task.pressed.emit()
+	await get_tree().process_frame
+	eq(str(main.screen.name), "quiz", "task opens a quiz")
+	eq(main.screen.session.count(), 4, "task uses its question count")
+	var guard := 0
+	while str(main.screen.name) == "quiz" and guard < 10:
+		guard += 1
+		await _answer_right(main.screen)
+		(main.screen.find_child("Next", true, false) as Button).pressed.emit()
+		await get_tree().process_frame
+	check(main.screen.find_child("TaskResult", true, false) != null, "result says the task is passed")
+	check(Sync.assignment_by_id("a1").done_at != null, "task marked done on the phone")
+	eq(Sync.events[-1].kind, "assignment", "task round queued as an assignment")
+	eq(Sync.events[-1].assignment, "a1", "task round carries the assignment id")
+	main.goto("books")
+	await get_tree().process_frame
+	check((main.find_child("Task_a1", true, false) as Button).disabled, "a finished task can't be replayed")
+	# Parents' settings screen
+	main.goto("parents")
+	await get_tree().process_frame
+	(main.screen.find_child("Url", true, false) as LineEdit).text = "study.example.com"
+	main.screen.save_and_test()
+	check("https" in (main.screen.find_child("Status", true, false) as Label).text, "parents screen rejects an address without https")
+	(main.screen.find_child("Url", true, false) as LineEdit).text = ""
+	main.screen.save_and_test()
+	check(not Sync.configured(), "clearing the address turns sync off")
+	main.queue_free()
+	await get_tree().process_frame
+	Sync.reset()
 	Settings.reset()

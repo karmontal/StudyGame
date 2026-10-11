@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% from "macros.html" import stars %}
+{% block title %}تقرير {{ kid.name }}{% endblock %}
+{% block body %}
+<div class="report card" style="--kid: {{ kid.color or '#4a6cf7' }}">
+  <div class="report-head">
+    <span class="avatar big">{{ kid.name[:1] }}</span>
+    <div><h1>تقرير الأسبوع: {{ kid.name }}</h1>
+      <span class="muted">من {{ r.start }} إلى {{ r.end }} · الصف {{ kid.grade }}</span></div>
+  </div>
+  <dl class="stats">
+    <div><dt>جولات</dt><dd>{{ r.rounds }}</dd></div>
+    <div><dt>أسئلة</dt><dd>{{ r.answered }}</dd></div>
+    <div><dt>الدقة</dt><dd>{{ r.accuracy ~ '%' if r.accuracy is not none else '—' }}</dd></div>
+    <div><dt>نجوم</dt><dd>{{ r.stars }}</dd></div>
+    <div><dt>دروس جديدة</dt><dd>{{ r.new_lessons }}</dd></div>
+    <div><dt>أيام نشاط</dt><dd>{{ r.active_days }} من 7</dd></div>
+  </dl>
+  <h2>كل يوم</h2>
+  <ul class="bars">
+  {% for d in r.days %}
+    <li><span class="day">{{ d.name }} <small>{{ d.date }}</small></span>
+      <span class="bar"><span style="width: {{ d.pct }}%"></span></span>
+      <span class="num">{{ d.answered }}</span></li>
+  {% endfor %}
+  </ul>
+  {% if r.lessons %}
+  <h2>الدروس اللي درسها</h2>
+  <ul class="lessons">
+  {% for l in r.lessons %}
+    <li class="played"><span>{{ l.title }}{% if l.new %} <span class="pill new">جديد</span>{% endif %}</span>
+      <span class="end">{{ stars(l.stars) }}</span></li>
+  {% endfor %}
+  </ul>
+  {% else %}<p class="muted">ما درس أي درس هالأسبوع.</p>{% endif %}
+  {% if done %}
+  <h2>اختبارات أنجزها</h2>
+  <ul class="lessons">{% for a in done %}<li class="played"><span>{{ a.title }}{% if a.reward %} · {{ a.reward }}{% endif %}</span><span class="end">{{ stars(a.best_stars) }}</span></li>{% endfor %}</ul>
+  {% endif %}
+</div>
+<p class="actions"><a class="btn ghost" href="/kid/{{ kid.id }}">رجوع</a></p>
+{% endblock %}

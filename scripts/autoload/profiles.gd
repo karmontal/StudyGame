@@ -98,7 +98,8 @@ func record_quiz(lesson_key_: String, earned_stars: int, results: Array) -> void
 
 
 ## Records a finished round and pays out coins, streak and badges.
-## kind: "lesson", "unit", "review", "daily" or "speed". Returns a summary for the result screen:
+## kind: "lesson", "unit", "review", "daily", "speed" or "assignment" (lesson_key "assignment/<id>").
+## Every round is also queued for the parent dashboard (Sync). Returns a summary for the result screen:
 ## {coins, lines, new_badges, level_before, level_after, streak, speed_best, new_best}.
 func finish_round(kind: String, lesson_key_: String, earned_stars: int, results: Array,
 		book_id: String = "", unit_id: String = "") -> Dictionary:
@@ -142,6 +143,7 @@ func finish_round(kind: String, lesson_key_: String, earned_stars: int, results:
 			p.badges[id] = true
 			new_badges.append(id)
 	save()
+	Sync.record(current_id, kind, lesson_key_, book_id, unit_id, earned_stars, results, int(pay.total))
 	return {"coins": pay.total, "lines": pay.lines, "new_badges": new_badges, "level_before": level_before,
 		"level_after": Rewards.level_for(int(p.xp)), "streak": int(p.streak.days),
 		"speed_best": int(p.speed_best), "new_best": new_best}

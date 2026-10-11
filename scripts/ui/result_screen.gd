@@ -23,6 +23,15 @@ func build() -> void:
 			pic.reveal_all.call_deferred()
 	else:
 		content.add_child(UI.label("فتحت القفل!" if earned >= 2 else "القفل لسا مسكّر، جرّب كمان مرة", 44, UI.GOOD.darkened(0.3) if earned >= 2 else UI.MUTED))
+	if quiz_args.get("kind", "") == "assignment":
+		var task := Sync.assignment_by_id(str(quiz_args.get("lesson_key", "")).trim_prefix("assignment/"))
+		var need := int(task.get("min_stars", 1))
+		var passed := earned >= need
+		var t := UI.label("نجحت بمهمة بابا! المكافأة: %s" % task.get("reward", "") if passed else \
+			"المهمة بدها %d نجوم، جرّب كمان مرة" % need, 42, Color.WHITE)
+		t.name = "TaskResult"
+		t.add_theme_stylebox_override("normal", UI.box(UI.GOOD.darkened(0.1) if passed else Color("#E67E22"), 36))
+		content.add_child(t)
 	_add_rewards(content, args.get("summary", {}), color)
 	if quiz_args.get("kind", "") != "daily":
 		var again := UI.button("العب مرة ثانية", color, 46, 140)
