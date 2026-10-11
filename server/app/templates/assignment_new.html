@@ -8,7 +8,7 @@
   <label for="kid">1. لمين الاختبار؟</label>
   <select id="kid" name="kid" onchange="this.form.submit()">
     <option value="">اختر...</option>
-    {% for k in kids %}<option value="{{ k.id }}" {{ 'selected' if kid and kid.id == k.id }}>{{ k.name }} (الصف {{ k.grade }})</option>{% endfor %}
+    {% for k in kids %}<option value="{{ k.id }}" {{ 'selected' if kid and kid.id == k.id }}>{{ k.name }} ({{ grade_label(k.grade) }})</option>{% endfor %}
   </select>
   {% if kid %}
   <label for="book">2. المادة</label>

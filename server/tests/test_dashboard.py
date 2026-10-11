@@ -116,3 +116,14 @@ def test_weekly_report_counts_last_7_days(admin, settings):
     assert r["rounds"] == 2 and r["answered"] == 16 and r["accuracy"] == 63 and r["stars"] == 5
     assert r["new_lessons"] == 0  # the lesson was first played 9 days ago
     assert sum(d["rounds"] for d in r["days"]) == 2
+
+
+def test_toddler_profile(admin):
+    body = {"device": "android-test", "profiles": [{"id": "aya", "name": "آية", "grade": 0}], "events": [],
+            "summary": {}}
+    assert admin.post("/api/sync", json=body, headers={"X-Device-Key": "test-device-key"}).status_code == 200
+    home = admin.get("/").text
+    assert "آية" in home and "ألعاب الصغار" in home and "الصف 0" not in home
+    assert admin.get("/kid/aya").status_code == 200
+    assert admin.get("/kid/aya/week").status_code == 200
+    assert admin.get("/assignments/new?kid=aya").status_code == 200

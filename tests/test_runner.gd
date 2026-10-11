@@ -53,7 +53,8 @@ func _test_curriculum_index() -> void:
 		check(Content.subjects.has(b.subject), "%s subject '%s' is defined" % [b.id, b.subject])
 		check(FileAccess.file_exists("res://" + b.source), "%s source PDF exists" % b.id)
 	for p in Profiles.profiles:
-		check(not Content.books_for_grade(int(p.grade)).is_empty(), "%s has books for grade %d" % [p.name, p.grade])
+		if not p.get("toddler", false):
+			check(not Content.books_for_grade(int(p.grade)).is_empty(), "%s has books for grade %d" % [p.name, p.grade])
 
 
 func _test_all_books_valid() -> void:
@@ -144,7 +145,23 @@ func _test_stars() -> void:
 
 
 func _test_progress_and_save() -> void:
-	eq(Profiles.profiles.size(), 4, "four kids by default")
+	eq(Profiles.profiles.size(), 5, "five kids by default")
+	check(Profiles.get_profile("aya").get("toddler", false), "Aya is the toddler")
+	eq(UI.grade_name(0), "ألعاب الصغار", "toddler shows no school grade")
+	# A save from before Aya was added keeps its kids and gains her.
+	var old_kids: Array = []
+	for k in Profiles.profiles:
+		if k.id != "aya":
+			old_kids.append(k.duplicate())
+	old_kids[0].name = "لميس الحلوة"
+	var f := FileAccess.open(Profiles.path, FileAccess.WRITE)
+	f.store_string(JSON.stringify({"profiles": old_kids, "progress": {}}))
+	f.close()
+	Profiles.load_save()
+	eq(Profiles.profiles.size(), 5, "old save gains the new kid")
+	eq(str(Profiles.profiles[0].name), "لميس الحلوة", "old save keeps its own kids")
+	eq(str(Profiles.profiles[4].id), "aya", "new kid added at the end")
+	Profiles.delete_save()
 	Profiles.select("nada")
 	check(Profiles.is_young(), "Nada (grade 3) gets the young style")
 	check(not Profiles.is_young(Profiles.get_profile("lamees")), "Lamees (grade 10) gets the older style")

@@ -13,6 +13,7 @@ from fastapi.templating import Jinja2Templates
 from . import db, stats
 
 TEMPLATES = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "templates"))
+TEMPLATES.env.globals["grade_label"] = lambda g: "الصف %d" % g if int(g) > 0 else "ألعاب الصغار"
 
 
 class NeedLogin(Exception):

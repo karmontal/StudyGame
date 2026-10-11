@@ -23,7 +23,7 @@ class Profile(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: Id
     name: Annotated[str, StringConstraints(min_length=1, max_length=60)]
-    grade: Annotated[int, Field(ge=1, le=12)]
+    grade: Annotated[int, Field(ge=0, le=12)]  # 0 = toddler (no school books)
 
 
 class Event(BaseModel):

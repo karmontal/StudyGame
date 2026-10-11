@@ -3,19 +3,28 @@ extends Screen
 
 
 func build() -> void:
+	add_child(Backdrop.make(Color("#F7B500"), 430))
 	var content := page("مين بيلعب اليوم؟", UI.TEXT, false)
 	var grid := GridContainer.new()
 	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 36)
-	grid.add_theme_constant_override("v_separation", 36)
+	grid.add_theme_constant_override("h_separation", 32)
+	grid.add_theme_constant_override("v_separation", 32)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_child(grid)
 	var leader := _week_leader()
 	for p in Profiles.profiles:
+		if p.get("toddler", false):
+			continue
 		grid.add_child(_card(p, p.id == leader))
+	for p in Profiles.profiles:
+		if p.get("toddler", false):
+			content.add_child(_toddler_card(p))
 	content.add_child(UI.label("العملات تنحسب كل أسبوع من جديد، يوم الإثنين", 30, UI.MUTED))
-	content.add_child(_sound_toggle())
-	content.add_child(_parents_button())
+	var row := UI.hbox(24)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_child(_sound_toggle())
+	row.add_child(_parents_button())
+	content.add_child(row)
 
 
 ## The parents' settings open only after holding the button, so the kids don't wander in.
@@ -70,35 +79,99 @@ func _card(p: Dictionary, leader: bool) -> Button:
 	var color := Color(p.color)
 	var b := Button.new()
 	b.name = "Profile_" + p.id
-	b.custom_minimum_size = Vector2(0, 760)
+	b.custom_minimum_size = Vector2(0, 700)
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	UI.style_button(b, UI.CARD)
-	var v := UI.vbox(12)
+	b.add_theme_stylebox_override("pressed", UI.box(color.lerp(Color.WHITE, 0.8)))
+	# Colored band across the top of the card, with the round picture sitting on its edge.
+	var band := Panel.new()
+	var band_box := UI.box(color, 36)
+	band_box.corner_radius_bottom_left = 0
+	band_box.corner_radius_bottom_right = 0
+	band.add_theme_stylebox_override("panel", band_box)
+	band.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	band.offset_bottom = 170
+	band.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	b.add_child(band)
+	var v := UI.vbox(10)
 	v.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	v.alignment = BoxContainer.ALIGNMENT_CENTER
-	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	v.offset_top = 40
+	v.offset_bottom = -24
 	b.add_child(v)
-	var avatar := Avatar.make(p.name, color, 240)
+	var avatar := Avatar.make(p.name, color.darkened(0.1), 270, p.id)
 	avatar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	v.add_child(avatar)
-	v.add_child(UI.label(p.name, 64, color.darkened(0.2)))
-	v.add_child(UI.label(UI.grade_name(int(p.grade)), 36, UI.MUTED))
+	v.add_child(UI.label(p.name, 62, color.darkened(0.25)))
+	var grade := UI.label(UI.grade_name(int(p.grade)), 30, color.darkened(0.25))
+	grade.autowrap_mode = TextServer.AUTOWRAP_OFF
+	grade.add_theme_stylebox_override("normal", UI.box(color.lerp(Color.WHITE, 0.82), 24))
+	grade.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	v.add_child(grade)
+	var stats := UI.hbox(20)
+	stats.alignment = BoxContainer.ALIGNMENT_CENTER
 	var level := Rewards.level_for(int(Profiles.info(p.id).xp))
-	v.add_child(UI.label("المستوى %d" % level, 32, color.darkened(0.2)))
-	var week := CoinIcon.with_amount(Profiles.week_coins(p.id), 34)
-	week.alignment = BoxContainer.ALIGNMENT_CENTER
+	var lvl := UI.label("المستوى %d" % level, 30, UI.MUTED)
+	lvl.autowrap_mode = TextServer.AUTOWRAP_OFF
+	stats.add_child(lvl)
+	var week := CoinIcon.with_amount(Profiles.week_coins(p.id), 32)
 	week.name = "Week"
-	v.add_child(week)
+	stats.add_child(week)
+	v.add_child(stats)
 	if leader:
-		var crown := UI.label("الأول هالأسبوع", 30, Color.WHITE)
+		var crown := UI.label("الأول هالأسبوع", 28, Color.WHITE)
 		crown.name = "Leader"
 		crown.autowrap_mode = TextServer.AUTOWRAP_OFF
-		crown.add_theme_stylebox_override("normal", UI.box(Color("#F7B500"), 26))
+		crown.add_theme_stylebox_override("normal", UI.box(UI.STAR, 26))
 		crown.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		v.add_child(crown)
-	for c in v.get_children():
-		c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_ignore_taps(v)
 	b.pressed.connect(func():
 		Profiles.select(p.id)
 		main.goto("books"))
 	return b
+
+
+## The little one's card: wide and bright, straight into her picture games (no reading needed).
+func _toddler_card(p: Dictionary) -> Button:
+	var color := Color(p.color)
+	var b := Button.new()
+	b.name = "Profile_" + p.id
+	b.custom_minimum_size = Vector2(0, 340)
+	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	UI.style_button(b, Color("#FFF1D6"))
+	b.get_theme_stylebox("normal").border_color = color
+	b.get_theme_stylebox("normal").set_border_width_all(6)
+	var row := UI.hbox(36)
+	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	row.offset_left = 40
+	row.offset_right = -40
+	b.add_child(row)
+	var avatar := Avatar.make(p.name, color, 270, p.id)
+	avatar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(avatar)
+	var v := UI.vbox(8)
+	v.alignment = BoxContainer.ALIGNMENT_CENTER
+	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(v)
+	v.add_child(UI.label(p.name, 72, color.darkened(0.15), HORIZONTAL_ALIGNMENT_LEFT))
+	v.add_child(UI.label("ألوان وأشكال وحيوانات", 34, UI.MUTED, HORIZONTAL_ALIGNMENT_LEFT))
+	var dots := HBoxContainer.new()
+	dots.add_theme_constant_override("separation", 14)
+	for c in UI.PAIR_COLORS:
+		var d := Panel.new()
+		d.custom_minimum_size = Vector2(44, 44)
+		d.add_theme_stylebox_override("panel", UI.box(c, 22))
+		dots.add_child(d)
+	v.add_child(dots)
+	_ignore_taps(row)
+	b.pressed.connect(func():
+		Profiles.select(p.id)
+		main.goto("toddler"))
+	return b
+
+
+func _ignore_taps(node: Control) -> void:
+	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for c in node.get_children():
+		if c is Control:
+			_ignore_taps(c)

@@ -28,6 +28,7 @@ Request body (JSON):
 }
 ```
 
+- `grade` is 1 to 12, or 0 for a toddler (no school books; her games are not sent as rounds).
 - `kind` is one of `lesson`, `unit`, `review`, `daily`, `speed`, `assignment`.
 - `events` are the rounds finished since the last successful sync. `id` is unique per event; the server
   must ignore an event id it already has (the game resends when a sync fails halfway).
