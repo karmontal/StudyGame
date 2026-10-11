@@ -39,3 +39,19 @@ fetch assets/stickers/falcon.jpg hf_20261010_165322_a43808de-99f8-4eeb-9b35-c580
 fetch assets/stickers/flask.jpg hf_20261010_165322_9357133d-b541-4b6d-b943-d37be57fb93d.png 512
 fetch assets/stickers/saturn.jpg hf_20261010_165322_2bce5259-a3ef-4d39-a0b8-f1c0c007234f.png 512
 fetch assets/stickers/trophy.jpg hf_20261010_165324_d97a71b6-b0b9-4f85-b1f6-717bcf0fce3d.png 512
+
+# App launcher icon (1:1, gpt_image_2_5): a smiling owl on a book. Android crops the adaptive
+# foreground to a circle or squircle, so the subject sits in the middle of the picture.
+# Other option: hf_20261011_053234_71aec26a-b7a2-4944-8b12-db8d1113c431.png (open book with a star).
+mkdir -p assets/icon
+curl -fsSL -o "$tmp/icon.png" "$base/hf_20261011_053235_8c69fbd7-f14f-4141-a109-8ceba028c11f.png"
+python3 - "$tmp/icon.png" <<'PY'
+import sys
+from PIL import Image
+im = Image.open(sys.argv[1]).convert("RGB")
+im.resize((512, 512), Image.LANCZOS).save("assets/icon/icon_512.png")
+im.resize((432, 432), Image.LANCZOS).save("assets/icon/foreground_432.png")
+# The adaptive background is the picture's own corner colour, so the edges blend in.
+Image.new("RGB", (432, 432), im.getpixel((4, 4))).save("assets/icon/background_432.png")
+PY
+echo assets/icon
