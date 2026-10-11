@@ -1,0 +1,2049 @@
+{
+	"id": "g10_english",
+	"title": "English for Palestine - Grade 10",
+	"lang": "en",
+	"units": [
+		{
+			"id": "u1",
+			"title": "Module 1: Units 1-3",
+			"lessons": [
+				{
+					"id": "l1",
+					"title": "Unit 1: Making contact - the emails",
+					"pages": [
+						4,
+						6
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Why is Jenny's dad in contact with Basim's father?",
+							"choices": [
+								"He is joining his farm research project",
+								"He is buying his farm",
+								"They went to school together",
+								"He is his new teacher"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What did Jenny attach to her first email?",
+							"choices": [
+								"A photo of a boat race",
+								"A photo of a football match",
+								"A map of Jericho",
+								"Her school report"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which team did Basim's junior team play?",
+							"choices": [
+								"Nablus",
+								"Jericho",
+								"Manchester",
+								"Hebron"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What was the score in Basim's football match?",
+							"choices": [
+								"3-1 to Basim's team",
+								"1-3 to Nablus",
+								"2-2",
+								"0-1"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where is the special apartment for Jenny's dad?",
+							"choices": [
+								"Near Basim's house in Jericho",
+								"In Manchester",
+								"In the Lake District",
+								"In Nablus"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where does Jenny go on a school trip every year?",
+							"choices": [
+								"The Lake District",
+								"Jericho",
+								"London",
+								"Nablus"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "In 'PS I'm attaching a photo', what does PS stand for?",
+							"choices": [
+								"postscript",
+								"please send",
+								"photo sent",
+								"personal story"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What does 'settle in' mean?",
+							"choices": [
+								"Get used to a new home or place",
+								"Cancel a trip",
+								"Sit down for a long time",
+								"Leave a place quickly"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Basim says they will 'show him round'. This means they will:",
+							"choices": [
+								"take him to see the places in the town",
+								"show him photos",
+								"turn him around",
+								"send him an email"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "Jenny's winter holidays start on 23rd December and finish on 9th January.",
+							"answer": true
+						},
+						{
+							"type": "tf",
+							"q": "Jenny's dad's first date for the flight was cancelled.",
+							"answer": true
+						},
+						{
+							"type": "match",
+							"q": "Match the word with its meaning",
+							"pairs": [
+								[
+									"depart",
+									"leave"
+								],
+								[
+									"cancel",
+									"stop a plan"
+								],
+								[
+									"attach",
+									"add a file to an email"
+								],
+								[
+									"reply",
+									"answer"
+								]
+							]
+						}
+					]
+				},
+				{
+					"id": "l2",
+					"title": "Unit 1: Talking about the future",
+					"pages": [
+						6,
+						8
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "'Dad is flying next Saturday.' This present continuous sentence talks about:",
+							"choices": [
+								"a future personal plan",
+								"something happening now",
+								"a regular habit",
+								"a past action"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "'His flight departs at 8:30 am.' We use the present simple here for:",
+							"choices": [
+								"a future schedule or timetable",
+								"a personal plan",
+								"something happening now",
+								"an offer"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: The train ___ at 9 am tomorrow. (timetable)",
+							"choices": [
+								"leaves",
+								"is leaving",
+								"left",
+								"has left"
+							],
+							"answer": 0,
+							"explain": "We use the present simple for fixed future schedules, like timetables."
+						},
+						{
+							"type": "mcq",
+							"q": "Look at the clouds! It ___ rain.",
+							"choices": [
+								"is going to",
+								"will",
+								"rains",
+								"is raining"
+							],
+							"answer": 0,
+							"explain": "We use 'going to' for what we feel must happen because of what we see now."
+						},
+						{
+							"type": "mcq",
+							"q": "'I'm cold.' - 'I ___ close the window for you.' (an offer)",
+							"choices": [
+								"will",
+								"am going to",
+								"am closing",
+								"close"
+							],
+							"answer": 0,
+							"explain": "We use 'will' to offer or promise to do something."
+						},
+						{
+							"type": "mcq",
+							"q": "We often use 'going to' for:",
+							"choices": [
+								"plans and intentions",
+								"offers",
+								"promises",
+								"sudden decisions"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which phrasal verb means 'to put something in the place where you usually keep it'?",
+							"choices": [
+								"put away",
+								"put down",
+								"put on",
+								"put up"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which phrasal verb means 'to begin to do something that someone else was doing'?",
+							"choices": [
+								"take over",
+								"take off",
+								"take out",
+								"put up"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "It's cold today, so the children need to ___ their hats and coats.",
+							"choices": [
+								"put on",
+								"take off",
+								"put away",
+								"take over"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I'll ___ my shoes and stand on a chair.",
+							"choices": [
+								"take off",
+								"put on",
+								"take over",
+								"put up"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match the phrasal verb with its meaning",
+							"pairs": [
+								[
+									"put up",
+									"attach something to a wall"
+								],
+								[
+									"put down",
+									"put something on a table or the ground"
+								],
+								[
+									"take out",
+									"take something from where you keep it"
+								],
+								[
+									"take off",
+									"remove clothes from your body"
+								]
+							]
+						},
+						{
+							"type": "tf",
+							"q": "We often use 'will' to say what we have just decided to do.",
+							"answer": true
+						}
+					]
+				},
+				{
+					"id": "l3",
+					"title": "Unit 2: From here to there",
+					"pages": [
+						9,
+						12
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Where did Mark Stubbs and his team want to row from and to?",
+							"choices": [
+								"From Canada to Britain",
+								"From Britain to Canada",
+								"From Cairo to Aqaba",
+								"From Spain to America"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What destroyed Mark Stubbs's boat?",
+							"choices": [
+								"A huge wave in a storm",
+								"A ship",
+								"A fire",
+								"Ice"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which three things saved the men's lives?",
+							"choices": [
+								"A life raft, a satellite phone and their GPS",
+								"A map, a radio and a boat",
+								"A helicopter, a rope and a phone",
+								"A satnav, a car and a radio"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What does GPS stand for?",
+							"choices": [
+								"Global Positioning System",
+								"Great Phone Signal",
+								"Global Phone Service",
+								"General Position Satellite"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How many satellites must GPS equipment 'see' to find its exact position?",
+							"choices": [
+								"Three or more",
+								"One",
+								"Two",
+								"Ten"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What does 'kph' mean?",
+							"choices": [
+								"kilometres per hour",
+								"kilos per hour",
+								"kilometres per house",
+								"kilometres past home"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "In the text, if you are 250 km from Damascus, 375 km from Cairo and 220 km from Aqaba, where are you?",
+							"choices": [
+								"Hebron",
+								"Gaza",
+								"Jericho",
+								"Amman"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: We have been running ___ ages.",
+							"choices": [
+								"for",
+								"since",
+								"yet",
+								"already"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: Lana has been writing ___ the age of four.",
+							"choices": [
+								"since",
+								"for",
+								"ago",
+								"yet"
+							],
+							"answer": 0,
+							"explain": "'Since' goes with a starting point; 'for' goes with a period of time."
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the past simple sentence (a completed past action):",
+							"choices": [
+								"A ship found them at 6:30 am.",
+								"GPS has saved many lives.",
+								"Satnavs have become popular.",
+								"How far have I travelled so far?"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "We use the present perfect continuous for actions that:",
+							"choices": [
+								"started in the past and continue up to now",
+								"finished long ago",
+								"will happen tomorrow",
+								"happen every day"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match the opposites",
+							"pairs": [
+								[
+									"question",
+									"answer"
+								],
+								[
+									"best",
+									"worst"
+								],
+								[
+									"into",
+									"out of"
+								],
+								[
+									"to the left",
+									"to the right"
+								]
+							]
+						}
+					]
+				},
+				{
+					"id": "l4",
+					"title": "Unit 3: Modal verbs",
+					"pages": [
+						13,
+						13
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "'We may hurt ourselves.' This says that something is:",
+							"choices": [
+								"possible",
+								"certain",
+								"necessary",
+								"not allowed"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "'You can carry the ball in rugby.' Here 'can' means people:",
+							"choices": [
+								"are allowed to",
+								"have to",
+								"are not able to",
+								"must not"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "'Could you send me some photos?' Here 'could' is used to:",
+							"choices": [
+								"ask for something",
+								"make an offer",
+								"talk about the past",
+								"say it is necessary"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "'Shall I email you some photos?' Here 'shall' is used for:",
+							"choices": [
+								"an offer or suggestion",
+								"a future fact",
+								"a rule",
+								"a past habit"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "'You should see it.' This means it is:",
+							"choices": [
+								"a good idea",
+								"not allowed",
+								"impossible",
+								"unnecessary"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "'You don't have to kick the ball.' This means it is:",
+							"choices": [
+								"not necessary",
+								"not allowed",
+								"a good idea",
+								"dangerous"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "You ___ use that path. It's collapsing into the sea.",
+							"choices": [
+								"mustn't",
+								"must",
+								"don't have to",
+								"could"
+							],
+							"answer": 0,
+							"explain": "'Mustn't' means it is necessary NOT to do something."
+						},
+						{
+							"type": "mcq",
+							"q": "Tomorrow's a holiday, so I ___ get up early!",
+							"choices": [
+								"don't need to",
+								"must",
+								"have to",
+								"mustn't"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I've forgotten my key, so I ___ open the car door.",
+							"choices": [
+								"can't",
+								"could",
+								"must",
+								"shall"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "'Mustn't' and 'don't have to' have the same meaning.",
+							"answer": false,
+							"explain": "'Mustn't' = it is not allowed. 'Don't have to' = it is not necessary."
+						},
+						{
+							"type": "match",
+							"q": "Match the modal with its meaning",
+							"pairs": [
+								[
+									"might",
+									"possibility"
+								],
+								[
+									"should",
+									"good idea"
+								],
+								[
+									"have to",
+									"necessary"
+								],
+								[
+									"can't",
+									"not able"
+								]
+							]
+						}
+					]
+				},
+				{
+					"id": "l5",
+					"title": "Unit 3: Turning a hobby into a business",
+					"pages": [
+						14,
+						18
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Why couldn't Joe's family buy him a bigger bike?",
+							"choices": [
+								"His dad had lost his job",
+								"Bikes were not sold in town",
+								"He was too young",
+								"His dad didn't like bikes"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What was wrong with Mr Wilson's old bike?",
+							"choices": [
+								"The frame was damaged and it needed a new wheel",
+								"It had no seat",
+								"It was too small",
+								"Nothing at all"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where did Joe find a second old bike for free?",
+							"choices": [
+								"On the internet",
+								"In a shop",
+								"At school",
+								"In the park"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Since then, Joe has built cheap bikes for:",
+							"choices": [
+								"several friends",
+								"a bike shop",
+								"Mr Wilson",
+								"his teachers"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What was Ann especially good at when she was young?",
+							"choices": [
+								"Decorating biscuits",
+								"Repairing bikes",
+								"Drawing cars",
+								"Taking photos"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Ann made her brother's birthday cake in the shape of a:",
+							"choices": [
+								"car",
+								"castle",
+								"bike",
+								"boat"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What is Ann's project this week?",
+							"choices": [
+								"A wedding cake for 100 people",
+								"A birthday cake for her brother",
+								"A princess's castle cake",
+								"Biscuits for school"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "At five, Ann ___ make biscuits.",
+							"choices": [
+								"could",
+								"can",
+								"must",
+								"has to"
+							],
+							"answer": 0,
+							"explain": "'Could' is the past of 'can': what someone was able to do in the past."
+						},
+						{
+							"type": "mcq",
+							"q": "Which verb goes with 'camping'?",
+							"choices": [
+								"go",
+								"play",
+								"do",
+								"make"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which verb goes with 'tennis'?",
+							"choices": [
+								"play",
+								"go",
+								"do",
+								"make"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which verb goes with 'flower arranging'?",
+							"choices": [
+								"do",
+								"play",
+								"go",
+								"take"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the correct possessive: The two ___ bikes.",
+							"choices": [
+								"boys'",
+								"boy's",
+								"boys's",
+								"boys"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "The cake shop let Ann accept only the orders that she could manage.",
+							"answer": true
+						},
+						{
+							"type": "match",
+							"q": "Match the full form with the short form",
+							"pairs": [
+								[
+									"should not",
+									"shouldn't"
+								],
+								[
+									"cannot",
+									"can't"
+								],
+								[
+									"you would",
+									"you'd"
+								],
+								[
+									"we are",
+									"we're"
+								]
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "u2",
+			"title": "Module 2: Units 4-6",
+			"lessons": [
+				{
+					"id": "l1",
+					"title": "Unit 4: Emergency!",
+					"pages": [
+						24,
+						28
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "How old was the nurse Helen West?",
+							"choices": [
+								"19",
+								"15",
+								"30",
+								"10"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "On which floor was Helen's apartment?",
+							"choices": [
+								"The tenth floor",
+								"The first floor",
+								"The fifth floor",
+								"The twentieth floor"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Why did Helen need another way out?",
+							"choices": [
+								"The outside door was in the kitchen, which was on fire",
+								"The door was locked",
+								"She lost her key",
+								"The lift was broken"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How wide was the ledge outside the window?",
+							"choices": [
+								"15 centimetres",
+								"30 metres",
+								"10 metres",
+								"1 metre"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Why couldn't the firefighters use their ladder?",
+							"choices": [
+								"It was ten metres short",
+								"It was broken",
+								"There was no fire engine",
+								"The police stopped them"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What finally made Helen jump?",
+							"choices": [
+								"An explosion smashed her window and flames shot out",
+								"Her neighbours shouted",
+								"The ladder arrived",
+								"The smoke stopped"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "After the paramedics examined her, Helen was:",
+							"choices": [
+								"unhurt",
+								"badly hurt",
+								"taken to hospital",
+								"very sick"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the correct adjective: I'm ___ to open the letter. I'm afraid it's bad news.",
+							"choices": [
+								"scared",
+								"scaring",
+								"scare",
+								"scarily"
+							],
+							"answer": 0,
+							"explain": "-ed adjectives describe how we feel; -ing adjectives describe how things seem."
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the correct adjective: Yesterday was very ___. I had nothing to do all day!",
+							"choices": [
+								"boring",
+								"bored",
+								"bore",
+								"boringly"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What is the adverb from 'good'?",
+							"choices": [
+								"well",
+								"goodly",
+								"good",
+								"better"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which adverb is irregular (does not add -ly)?",
+							"choices": [
+								"fast",
+								"quickly",
+								"safely",
+								"gently"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the correct word: He was ___ happy when he finished school.",
+							"choices": [
+								"extremely",
+								"extreme",
+								"extremer",
+								"extremity"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "Adjectives usually come before the noun, like 'a full schedule'.",
+							"answer": true
+						},
+						{
+							"type": "tf",
+							"q": "The usual job of -ly adverbs is to tell us more about nouns.",
+							"answer": false,
+							"explain": "-ly adverbs usually tell us more about verbs."
+						}
+					]
+				},
+				{
+					"id": "l2",
+					"title": "Unit 5: Dangerous weather",
+					"pages": [
+						29,
+						32
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Hurricane wind speeds are:",
+							"choices": [
+								"118 kph or more",
+								"18 kph",
+								"50 kph",
+								"1,000 kph"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How big can a hurricane be across?",
+							"choices": [
+								"As much as 800 kilometres",
+								"8 kilometres",
+								"80 metres",
+								"8,000 kilometres"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which hurricane became the world's most expensive?",
+							"choices": [
+								"Hurricane Andrew",
+								"Hurricane Katrina",
+								"The 1970 hurricane",
+								"Hurricane Florida"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Why did only a few people die in Hurricane Andrew?",
+							"choices": [
+								"Most had escaped by car",
+								"It was very small",
+								"It did not reach land",
+								"It happened at night"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where did the most destructive storm in history hit in 1970?",
+							"choices": [
+								"East Pakistan (now Bangladesh)",
+								"Florida",
+								"Palestine",
+								"Japan"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "About how many people died in the 1970 storm?",
+							"choices": [
+								"500,000",
+								"500",
+								"5,000",
+								"50"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where does information about hurricanes come from?",
+							"choices": [
+								"Satellites, weather balloons and weather stations",
+								"Only from ships",
+								"Only from newspapers",
+								"From aeroplanes only"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the correct form: These are the ___ mountains.",
+							"choices": [
+								"most dramatic",
+								"dramaticest",
+								"more dramatic",
+								"dramatic"
+							],
+							"answer": 0,
+							"explain": "Longer adjectives use more / most."
+						},
+						{
+							"type": "mcq",
+							"q": "Choose: The storm is not behaving ___ violently ___ some other storms.",
+							"choices": [
+								"as ... as",
+								"so ... that",
+								"more ... than",
+								"too ... to"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Bangladesh is still too poor to protect its population. This means Bangladesh is:",
+							"choices": [
+								"not rich enough to protect its population",
+								"rich enough to protect its population",
+								"so rich that it protects everyone",
+								"richer than other countries"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: The wind was ___ strong that it damaged lots of houses.",
+							"choices": [
+								"so",
+								"such",
+								"too",
+								"enough"
+							],
+							"answer": 0,
+							"explain": "We use 'so' before adjectives and adverbs, and 'such' before nouns."
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: She cooked ___ a nice meal that we never forgot it.",
+							"choices": [
+								"such",
+								"so",
+								"too",
+								"very"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match the word family",
+							"pairs": [
+								[
+									"destroy",
+									"verb"
+								],
+								[
+									"destruction",
+									"noun"
+								],
+								[
+									"destructive",
+									"adjective"
+								]
+							]
+						},
+						{
+							"type": "tf",
+							"q": "'Moreover' is used to add more information.",
+							"answer": true
+						}
+					]
+				},
+				{
+					"id": "l3",
+					"title": "Unit 6: A scientist for the world",
+					"pages": [
+						33,
+						36
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Where was Maria Sklodowska (Marie Curie) born?",
+							"choices": [
+								"Warsaw",
+								"Paris",
+								"London",
+								"Berlin"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Why couldn't Marie go to university in her own country?",
+							"choices": [
+								"It was against the law for women",
+								"She failed her exams",
+								"There was no university",
+								"She was too young"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where did Marie study from 1891?",
+							"choices": [
+								"The Sorbonne in Paris",
+								"Cambridge",
+								"Cairo University",
+								"Warsaw University"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What dream did Marie and Pierre Curie share?",
+							"choices": [
+								"To make the world a better place through science",
+								"To become rich",
+								"To travel the world",
+								"To build a laboratory"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Marie and Pierre used radiation to:",
+							"choices": [
+								"treat various diseases",
+								"make weapons",
+								"cook food",
+								"build machines"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "In which year did Marie and Pierre receive the Nobel Prize?",
+							"choices": [
+								"1903",
+								"1867",
+								"1934",
+								"1914"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What did Marie supply in the First World War?",
+							"choices": [
+								"Over 200 X-ray machines",
+								"Food for soldiers",
+								"200 ambulances",
+								"Medicine for hospitals"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the correct tense: In 1903, they ___ the Nobel Prize.",
+							"choices": [
+								"received",
+								"were receiving",
+								"receive",
+								"had been receive"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose: When she ___ for a laboratory, she met another scientist.",
+							"choices": [
+								"was looking",
+								"looks",
+								"has looked",
+								"looked at"
+							],
+							"answer": 0,
+							"explain": "The longer action is in the past continuous, the short action in the past simple."
+						},
+						{
+							"type": "order",
+							"q": "Put the events of Marie Curie's life in order",
+							"items": [
+								"She was born in Warsaw",
+								"She started studying in Paris",
+								"She married Pierre Curie",
+								"Pierre died in a road accident",
+								"She supplied X-ray machines in the war"
+							]
+						},
+						{
+							"type": "tf",
+							"q": "Marie gave up her work after Pierre died.",
+							"answer": false,
+							"explain": "She did not give up, and in 1911 she received another Nobel Prize."
+						},
+						{
+							"type": "match",
+							"q": "Match the word with its meaning",
+							"pairs": [
+								[
+									"abroad",
+									"in another country"
+								],
+								[
+									"graduate",
+									"finish university"
+								],
+								[
+									"give up",
+									"stop trying"
+								],
+								[
+									"treat",
+									"give medical care to"
+								]
+							]
+						}
+					]
+				},
+				{
+					"id": "l4",
+					"title": "Unit 6: Past perfect and life stories",
+					"pages": [
+						37,
+						41
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Where was Mahmoud Darwish born?",
+							"choices": [
+								"Al-Birwah, near Acre",
+								"Haifa",
+								"Beirut",
+								"Ramallah"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "In which year was Mahmoud Darwish born?",
+							"choices": [
+								"1942",
+								"1948",
+								"1959",
+								"1970"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What had happened to Darwish's village when his family returned?",
+							"choices": [
+								"It had disappeared",
+								"It had grown bigger",
+								"It had a new school",
+								"Nothing had changed"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Darwish published his first book after he had worked for a Haifa newspaper for:",
+							"choices": [
+								"just a year",
+								"ten years",
+								"26 years",
+								"a month"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose: By the time Jamila left school, she ___ lots of poetry.",
+							"choices": [
+								"had written",
+								"has written",
+								"writes",
+								"was writing"
+							],
+							"answer": 0,
+							"explain": "The past perfect shows something happened before another past time."
+						},
+						{
+							"type": "mcq",
+							"q": "Choose: When they returned home, their car ___.",
+							"choices": [
+								"had disappeared",
+								"disappear",
+								"has disappeared",
+								"disappears"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The past perfect is formed with:",
+							"choices": [
+								"had + past participle",
+								"have + past participle",
+								"was + -ing",
+								"will have"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which of these needs a capital letter?",
+							"choices": [
+								"jerusalem",
+								"city",
+								"mosque",
+								"doctor"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which is an abbreviation of a proper noun?",
+							"choices": [
+								"the UN",
+								"the city",
+								"a doctor",
+								"the sea"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where did Dr Hannan Hussein study medicine?",
+							"choices": [
+								"Cairo University",
+								"Jericho",
+								"London",
+								"Gaza"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "Darwish was delighted that people had not forgotten him when he returned in 1996.",
+							"answer": true
+						},
+						{
+							"type": "match",
+							"q": "Match each proper noun with its type",
+							"pairs": [
+								[
+									"Jerusalem",
+									"city"
+								],
+								[
+									"Jordanian",
+									"nationality"
+								],
+								[
+									"the United Nations",
+									"institution"
+								],
+								[
+									"Shou'n Falastiniya",
+									"magazine"
+								]
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "u3",
+			"title": "Module 3: Units 7-8",
+			"lessons": [
+				{
+					"id": "l1",
+					"title": "Unit 7: Good news from the doctors",
+					"pages": [
+						45,
+						48
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Who did Jenan Rashidi meet to write about medicine?",
+							"choices": [
+								"Dr Mark Way",
+								"Dr Anwar",
+								"Samar",
+								"Serena North"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where does Dr Way work?",
+							"choices": [
+								"London Medical College",
+								"Jericho Hospital",
+								"Cairo University",
+								"Sheffield Hospital"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Why are people living longer, healthier lives, according to Dr Way?",
+							"choices": [
+								"Much better basic health care",
+								"They eat more fries",
+								"They work less",
+								"They live in cities"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What do many modern buildings have for people in wheelchairs?",
+							"choices": [
+								"Special ramps",
+								"Special ladders",
+								"Bionic arms",
+								"Big windows"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What can the new bionic arm understand?",
+							"choices": [
+								"Messages from the brain",
+								"Spoken words",
+								"Music",
+								"Pictures"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "'They are fantastic,' we agreed. In reported speech this is:",
+							"choices": [
+								"We agreed that they were fantastic.",
+								"We agreed that they are fantastic.",
+								"We agreed that they had been fantastic.",
+								"We agree that they were fantastic."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "'It will continue,' he said. Reported:",
+							"choices": [
+								"He said that it would continue.",
+								"He said that it will continue.",
+								"He said that it continues.",
+								"He said that it continued."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "'It can understand,' he said. Reported:",
+							"choices": [
+								"He said that it could understand.",
+								"He said that it can understood.",
+								"He said that it would understand.",
+								"He said that it understands."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "'Are you free?' Samar asks me. Reported:",
+							"choices": [
+								"Samar asks if I am free.",
+								"Samar asks am I free.",
+								"Samar asks if am I free?",
+								"Samar asks that I am free."
+							],
+							"answer": 0,
+							"explain": "In reported Yes/No questions we add if or whether and use statement word order."
+						},
+						{
+							"type": "mcq",
+							"q": "'Could you look after Deema?' she asks me. Reported:",
+							"choices": [
+								"She wants me to look after Deema.",
+								"She wants me looking after Deema.",
+								"She wants could I look after Deema.",
+								"She wants that I look after Deema?"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match the tense change in reported speech",
+							"pairs": [
+								[
+									"am / is",
+									"was"
+								],
+								[
+									"will",
+									"would"
+								],
+								[
+									"can",
+									"could"
+								],
+								[
+									"have started",
+									"had started"
+								]
+							]
+						},
+						{
+							"type": "tf",
+							"q": "Reported questions keep their question marks.",
+							"answer": false,
+							"explain": "Reported questions lose their question marks."
+						}
+					]
+				},
+				{
+					"id": "l2",
+					"title": "Unit 8: Which way at 16?",
+					"pages": [
+						49,
+						54
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Which two routes can Palestinian students choose after Grade 10?",
+							"choices": [
+								"Academic and vocational",
+								"Sports and music",
+								"Scientific and medical",
+								"Day and night"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How is school in Germany and France different?",
+							"choices": [
+								"Students continue with most of their subjects until they graduate",
+								"Students leave school at 13",
+								"There are no exams",
+								"Students study only one subject"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "In the academic route, which two streams can you enter?",
+							"choices": [
+								"Scientific and literary",
+								"Technical and office",
+								"Academic and vocational",
+								"Arts and sports"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What will you mostly study in the literary stream?",
+							"choices": [
+								"Subjects such as history, Arabic and English",
+								"Maths and sciences",
+								"Building and farming",
+								"Office skills"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Someone who enjoys working with their hands outdoors might become:",
+							"choices": [
+								"a builder or a farmer",
+								"a scientist",
+								"an editor",
+								"a programmer"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "According to the passage, a job is only good if:",
+							"choices": [
+								"it is right for you",
+								"it pays a lot",
+								"your friends like it",
+								"it is a doctor's job"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What is a 'dead-end' job?",
+							"choices": [
+								"A job with no future or chance to improve",
+								"A dangerous job",
+								"A job at night",
+								"A job in a hospital"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose: If you had been born in 1700, you ___ any education.",
+							"choices": [
+								"would not have had",
+								"will not have",
+								"would not have",
+								"did not have"
+							],
+							"answer": 0,
+							"explain": "Type 3 conditional: If + past perfect, would have + past participle."
+						},
+						{
+							"type": "mcq",
+							"q": "Choose: If they ___ enough money, they would buy a car.",
+							"choices": [
+								"had",
+								"have",
+								"will have",
+								"had had"
+							],
+							"answer": 0,
+							"explain": "Type 2 conditional: If + past simple, would + verb."
+						},
+						{
+							"type": "mcq",
+							"q": "A Type 3 conditional talks about:",
+							"choices": [
+								"a past event that did not happen",
+								"a real future plan",
+								"a general fact",
+								"something happening now"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Jenny's personal statement says she is thinking about a career as a:",
+							"choices": [
+								"nurse",
+								"doctor",
+								"carpenter",
+								"teacher"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match the word with its meaning",
+							"pairs": [
+								[
+									"carpenter",
+									"a person who makes things from wood"
+								],
+								[
+									"determined",
+									"going on trying when things get difficult"
+								],
+								[
+									"qualification",
+									"a certificate showing you passed a course"
+								],
+								[
+									"apply",
+									"ask formally for a job or a place"
+								]
+							]
+						},
+						{
+							"type": "tf",
+							"q": "The passage says people are respected if they do their work well, whatever their jobs.",
+							"answer": true
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "u4",
+			"title": "Module 4: Units 9-10",
+			"lessons": [
+				{
+					"id": "l1",
+					"title": "Unit 9: Healthy eating - healthy body",
+					"pages": [
+						60,
+						63
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Who is the writer of 'How to be healthier'?",
+							"choices": [
+								"Ellen Grant",
+								"Carrie Choi",
+								"Jenan Rashidi",
+								"Jenny Scott"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Why doesn't Carrie Choi eat breakfast?",
+							"choices": [
+								"She has no time and isn't hungry then",
+								"Her mum doesn't cook",
+								"She is on a diet",
+								"She eats at school"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What percentage of US teenagers don't eat breakfast?",
+							"choices": [
+								"20%",
+								"17%",
+								"50%",
+								"7%"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What percentage of American teenagers are now very overweight?",
+							"choices": [
+								"17%",
+								"20%",
+								"15%",
+								"70%"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The writer says your body is like a car because:",
+							"choices": [
+								"cars need fuel and we need food",
+								"both are fast",
+								"both need water",
+								"both get old"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "People who miss breakfast may suffer:",
+							"choices": [
+								"headaches and low energy",
+								"broken bones",
+								"better learning",
+								"more energy"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What is the answer, according to the writer?",
+							"choices": [
+								"A healthy breakfast, a balanced diet and more exercise",
+								"Eating only fruit",
+								"Eating a big burger at lunch",
+								"Sleeping more"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose: I'm hungry. I'd like ___ food.",
+							"choices": [
+								"some",
+								"a",
+								"an",
+								"the"
+							],
+							"answer": 0,
+							"explain": "'Food' here is uncountable, so we use 'some'."
+						},
+						{
+							"type": "mcq",
+							"q": "Choose: I found ___ bag I lost yesterday.",
+							"choices": [
+								"the",
+								"a",
+								"some",
+								"an"
+							],
+							"answer": 0,
+							"explain": "We use 'the' for something already known."
+						},
+						{
+							"type": "mcq",
+							"q": "'Cars need fuel.' This is a generic statement, so it uses:",
+							"choices": [
+								"no article",
+								"the",
+								"a",
+								"an"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose: Tim Dinsdale was an engineer ___ gave up his career to find Nessie.",
+							"choices": [
+								"who",
+								"which",
+								"where",
+								"what"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose: He filmed an object ___ appeared to be the real thing.",
+							"choices": [
+								"which",
+								"who",
+								"where",
+								"whose"
+							],
+							"answer": 0,
+							"explain": "We use who/that for people and which/that for things."
+						},
+						{
+							"type": "match",
+							"q": "Match the word with its meaning",
+							"pairs": [
+								[
+									"portion",
+									"an amount of food for one person"
+								],
+								[
+									"nutrient",
+									"something in food that the body needs"
+								],
+								[
+									"teenager",
+									"a person aged 13 to 19"
+								],
+								[
+									"balanced diet",
+									"the right mix of healthy foods"
+								]
+							]
+						}
+					]
+				},
+				{
+					"id": "l2",
+					"title": "Unit 10: Talking about tomorrow's world",
+					"pages": [
+						64,
+						68
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Which speaker sees the future as completely negative?",
+							"choices": [
+								"Rosa",
+								"Liam",
+								"Hisako",
+								"Basim"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What positive point does Liam make?",
+							"choices": [
+								"Since the UN was set up in 1945, another huge world war has been avoided",
+								"There is no disease any more",
+								"Crops grow better now",
+								"The climate is improving"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "In which year was the United Nations set up?",
+							"choices": [
+								"1945",
+								"1914",
+								"1970",
+								"1992"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What good news does Hisako give?",
+							"choices": [
+								"Basic medical care and disease prevention are improving",
+								"There are no more wars",
+								"Africa is getting cooler",
+								"Everyone has enough food"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What problem is Simu worried about in Africa?",
+							"choices": [
+								"It is getting hotter and drier and crops fail",
+								"There is too much rain",
+								"There are too few people",
+								"Food is too cheap"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where is Basim from?",
+							"choices": [
+								"Jericho",
+								"Nairobi",
+								"Tokyo",
+								"Dublin"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Change to passive: Scientists are developing crops.",
+							"choices": [
+								"Crops are being developed.",
+								"Crops are developed by.",
+								"Crops have developed.",
+								"Crops were developing."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Change to passive: People set up the UN in 1945.",
+							"choices": [
+								"The UN was set up in 1945.",
+								"The UN is set up in 1945.",
+								"The UN has set up in 1945.",
+								"The UN set up in 1945."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Change to passive: It will force millions to leave.",
+							"choices": [
+								"Millions will be forced to leave.",
+								"Millions will force to leave.",
+								"Millions are forcing to leave.",
+								"Millions were forced to leave."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which passive form is in the present perfect?",
+							"choices": [
+								"We have been given this world.",
+								"We are given this world.",
+								"We were given this world.",
+								"We will be given this world."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "In a formal letter that starts 'Dear Sir', we finish with:",
+							"choices": [
+								"Yours faithfully,",
+								"Love,",
+								"Bye for now,",
+								"Best wishes,"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match the opposites",
+							"pairs": [
+								[
+									"increase",
+									"decrease"
+								],
+								[
+									"peace",
+									"war"
+								],
+								[
+									"positive",
+									"negative"
+								],
+								[
+									"safe",
+									"dangerous"
+								]
+							]
+						},
+						{
+							"type": "match",
+							"q": "Match the word family",
+							"pairs": [
+								[
+									"peace",
+									"peaceful"
+								],
+								[
+									"disaster",
+									"disastrous"
+								],
+								[
+									"prevent",
+									"prevention"
+								]
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}
