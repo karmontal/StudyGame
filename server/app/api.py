@@ -30,7 +30,7 @@ class Event(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: Annotated[str, StringConstraints(min_length=1, max_length=100)]
     profile: Id
-    kind: Literal["lesson", "unit", "review", "daily", "speed", "assignment"]
+    kind: Literal["lesson", "unit", "review", "daily", "speed", "assignment", "family"]
     lesson_key: Key = ""
     book: Short = ""
     unit: Short = ""

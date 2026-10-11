@@ -11,6 +11,8 @@ const SCREENS := {
 	"badges": preload("res://scripts/ui/badges_screen.gd"),
 	"album": preload("res://scripts/ui/album_screen.gd"),
 	"parents": preload("res://scripts/ui/parents_screen.gd"),
+	"family": preload("res://scripts/ui/family_setup_screen.gd"),
+	"family_play": preload("res://scripts/ui/family_play_screen.gd"),
 	"toddler": preload("res://scripts/toddler/toddler_hub.gd"),
 	"toddler_color": preload("res://scripts/toddler/toddler_color.gd"),
 	"toddler_sort": preload("res://scripts/toddler/toddler_sort.gd"),
@@ -35,6 +37,8 @@ func _ready() -> void:
 
 func goto(screen_name: String, screen_args: Dictionary = {}) -> void:
 	if screen != null:
+		# Out of the tree first, so a screen opened again (sound switch, "play again") keeps its name.
+		remove_child(screen)
 		screen.queue_free()
 	screen = SCREENS[screen_name].new()
 	screen.name = screen_name
