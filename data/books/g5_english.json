@@ -1,0 +1,2004 @@
+{
+	"id": "g5_english",
+	"title": "English - Grade 5",
+	"lang": "en",
+	"units": [
+		{
+			"id": "u1",
+			"title": "Units 1-4: Friends, places, races and seasons",
+			"lessons": [
+				{
+					"id": "l1",
+					"title": "Unit 1: New friends",
+					"pages": [
+						4,
+						7
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Where is Ben from?",
+							"choices": [
+								"Britain",
+								"Palestine",
+								"America",
+								"Scotland"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Omar and Rania are ___.",
+							"choices": [
+								"twins",
+								"cousins",
+								"parents",
+								"teachers"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How old are Omar and Rania?",
+							"choices": [
+								"11",
+								"10",
+								"12",
+								"9"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What is Ben's dad's job?",
+							"choices": [
+								"He's an engineer.",
+								"He's a teacher.",
+								"He's a doctor.",
+								"He's a farmer."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What does Rania like doing?",
+							"choices": [
+								"looking at cats on the internet",
+								"writing emails",
+								"playing basketball",
+								"drawing pictures"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "Ben and Omar both like watching films at the cinema.",
+							"answer": true
+						},
+						{
+							"type": "tf",
+							"q": "Your parents are your brother and sister.",
+							"answer": false,
+							"explain": "Your parents are your mother and father."
+						},
+						{
+							"type": "mcq",
+							"q": "You can watch a film at the ___.",
+							"choices": [
+								"cinema",
+								"race",
+								"class",
+								"email"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I ___ in Ramallah.",
+							"choices": [
+								"live",
+								"lives"
+							],
+							"answer": 0,
+							"explain": "I live / he lives / she lives."
+						},
+						{
+							"type": "mcq",
+							"q": "She ___ in a hospital.",
+							"choices": [
+								"works",
+								"work"
+							],
+							"answer": 0,
+							"explain": "With he and she we add -s: she works."
+						},
+						{
+							"type": "mcq",
+							"q": "He ___ eleven years old.",
+							"choices": [
+								"is",
+								"am",
+								"are"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match the opposites.",
+							"pairs": [
+								[
+									"old",
+									"new"
+								],
+								[
+									"in front of",
+									"behind"
+								],
+								[
+									"love",
+									"hate"
+								]
+							]
+						}
+					]
+				},
+				{
+					"id": "l2",
+					"title": "Unit 2: Our country",
+					"pages": [
+						8,
+						11
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Where is the Dome of the Rock?",
+							"choices": [
+								"in Jerusalem",
+								"in Jericho",
+								"in London",
+								"in Gaza"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where is the Olympic Stadium in the story?",
+							"choices": [
+								"in London",
+								"in Jerusalem",
+								"in Jericho",
+								"in Haifa"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How can you go up the mountain at Deir Qruntul?",
+							"choices": [
+								"in the cable car",
+								"in the duck bus",
+								"in a boat",
+								"on a horse"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Wadi al-Qilt is a famous ___.",
+							"choices": [
+								"valley",
+								"stadium",
+								"building",
+								"river"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What do Rania and her parents do in Wadi al-Qilt?",
+							"choices": [
+								"They go hiking.",
+								"They swim.",
+								"They play football.",
+								"They ride horses."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The duck bus can go ___.",
+							"choices": [
+								"in the water and on the street",
+								"only in the sky",
+								"only on the street",
+								"only on the mountain"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "Deir Qruntul is in Jericho.",
+							"answer": true
+						},
+						{
+							"type": "tf",
+							"q": "The Dome of the Rock is a new building.",
+							"answer": false,
+							"explain": "The Dome of the Rock is an old, famous building."
+						},
+						{
+							"type": "mcq",
+							"q": "Ben is ___ a photo of the Olympic Stadium.",
+							"choices": [
+								"showing",
+								"show",
+								"shows"
+							],
+							"answer": 0,
+							"explain": "Present continuous: is + verb-ing."
+						},
+						{
+							"type": "mcq",
+							"q": "What are you doing now?",
+							"choices": [
+								"I'm reading.",
+								"I read every day.",
+								"I'm from Gaza.",
+								"I like reading."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which sentence is written correctly?",
+							"choices": [
+								"Omar lives in Palestine.",
+								"omar lives in Palestine.",
+								"Omar lives in palestine",
+								"omar lives in palestine"
+							],
+							"answer": 0,
+							"explain": "Use a capital letter at the start and for names, and a full stop at the end."
+						},
+						{
+							"type": "mcq",
+							"q": "Jerusalem ___ the capital of Palestine.",
+							"choices": [
+								"is",
+								"are",
+								"am"
+							],
+							"answer": 0
+						}
+					]
+				},
+				{
+					"id": "l3",
+					"title": "Unit 3: Mini-Olympics",
+					"pages": [
+						12,
+						15
+					],
+					"questions": [
+						{
+							"type": "match",
+							"q": "Match the number and the word.",
+							"pairs": [
+								[
+									"1st",
+									"first"
+								],
+								[
+									"2nd",
+									"second"
+								],
+								[
+									"3rd",
+									"third"
+								],
+								[
+									"5th",
+									"fifth"
+								]
+							]
+						},
+						{
+							"type": "match",
+							"q": "Match the number and the word.",
+							"pairs": [
+								[
+									"8th",
+									"eighth"
+								],
+								[
+									"9th",
+									"ninth"
+								],
+								[
+									"11th",
+									"eleventh"
+								],
+								[
+									"12th",
+									"twelfth"
+								]
+							]
+						},
+						{
+							"type": "order",
+							"q": "Put the words in order, from first to fifth.",
+							"items": [
+								"first",
+								"second",
+								"third",
+								"fourth",
+								"fifth"
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "Who is first in the egg and spoon race?",
+							"choices": [
+								"Reem",
+								"Rania",
+								"Fatima",
+								"Huda"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Rania is ___ in the egg and spoon race.",
+							"choices": [
+								"second",
+								"first",
+								"third",
+								"tenth"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How long is the egg and spoon race?",
+							"choices": [
+								"50 metres",
+								"100 metres",
+								"200 metres",
+								"10 metres"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Omar is swimming in the 50 metre race. He is ___.",
+							"choices": [
+								"fourth",
+								"first",
+								"third",
+								"eighth"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Ten girls run in the 200 metre race. Fatima is very slow. She is ___.",
+							"choices": [
+								"tenth",
+								"first",
+								"second",
+								"fifth"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Ali is 7th in the running race. He is ___.",
+							"choices": [
+								"seventh",
+								"sixth",
+								"eighth",
+								"eleventh"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Thursday is the ___ day of the week.",
+							"choices": [
+								"sixth",
+								"fifth",
+								"fourth",
+								"seventh"
+							],
+							"answer": 0,
+							"explain": "Saturday 1st, Sunday 2nd, Monday 3rd, Tuesday 4th, Wednesday 5th, Thursday 6th."
+						},
+						{
+							"type": "mcq",
+							"q": "I can swim 100 metres in two ___.",
+							"choices": [
+								"minutes",
+								"metres",
+								"firsts",
+								"races"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Omar is ___ in the swimming race.",
+							"choices": [
+								"swimming",
+								"swim",
+								"swims"
+							],
+							"answer": 0
+						}
+					]
+				},
+				{
+					"id": "l4",
+					"title": "Unit 4: Holidays in Palestine",
+					"pages": [
+						16,
+						20
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Which months are in winter?",
+							"choices": [
+								"December, January and February",
+								"June, July and August",
+								"March, April and May",
+								"September, October and November"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which months are in summer?",
+							"choices": [
+								"June, July and August",
+								"December, January and February",
+								"March, April and May",
+								"September, October and November"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which months are in spring?",
+							"choices": [
+								"March, April and May",
+								"June, July and August",
+								"December, January and February",
+								"September, October and November"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which months are in autumn?",
+							"choices": [
+								"September, October and November",
+								"March, April and May",
+								"June, July and August",
+								"December, January and February"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "We collect olives in ___.",
+							"choices": [
+								"October",
+								"February",
+								"June",
+								"April"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "We go to the beach in ___.",
+							"choices": [
+								"August",
+								"December",
+								"January",
+								"February"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The season of autumn is ___. We can fly kites.",
+							"choices": [
+								"windy",
+								"very hot",
+								"snowy",
+								"very cold"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "June is in winter.",
+							"answer": false,
+							"explain": "June is in summer."
+						},
+						{
+							"type": "mcq",
+							"q": "How many months are there in a year?",
+							"choices": [
+								"twelve",
+								"ten",
+								"eleven",
+								"seven"
+							],
+							"answer": 0
+						},
+						{
+							"type": "order",
+							"q": "Put the months in order.",
+							"items": [
+								"January",
+								"February",
+								"March",
+								"April",
+								"May"
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "Where are Omar and Rania going in the February holiday?",
+							"choices": [
+								"to Aunt Amina's farm",
+								"to the beach",
+								"to London",
+								"to the cinema"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Omar and his friends ___ their kites now.",
+							"choices": [
+								"are flying",
+								"fly",
+								"flies"
+							],
+							"answer": 0,
+							"explain": "'now' tells us to use the present continuous."
+						},
+						{
+							"type": "mcq",
+							"q": "She ___ her bike every day.",
+							"choices": [
+								"rides",
+								"ride",
+								"riding"
+							],
+							"answer": 0,
+							"explain": "'every day' tells us to use the present simple: she rides."
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "u2",
+			"title": "Units 5-7: Describing and comparing",
+			"lessons": [
+				{
+					"id": "l1",
+					"title": "Unit 5: Basketball",
+					"pages": [
+						21,
+						23
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "How many people do you need to play basketball?",
+							"choices": [
+								"five",
+								"eleven",
+								"two",
+								"four"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Who can play basketball?",
+							"choices": [
+								"everyone",
+								"only tall people",
+								"only boys",
+								"only old people"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Dwight Howard is ___.",
+							"choices": [
+								"American",
+								"British",
+								"Palestinian",
+								"Scottish"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Dwight Howard is over 2 metres tall and is ___ kilos.",
+							"choices": [
+								"120",
+								"20",
+								"200",
+								"12"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Dwight Howard has ___ shoulders.",
+							"choices": [
+								"wide",
+								"short",
+								"thin",
+								"small"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "Basketball is a slow sport.",
+							"answer": false,
+							"explain": "The book says basketball is a fast sport."
+						},
+						{
+							"type": "match",
+							"q": "Match the opposites.",
+							"pairs": [
+								[
+									"fat",
+									"thin"
+								],
+								[
+									"heavy",
+									"light"
+								],
+								[
+									"high",
+									"low"
+								],
+								[
+									"tall",
+									"short"
+								]
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "Ali is ___ than Ahmed.",
+							"choices": [
+								"taller",
+								"tall",
+								"tallest"
+							],
+							"answer": 0,
+							"explain": "Use -er + than to compare two things."
+						},
+						{
+							"type": "mcq",
+							"q": "Reem is younger ___ Rania.",
+							"choices": [
+								"than",
+								"then",
+								"that"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The sun is ___ than the moon.",
+							"choices": [
+								"bigger",
+								"smaller",
+								"big"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "He is heavy. He is ___ than me.",
+							"choices": [
+								"heavier",
+								"heavyer",
+								"more heavy"
+							],
+							"answer": 0,
+							"explain": "heavy changes y to i: heavier."
+						},
+						{
+							"type": "mcq",
+							"q": "To play basketball you need to throw the ball ___.",
+							"choices": [
+								"high",
+								"low",
+								"slowly",
+								"far away"
+							],
+							"answer": 0
+						}
+					]
+				},
+				{
+					"id": "l2",
+					"title": "Unit 6: Things around us",
+					"pages": [
+						24,
+						27
+					],
+					"questions": [
+						{
+							"type": "match",
+							"q": "Match the opposites.",
+							"pairs": [
+								[
+									"expensive",
+									"cheap"
+								],
+								[
+									"dirty",
+									"clean"
+								],
+								[
+									"warm",
+									"cool"
+								],
+								[
+									"beautiful",
+									"ugly"
+								]
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "The green bee-eater is a very ___ bird.",
+							"choices": [
+								"beautiful",
+								"big",
+								"dirty",
+								"cheap"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The green bee-eater likes ___ weather.",
+							"choices": [
+								"warm",
+								"cool",
+								"cold",
+								"snowy"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "The green bee-eater lives in England.",
+							"answer": false,
+							"explain": "This bird doesn't live in England. It likes warm weather, and England is very cool."
+						},
+						{
+							"type": "mcq",
+							"q": "Where can you see the news?",
+							"choices": [
+								"in the newspaper, on TV and on the internet",
+								"only on TV",
+								"only in a book",
+								"only at the cinema"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Rania wants to watch the volleyball because it's ___ than the football.",
+							"choices": [
+								"earlier",
+								"later",
+								"cheaper",
+								"longer"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "A bike is ___ than a car.",
+							"choices": [
+								"cheaper",
+								"cheap",
+								"cheapest"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Cats are the ___ beautiful.",
+							"choices": [
+								"most",
+								"more",
+								"much"
+							],
+							"answer": 0,
+							"explain": "'the most' is used when we compare more than two things."
+						},
+						{
+							"type": "mcq",
+							"q": "Butterflies are ___ beautiful than birds.",
+							"choices": [
+								"more",
+								"most",
+								"the most"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "August is ___ hottest month.",
+							"choices": [
+								"the",
+								"a",
+								"than"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Lions are bigger ___ cats.",
+							"choices": [
+								"than",
+								"the",
+								"then"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Tree A is short. Tree B is taller. Tree C is the ___.",
+							"choices": [
+								"tallest",
+								"taller",
+								"tall",
+								"most tall"
+							],
+							"answer": 0
+						}
+					]
+				},
+				{
+					"id": "l3",
+					"title": "Unit 7: What I like doing and why",
+					"pages": [
+						28,
+						32
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Where is the zoo in the story?",
+							"choices": [
+								"in Qalqilya",
+								"in London",
+								"in Jericho",
+								"in Hebron"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The animals at the zoo come from ___.",
+							"choices": [
+								"Africa and India",
+								"England and Scotland",
+								"America",
+								"the moon"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The weather is going to get worse. What is the better idea?",
+							"choices": [
+								"to watch the football on TV",
+								"to play football outside",
+								"to go swimming",
+								"to fly a kite"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How does Ben help his dad?",
+							"choices": [
+								"He helps him clean the dirty car.",
+								"He cooks dinner.",
+								"He drives the car.",
+								"He reads the newspaper."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "bad, worse, ___",
+							"choices": [
+								"worst",
+								"worse",
+								"baddest",
+								"most bad"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "fast, faster, ___",
+							"choices": [
+								"fastest",
+								"most fast",
+								"fastter",
+								"more fast"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "wide, wider, ___",
+							"choices": [
+								"widest",
+								"wideest",
+								"most wide",
+								"wider"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Coming tenth is the ___.",
+							"choices": [
+								"worst",
+								"best",
+								"better"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Please listen to the question and ___ it.",
+							"choices": [
+								"answer",
+								"ask",
+								"give"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Can you ___ me your pencil, please?",
+							"choices": [
+								"give",
+								"answer",
+								"ask",
+								"better"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I got grade B in my English exam. I am getting ___ at English.",
+							"choices": [
+								"better",
+								"worse",
+								"worst"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which question is correct?",
+							"choices": [
+								"Which is faster, swimming or running?",
+								"which is faster, swimming or running?",
+								"Which is faster, swimming or running.",
+								"Which is fastest, swimming or running?"
+							],
+							"answer": 0,
+							"explain": "Start with a capital letter and end with a question mark."
+						},
+						{
+							"type": "tf",
+							"q": "Walking and swimming are good and healthy.",
+							"answer": true
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "u3",
+			"title": "Units 8-10: Holidays, stories and visits",
+			"lessons": [
+				{
+					"id": "l1",
+					"title": "Unit 8: Ben and Amy's holiday",
+					"pages": [
+						33,
+						35
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Where was the wedding?",
+							"choices": [
+								"in Scotland",
+								"in England",
+								"in Palestine",
+								"in London"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What colour was Amy's dress?",
+							"choices": [
+								"yellow",
+								"white",
+								"pink",
+								"blue"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Amy's aunt Sarah looked like a ___.",
+							"choices": [
+								"princess",
+								"teacher",
+								"farmer",
+								"doctor"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How did the family go to Scotland?",
+							"choices": [
+								"by car",
+								"by boat",
+								"by bus",
+								"by plane"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How long did it take to drive to Scotland?",
+							"choices": [
+								"six hours",
+								"one hour",
+								"two days",
+								"ten hours"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What photos did Ben take?",
+							"choices": [
+								"photos of mountains",
+								"photos of animals",
+								"photos of cars",
+								"photos of the sea"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "Ben went in his uncle's boat.",
+							"answer": true
+						},
+						{
+							"type": "mcq",
+							"q": "Where did the princess in the story live?",
+							"choices": [
+								"in a palace",
+								"in a house",
+								"in a farm",
+								"in a tent"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match the verb and its past.",
+							"pairs": [
+								[
+									"get",
+									"got"
+								],
+								[
+									"take",
+									"took"
+								],
+								[
+									"wear",
+									"wore"
+								],
+								[
+									"go",
+									"went"
+								]
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "Amy ___ a yellow dress.",
+							"choices": [
+								"wore",
+								"wear",
+								"wears"
+							],
+							"answer": 0,
+							"explain": "The wedding was last summer, so we use the past: wore."
+						},
+						{
+							"type": "mcq",
+							"q": "The wedding ___ in Scotland.",
+							"choices": [
+								"was",
+								"were",
+								"is"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Amy's aunt ___ married last summer.",
+							"choices": [
+								"got",
+								"get",
+								"gets"
+							],
+							"answer": 0
+						}
+					]
+				},
+				{
+					"id": "l2",
+					"title": "Unit 9: The wolf's shoes",
+					"pages": [
+						36,
+						38
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "What did the farmer buy at the market?",
+							"choices": [
+								"a goat",
+								"a rabbit",
+								"a horse",
+								"a shoe"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Who heard the goat?",
+							"choices": [
+								"a wolf",
+								"a farmer",
+								"a fox",
+								"a dog"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which shoe did the wolf put on the road first?",
+							"choices": [
+								"the left shoe",
+								"the right shoe",
+								"both shoes"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where did the wolf hide?",
+							"choices": [
+								"behind a tree",
+								"in the market",
+								"under the road",
+								"in a house"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The farmer wanted ___ shoes.",
+							"choices": [
+								"both",
+								"no",
+								"one"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "In the end the greedy farmer got ___.",
+							"choices": [
+								"nothing",
+								"two shoes",
+								"the goat",
+								"a wolf"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "The wolf was clever.",
+							"answer": true
+						},
+						{
+							"type": "tf",
+							"q": "The farmer took the goat home.",
+							"answer": false,
+							"explain": "The wolf took the goat. The farmer got nothing."
+						},
+						{
+							"type": "order",
+							"q": "Put the story in order.",
+							"items": [
+								"A farmer bought a goat.",
+								"The wolf put his left shoe on the road.",
+								"The wolf put his right shoe on the road.",
+								"The farmer went to look for the left shoe.",
+								"The wolf took the goat."
+							]
+						},
+						{
+							"type": "match",
+							"q": "Match the verb and its past.",
+							"pairs": [
+								[
+									"see",
+									"saw"
+								],
+								[
+									"hide",
+									"hid"
+								],
+								[
+									"hear",
+									"heard"
+								],
+								[
+									"buy",
+									"bought"
+								]
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "He ___ to the market yesterday.",
+							"choices": [
+								"went",
+								"go",
+								"going"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The farmer lost the goat. He was very ___.",
+							"choices": [
+								"angry",
+								"happy",
+								"clever",
+								"greedy"
+							],
+							"answer": 0
+						}
+					]
+				},
+				{
+					"id": "l3",
+					"title": "Unit 10: Omar and Rania's visit to Qalqilya",
+					"pages": [
+						39,
+						42
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "When did Omar's family drive to Qalqilya?",
+							"choices": [
+								"last weekend",
+								"next week",
+								"every day",
+								"tomorrow"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What did Mum, Omar and Rania do when the car couldn't move?",
+							"choices": [
+								"They sang.",
+								"They slept.",
+								"They ate.",
+								"They read."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What was Omar's favourite animal at the zoo?",
+							"choices": [
+								"the giraffe",
+								"the rabbit",
+								"the tiger",
+								"the goat"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which animals did Rania like?",
+							"choices": [
+								"the rabbits",
+								"the giraffes",
+								"the lions",
+								"the birds"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The water in Wadi al Badan was very ___.",
+							"choices": [
+								"cold",
+								"hot",
+								"warm",
+								"dirty"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The children were cold. What did Dad give them?",
+							"choices": [
+								"their sweaters",
+								"their books",
+								"their bags",
+								"their shoes"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "Olives are fruit.",
+							"answer": true
+						},
+						{
+							"type": "mcq",
+							"q": "Here are ___ red apples.",
+							"choices": [
+								"some",
+								"any"
+							],
+							"answer": 0,
+							"explain": "We use 'some' in positive sentences and 'any' in negatives and questions."
+						},
+						{
+							"type": "mcq",
+							"q": "I don't have ___ green apples.",
+							"choices": [
+								"any",
+								"some"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Did you play football? No, I ___.",
+							"choices": [
+								"didn't",
+								"did",
+								"don't"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match the verb and its past.",
+							"pairs": [
+								[
+									"visit",
+									"visited"
+								],
+								[
+									"sing",
+									"sang"
+								],
+								[
+									"play",
+									"played"
+								],
+								[
+									"see",
+									"saw"
+								]
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "The children ___ cold and wore sweaters.",
+							"choices": [
+								"were",
+								"was",
+								"is"
+							],
+							"answer": 0
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "u4",
+			"title": "Units 11-14: Blogs, tours, gadgets and the future",
+			"lessons": [
+				{
+					"id": "l1",
+					"title": "Unit 11: Ben's blog",
+					"pages": [
+						43,
+						47
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Where is Ben's blog?",
+							"choices": [
+								"on the internet",
+								"in a book",
+								"on TV",
+								"in the newspaper"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What did Ben break last summer?",
+							"choices": [
+								"his leg",
+								"his arm",
+								"his camera",
+								"his mirror"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where did Ben break his leg?",
+							"choices": [
+								"at the football game",
+								"at the zoo",
+								"in the park",
+								"at school"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Who took Ben to the hospital?",
+							"choices": [
+								"his dad",
+								"his mum",
+								"Omar",
+								"the teacher"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What is Ben's hobby?",
+							"choices": [
+								"taking photos",
+								"drawing pictures",
+								"playing basketball",
+								"swimming"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "In Ben's photo, the sea looked like a ___.",
+							"choices": [
+								"mirror",
+								"moon",
+								"blog",
+								"hospital"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What did the families eat at the restaurant?",
+							"choices": [
+								"rice and chicken",
+								"fish and chips",
+								"fruit and cheese",
+								"bread and eggs"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "Manchester United won the game.",
+							"answer": true
+						},
+						{
+							"type": "mcq",
+							"q": "Ben ___ his leg last summer.",
+							"choices": [
+								"broke",
+								"break",
+								"breaks"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Ben ___ Omar about his blog yesterday.",
+							"choices": [
+								"told",
+								"tell",
+								"tells"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the correct sentence.",
+							"choices": [
+								"She went to the zoo.",
+								"Her went to the zoo.",
+								"she went to the zoo",
+								"Him went to the zoo."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Dad was angry. ___ didn't like busy roads.",
+							"choices": [
+								"He",
+								"Him",
+								"His"
+							],
+							"answer": 0
+						}
+					]
+				},
+				{
+					"id": "l2",
+					"title": "Unit 12: The 'Best of Palestine' tour",
+					"pages": [
+						48,
+						50
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "When is Ben's family going on holiday?",
+							"choices": [
+								"next October",
+								"next June",
+								"last summer",
+								"tomorrow"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How long is the 'Best of Palestine' tour?",
+							"choices": [
+								"7 days",
+								"2 days",
+								"10 days",
+								"one month"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where do they arrive on the first day?",
+							"choices": [
+								"Jerusalem",
+								"Gaza",
+								"Hebron",
+								"Jenin"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where are they going to pick olives?",
+							"choices": [
+								"in Jenin",
+								"in Gaza",
+								"in Jericho",
+								"in Bethlehem"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where are they going to float in the water?",
+							"choices": [
+								"the Dead Sea",
+								"Ein Kenya",
+								"Wadi al-Qilt",
+								"the river"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where is the famous Church of the Nativity?",
+							"choices": [
+								"in Bethlehem",
+								"in Nablus",
+								"in Ramallah",
+								"in Gaza"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where is the Ibrahimi mosque?",
+							"choices": [
+								"in Hebron",
+								"in Jenin",
+								"in Jericho",
+								"in Nablus"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "Ben's family are going to take a holiday in Jordan.",
+							"answer": false,
+							"explain": "They are going on a tour of Palestine."
+						},
+						{
+							"type": "tf",
+							"q": "Ein Kenya is near to Jericho.",
+							"answer": false,
+							"explain": "They drive from Ramallah to Ein Kenya."
+						},
+						{
+							"type": "mcq",
+							"q": "Rania ___ Amy tomorrow.",
+							"choices": [
+								"is going to meet",
+								"met",
+								"meets"
+							],
+							"answer": 0,
+							"explain": "'tomorrow' is in the future, so we use 'going to'."
+						},
+						{
+							"type": "mcq",
+							"q": "Mum is on the phone. Please talk to ___.",
+							"choices": [
+								"her",
+								"him",
+								"them"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Ben and Amy are playing. Let's take a photo of ___.",
+							"choices": [
+								"them",
+								"him",
+								"her"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What is the opposite of 'last'?",
+							"choices": [
+								"next",
+								"first",
+								"before",
+								"near"
+							],
+							"answer": 0
+						}
+					]
+				},
+				{
+					"id": "l3",
+					"title": "Unit 13: Can I use it?",
+					"pages": [
+						51,
+						53
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "What do you use a keyboard for?",
+							"choices": [
+								"to write",
+								"to watch TV",
+								"to call people",
+								"to take photos"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What do you use a mouse for?",
+							"choices": [
+								"to choose things on the screen",
+								"to write letters",
+								"to turn on the TV",
+								"to call friends"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Why is a laptop easy to take with you?",
+							"choices": [
+								"It's very light.",
+								"It's very big.",
+								"It has a remote control.",
+								"It's very heavy."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which button turns on Rania's mobile phone?",
+							"choices": [
+								"the blue button",
+								"the green button",
+								"the red button",
+								"the yellow button"
+							],
+							"answer": 0
+						},
+						{
+							"type": "order",
+							"q": "Put Rania's steps in order to make a phone call.",
+							"items": [
+								"Press the blue button.",
+								"Press the telephone numbers.",
+								"Press the green button."
+							]
+						},
+						{
+							"type": "mcq",
+							"q": "Who has the remote control in the living room?",
+							"choices": [
+								"Omar",
+								"Rania",
+								"Dad",
+								"Ben"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Dad wants the remote control. What does he want to watch?",
+							"choices": [
+								"the news",
+								"the cartoons",
+								"a film",
+								"football"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How do you ask to use your friend's bike?",
+							"choices": [
+								"Can I borrow your bike, please?",
+								"Can you borrow my bike?",
+								"I borrow your bike.",
+								"Give me bike."
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "You use a keyboard to write on the computer.",
+							"answer": true
+						},
+						{
+							"type": "mcq",
+							"q": "You need to ___ the mouse to choose the game.",
+							"choices": [
+								"click",
+								"press",
+								"try",
+								"borrow"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match the word and what it does.",
+							"pairs": [
+								[
+									"screen",
+									"you read blogs on it"
+								],
+								[
+									"keyboard",
+									"you use it to write"
+								],
+								[
+									"mouse",
+									"you choose things with it"
+								]
+							]
+						}
+					]
+				},
+				{
+					"id": "l4",
+					"title": "Unit 14: What will happen?",
+					"pages": [
+						54,
+						58
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "In the future, robots will look like ___.",
+							"choices": [
+								"police officers",
+								"animals",
+								"teachers",
+								"cars"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where will people live in the future?",
+							"choices": [
+								"on the moon",
+								"in the sea",
+								"on the sun",
+								"in spaceships only"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What will everyone wear on the moon?",
+							"choices": [
+								"spacesuits",
+								"T-shirts",
+								"sweaters",
+								"dresses"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How will people travel to other planets?",
+							"choices": [
+								"in spaceships",
+								"by car",
+								"by boat",
+								"by plane"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where will scientists grow new plants?",
+							"choices": [
+								"in science labs",
+								"on farms",
+								"in the sea",
+								"at school"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where will children learn in the future?",
+							"choices": [
+								"at home with computers",
+								"at school",
+								"at the zoo",
+								"on the moon"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "It will be very cold on the moon.",
+							"answer": true
+						},
+						{
+							"type": "tf",
+							"q": "Computers will be bigger and more expensive in the future.",
+							"answer": false,
+							"explain": "They will be smaller, cheaper and lighter."
+						},
+						{
+							"type": "mcq",
+							"q": "Children ___ go to school.",
+							"choices": [
+								"won't",
+								"will",
+								"didn't"
+							],
+							"answer": 0,
+							"explain": "In the story, children won't go to school; they will learn at home."
+						},
+						{
+							"type": "mcq",
+							"q": "People will ___ to the moon.",
+							"choices": [
+								"travel",
+								"travels",
+								"traveling"
+							],
+							"answer": 0,
+							"explain": "After will we use the verb with no -s or -ing."
+						},
+						{
+							"type": "mcq",
+							"q": "There will ___ robots.",
+							"choices": [
+								"be",
+								"been",
+								"being"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Robots and police officers will ___ people.",
+							"choices": [
+								"rescue",
+								"grow",
+								"float",
+								"borrow"
+							],
+							"answer": 0
+						}
+					]
+				}
+			]
+		}
+	]
+}
