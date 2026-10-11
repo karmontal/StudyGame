@@ -310,6 +310,18 @@ func _test_challenges_ui() -> void:
 		await get_tree().process_frame
 		check(main.find_child("Status", true, false) != null, "%s: status card on books screen" % p.id)
 		var daily: Button = main.find_child("Daily", true, false)
+		check(daily != null and daily.disabled, "%s: daily locked before any lesson is finished" % p.id)
+		check((main.find_child("Speed", true, false) as Button).disabled, "%s: speed locked before any lesson" % p.id)
+		# Finish one lesson with a single star: challenges open and only use that lesson.
+		var first: Dictionary = Content.grade_questions(int(p.grade), ["mcq", "tf"])[0]
+		var parts: PackedStringArray = str(first.key).split("/")
+		var done_key := "/".join([parts[0], parts[1], parts[2]])
+		Profiles.record_quiz(done_key, 1, [])
+		for q in Content.daily_questions(int(p.grade), Profiles.today(), p.id):
+			check(str(q.key).begins_with(done_key + "/"), "%s: daily question from a finished lesson" % p.id)
+		main.goto("books")
+		await get_tree().process_frame
+		daily = main.find_child("Daily", true, false)
 		check(daily != null and not daily.disabled, "%s: daily challenge open" % p.id)
 		daily.pressed.emit()
 		await get_tree().process_frame
@@ -326,6 +338,26 @@ func _test_challenges_ui() -> void:
 		main.screen.go_back()
 		await get_tree().process_frame
 		check((main.find_child("Daily", true, false) as Button).disabled, "%s: daily done for today" % p.id)
+		# Whole-unit test opens only after every lesson of the unit has a star.
+		var ub: String = parts[0]
+		var uid: String = parts[1]
+		var playable := 0
+		for l in Content.unit(ub, uid).lessons:
+			if not Content.lesson_questions(ub, uid, l.id).is_empty():
+				playable += 1
+		if Content.unit_questions(ub, uid).size() >= 4:
+			main.goto("map", {"book": ub})
+			await get_tree().process_frame
+			var ut: Button = main.find_child("UnitTest_" + uid, true, false)
+			eq(ut.disabled, playable > 1, "%s: unit test locked until all lessons are done" % p.id)
+			for l in Content.unit(ub, uid).lessons:
+				if not Content.lesson_questions(ub, uid, l.id).is_empty():
+					Profiles.record_quiz(Profiles.lesson_key(ub, uid, l.id), 1, [])
+			main.goto("map", {"book": ub})
+			await get_tree().process_frame
+			check(not (main.find_child("UnitTest_" + uid, true, false) as Button).disabled, "%s: unit test opens" % p.id)
+			main.goto("books")
+			await get_tree().process_frame
 		# Speed challenge
 		(main.find_child("Speed", true, false) as Button).pressed.emit()
 		await get_tree().process_frame
@@ -333,6 +365,7 @@ func _test_challenges_ui() -> void:
 		var speed = main.screen
 		(speed.find_child("Start", true, false) as Button).pressed.emit()
 		await get_tree().process_frame
+		check(str(speed.current_question().key).begins_with(parts[0] + "/" + parts[1] + "/"), "%s: speed uses finished lessons" % p.id)
 		for i in 3:
 			var q: Dictionary = speed.current_question()
 			speed.answer_current(int(q.answer) if q.type == "mcq" else q.answer)

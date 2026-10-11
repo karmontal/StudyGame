@@ -41,8 +41,11 @@ func _unit_card(u: Dictionary) -> PanelContainer:
 		v.add_child(_lesson_row(u, l, i))
 	var unit_qs := Content.unit_questions(book_id, u.id)
 	if unit_qs.size() >= 4:
-		var test := UI.button("تحدي الوحدة كاملة", color.darkened(0.1), 40, 120)
+		var open := Content.unit_finished(book_id, u.id)
+		var test := UI.button("تحدي الوحدة كاملة" if open else "تحدي الوحدة: خلّص كل دروسها أولاً",
+			color.darkened(0.1) if open else Color("#BBBBBB"), 40, 120)
 		test.name = "UnitTest_" + u.id
+		test.disabled = not open
 		test.pressed.connect(func():
 			main.goto("quiz", {"questions": unit_qs, "count": 10, "title": u.title, "book": book_id,
 				"unit": u.id, "kind": "unit", "back": "map", "back_args": {"book": book_id}}))

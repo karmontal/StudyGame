@@ -91,20 +91,33 @@ func unit_questions(book_id: String, unit_id: String) -> Array[Dictionary]:
 
 
 ## Every question from the books of one grade (for the daily and speed challenges).
-## `types` limits the question types; empty means all.
-func grade_questions(grade: int, types: Array = []) -> Array[Dictionary]:
+## `types` limits the question types; empty means all. With `done_only` only lessons the current kid
+## finished (at least one star) count.
+func grade_questions(grade: int, types: Array = [], done_only := false) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for meta in books_for_grade(grade):
 		for u in book(meta.id).get("units", []):
-			for q in unit_questions(meta.id, u.id):
-				if types.is_empty() or q.type in types:
-					out.append(q)
+			for l in u.get("lessons", []):
+				if done_only and Profiles.stars(Profiles.lesson_key(meta.id, u.id, l.id)) < 1:
+					continue
+				for q in lesson_questions(meta.id, u.id, l.id):
+					if types.is_empty() or q.type in types:
+						out.append(q)
 	return out
 
 
-## The same handful of questions all day for one kid, different the next day.
+## True when the current kid has at least one star on every lesson of the unit that has questions.
+func unit_finished(book_id: String, unit_id: String) -> bool:
+	for l in unit(book_id, unit_id).get("lessons", []):
+		if not lesson_questions(book_id, unit_id, l.id).is_empty() \
+				and Profiles.stars(Profiles.lesson_key(book_id, unit_id, l.id)) < 1:
+			return false
+	return true
+
+
+## The same handful of questions all day for one kid, different the next day. Only from finished lessons.
 func daily_questions(grade: int, date: String, profile_id: String, count: int = 6) -> Array[Dictionary]:
-	var pool := grade_questions(grade)
+	var pool := grade_questions(grade, [], true)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = hash(date + "/" + profile_id)
 	var out: Array[Dictionary] = []

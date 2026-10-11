@@ -108,14 +108,17 @@ func _challenges(p: Dictionary) -> GridContainer:
 	grid.columns = 2
 	grid.add_theme_constant_override("h_separation", 24)
 	grid.add_theme_constant_override("v_separation", 24)
-	var has_questions := not Content.grade_questions(int(p.grade)).is_empty()
+	# Challenges only use lessons the kid finished (one star is enough).
+	var has_questions := not Content.grade_questions(int(p.grade), ["mcq", "tf"], true).is_empty()
 	var done := Profiles.daily_done()
-	var daily := _big_button("Daily", "تمّ تحدي اليوم" if done else "تحدي اليوم", "ارجع بكرة" if done else "+%d عملة" % Rewards.DAILY_BONUS, Color("#F39C12"))
+	var daily_sub := "ارجع بكرة" if done else ("+%d عملة" % Rewards.DAILY_BONUS if has_questions else "خلّص درس أولاً")
+	var daily := _big_button("Daily", "تمّ تحدي اليوم" if done else "تحدي اليوم", daily_sub, Color("#F39C12"))
 	daily.disabled = done or not has_questions
 	daily.pressed.connect(_start_daily.bind(p))
 	grid.add_child(daily)
 	var best := int(Profiles.info().speed_best)
-	var speed := _big_button("Speed", "تحدي السرعة", "أفضل نتيجة: %d" % best if best > 0 else "60 ثانية", Color("#E74C3C"))
+	var speed_sub := ("أفضل نتيجة: %d" % best if best > 0 else "60 ثانية") if has_questions else "خلّص درس أولاً"
+	var speed := _big_button("Speed", "تحدي السرعة", speed_sub, Color("#E74C3C"))
 	speed.disabled = not has_questions
 	speed.pressed.connect(func(): main.goto("speed"))
 	grid.add_child(speed)

@@ -1,6 +1,6 @@
 extends Screen
 ## Speed challenge: as many right answers as possible before the clock runs out (multiple choice and
-## true/false from all of the kid's books). Each answer moves straight to the next question.
+## true/false from the lessons the kid finished). Each answer moves straight to the next question.
 
 const SECONDS_OLD := 60.0
 const SECONDS_YOUNG := 90.0
@@ -25,7 +25,7 @@ func build() -> void:
 	var p := Profiles.current()
 	color = Color(p.color)
 	time_left = SECONDS_YOUNG if Profiles.is_young(p) else SECONDS_OLD
-	_pool = Content.grade_questions(int(p.grade), ["mcq", "tf"])
+	_pool = Content.grade_questions(int(p.grade), ["mcq", "tf"], true)
 	_pool.shuffle()
 	_content = page("تحدي السرعة", color)
 	_sfx = AudioStreamPlayer.new()
@@ -87,7 +87,7 @@ func _process(delta: float) -> void:
 
 func _next_question() -> void:
 	if _pool.is_empty():
-		_pool = Content.grade_questions(int(Profiles.current().grade), ["mcq", "tf"])
+		_pool = Content.grade_questions(int(Profiles.current().grade), ["mcq", "tf"], true)
 		_pool.shuffle()
 	var session := QuizSession.new([_pool.pop_back()], 1)
 	_current = session.current()
