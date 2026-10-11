@@ -586,10 +586,14 @@ func _test_toddler() -> void:
 	var main: Node = MAIN_SCENE.instantiate()
 	add_child(main)
 	await _frames()
-	# Hub
-	main.goto("toddler")
+	# Hub, opened from Aya's card on the profile screen
+	main.goto("profiles")
 	await _frames()
-	eq(str(main.screen.name), "toddler", "toddler hub opens")
+	var aya_card: Button = main.find_child("Profile_aya", true, false)
+	check(aya_card != null, "Aya has a card")
+	aya_card.pressed.emit()
+	await _frames()
+	eq(str(main.screen.name), "toddler", "Aya's card opens the toddler hub")
 	eq(ToddlerVoice.last_key, "hello", "hub greets Aya")
 	for g in ["color", "sort", "shapes", "animals", "balloons"]:
 		var b: Control = main.screen.find_child("Game_" + g, true, false)

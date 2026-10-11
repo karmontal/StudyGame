@@ -55,3 +55,11 @@ im.resize((432, 432), Image.LANCZOS).save("assets/icon/foreground_432.png")
 Image.new("RGB", (432, 432), im.getpixel((4, 4))).save("assets/icon/background_432.png")
 PY
 echo assets/icon
+
+# The kids' 3D portraits (1:1, gpt_image_2_5 from their photos), shown in round frames.
+mkdir -p assets/avatars
+fetch assets/avatars/lamees.jpg hf_20261011_192531_27bc0d74-56d6-4afd-9e60-69478f4ec215.png 512
+fetch assets/avatars/mufeed.jpg hf_20261011_192531_ba41a3c8-950e-4986-bb77-cd4fd2dbbcfa.png 512
+fetch assets/avatars/lujain.jpg hf_20261011_192532_cbb2c535-65db-451b-9637-398841e2d778.png 512
+fetch assets/avatars/nada.jpg hf_20261011_192531_f0dc7d3b-6b89-4585-a7f6-6d699d60efb4.png 512
+fetch assets/avatars/aya.jpg hf_20261011_192531_a3489ef9-f078-49fd-a44d-07f8ec06d645.png 512
