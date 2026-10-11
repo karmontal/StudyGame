@@ -80,6 +80,7 @@ func _buy(st: Dictionary) -> void:
 	var result = Profiles.buy_sticker(st.id)
 	if result == null:
 		return
+	Sfx.play("buy")
 	_message.text = "مبروك! صار عندك ملصق %s" % st.name
 	for id in result:
 		_message.text += "\nووسام جديد: " + Rewards.badge(id).name

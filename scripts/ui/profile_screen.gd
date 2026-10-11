@@ -14,6 +14,30 @@ func build() -> void:
 	for p in Profiles.profiles:
 		grid.add_child(_card(p, p.id == leader))
 	content.add_child(UI.label("العملات تنحسب كل أسبوع من جديد، يوم الإثنين", 30, UI.MUTED))
+	content.add_child(_sound_toggle())
+
+
+## Sound on/off for effects and reading aloud.
+func _sound_toggle() -> Button:
+	var on := Settings.sound_on()
+	var b := UI.button("", Color("#16A085") if on else Color("#95A5A6"), 36, 110)
+	b.name = "Sound"
+	b.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	b.custom_minimum_size.x = 420
+	var row := UI.hbox(16)
+	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(SpeakerIcon.make(Color.WHITE, 60, not on))
+	var l := UI.label("الصوت شغّال" if on else "الصوت مطفي", 36, Color.WHITE)
+	l.autowrap_mode = TextServer.AUTOWRAP_OFF
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(l)
+	b.add_child(row)
+	b.pressed.connect(func():
+		Settings.set_value("sound", not Settings.sound_on())
+		main.goto("profiles"))
+	return b
 
 
 ## The kid with the most coins this week, or "" when nobody has played yet.
@@ -32,7 +56,7 @@ func _card(p: Dictionary, leader: bool) -> Button:
 	var color := Color(p.color)
 	var b := Button.new()
 	b.name = "Profile_" + p.id
-	b.custom_minimum_size = Vector2(0, 700)
+	b.custom_minimum_size = Vector2(0, 760)
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	UI.style_button(b, UI.CARD)
 	var v := UI.vbox(12)

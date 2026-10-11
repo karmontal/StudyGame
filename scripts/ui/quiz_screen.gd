@@ -12,7 +12,6 @@ var answers: VBoxContainer
 var feedback: PanelContainer
 var _answered := false
 var _rtl := true
-var _sfx: AudioStreamPlayer
 var _coin_label: Label
 var _round_coins := 0
 var _combo := 0
@@ -40,6 +39,8 @@ func build() -> void:
 		reward = LockPanel.make(session.count(), seed_value)
 	reward.name = "Reward"
 	content.add_child(reward)
+	if young:
+		content.add_child(_speak_button())
 	var qcard := UI.card()
 	content.add_child(qcard)
 	question_label = UI.label("", 50 if young else 46, UI.TEXT)
@@ -52,8 +53,6 @@ func build() -> void:
 	feedback = UI.card()
 	feedback.name = "Feedback"
 	content.add_child(feedback)
-	_sfx = AudioStreamPlayer.new()
-	add_child(_sfx)
 	_show_question()
 
 
@@ -61,7 +60,43 @@ func go_back() -> void:
 	main.goto(args.get("back", "books"), args.get("back_args", {}))
 
 
+func _exit_tree() -> void:
+	Sfx.stop_speaking()
+
+
+## Young kids get a speaker button that reads the question and its choices out loud.
+func _speak_button() -> VBoxContainer:
+	var box := UI.vbox(6)
+	var b := UI.button("", color.darkened(0.1), 40, 110)
+	b.name = "Speak"
+	var row := UI.hbox(18)
+	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(SpeakerIcon.make(Color.WHITE, 72))
+	var l := UI.label("اسمع السؤال", 40, Color.WHITE)
+	l.autowrap_mode = TextServer.AUTOWRAP_OFF
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(l)
+	b.add_child(row)
+	box.add_child(b)
+	var hint := UI.label("", 28, UI.MUTED)
+	hint.name = "SpeakHint"
+	hint.visible = false
+	box.add_child(hint)
+	b.pressed.connect(func():
+		var q := session.current()
+		var lang := _lang(q)
+		var ok := Sfx.speak(Sfx.question_text(q, lang), lang)
+		hint.visible = not ok
+		if not ok:
+			hint.text = "الصوت مطفي" if not Settings.sound_on() else \
+				"ما في صوت %s على الجهاز: نزّل Google Text-to-Speech من المتجر" % ("عربي" if lang != "en" else "إنجليزي"))
+	return box
+
+
 func _show_question() -> void:
+	Sfx.stop_speaking()
 	_answered = false
 	feedback.visible = false
 	_clear(answers)
@@ -317,7 +352,4 @@ func _finish() -> void:
 
 
 func _play(ok: bool) -> void:
-	var path := "res://assets/sfx/%s.wav" % ("correct" if ok else "wrong")
-	if ResourceLoader.exists(path):
-		_sfx.stream = load(path)
-		_sfx.play()
+	Sfx.play("correct" if ok else "wrong")

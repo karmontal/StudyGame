@@ -12,6 +12,8 @@ var _checks := 0
 func _ready() -> void:
 	Profiles.path = "user://test_save.json"
 	Profiles.delete_save()
+	Settings.path = "user://test_settings.cfg"
+	Settings.reset()
 	_test_curriculum_index()
 	_test_all_books_valid()
 	_test_validator_catches_mistakes()
@@ -23,6 +25,7 @@ func _ready() -> void:
 	_test_finish_round()
 	await _test_ui_flow()
 	await _test_challenges_ui()
+	await _test_sound()
 	Profiles.delete_save()
 	print("\n%d checks, %d failures" % [_checks, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
@@ -417,3 +420,43 @@ func _answer_right(quiz: Node) -> void:
 				(quiz.find_child("Item%d" % q.shuffled_origin.find(pos), true, false) as Button).pressed.emit()
 	await get_tree().process_frame
 	check(quiz.session.results.back().correct, "answered %s question right through the UI" % q.type)
+
+
+func _test_sound() -> void:
+	for n in Sfx.NAMES:
+		check(ResourceLoader.exists("res://assets/sfx/%s.wav" % n), "sound %s exists" % n)
+	var mcq := {"type": "mcq", "q": "كم رجل للعنكبوت؟", "choices": ["6", "8"], "answer": 1}
+	var said := Sfx.question_text(mcq, "ar")
+	check(said.begins_with("كم رجل") and "الخيار الأول: 6" in said and "الخيار الثاني: 8" in said, "read-aloud has question and choices")
+	check("True or false?" in Sfx.question_text({"type": "tf", "q": "Fish swim", "answer": true}, "en"), "read-aloud tf in English")
+	var main: Node = MAIN_SCENE.instantiate()
+	add_child(main)
+	await get_tree().process_frame
+	for p in Profiles.profiles:
+		var book_id := _first_book_with_data(int(p.grade))
+		if book_id == "":
+			continue
+		Profiles.select(p.id)
+		main.goto("quiz", {"questions": Content.grade_questions(int(p.grade), ["mcq"]).slice(0, 3), "title": "t", "back": "books", "back_args": {}})
+		await get_tree().process_frame
+		var speak: Button = main.find_child("Speak", true, false)
+		eq(speak != null, Profiles.is_young(p), "%s: speaker button only for young kids" % p.id)
+		if speak:
+			speak.pressed.emit()
+			check(Sfx.last_spoken.begins_with(str(main.screen.session.current().q)), "%s: speaker reads the question" % p.id)
+			check(main.screen.find_child("SpeakHint", true, false).visible, "%s: no voice in headless shows a hint" % p.id)
+		Sfx.last_played = ""
+		(main.screen.find_child("Choice0", true, false) as Button).pressed.emit()
+		check(Sfx.last_played in ["correct", "wrong"], "%s: answer plays a sound" % p.id)
+	main.goto("profiles")
+	await get_tree().process_frame
+	check(Settings.sound_on(), "sound is on by default")
+	(main.find_child("Sound", true, false) as Button).pressed.emit()
+	await get_tree().process_frame
+	check(not Settings.sound_on(), "sound switch turns it off")
+	(main.find_child("Sound", true, false) as Button).pressed.emit()
+	await get_tree().process_frame
+	check(Settings.sound_on(), "sound switch turns it back on")
+	main.queue_free()
+	await get_tree().process_frame
+	Settings.reset()

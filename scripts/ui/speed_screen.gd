@@ -18,7 +18,6 @@ var _score_label: Label
 var _question_label: Label
 var _answers: VBoxContainer
 var _locked := false
-var _sfx: AudioStreamPlayer
 
 
 func build() -> void:
@@ -28,8 +27,6 @@ func build() -> void:
 	_pool = Content.grade_questions(int(p.grade), ["mcq", "tf"], true)
 	_pool.shuffle()
 	_content = page("تحدي السرعة", color)
-	_sfx = AudioStreamPlayer.new()
-	add_child(_sfx)
 	_show_intro()
 
 
@@ -73,13 +70,17 @@ func start() -> void:
 	_answers.name = "Answers"
 	_content.add_child(_answers)
 	running = true
+	Sfx.play("start")
 	_next_question()
 
 
 func _process(delta: float) -> void:
 	if not running:
 		return
+	var before := ceili(time_left)
 	time_left -= delta
+	if ceili(time_left) < before and before <= 10 and time_left > 0.0:
+		Sfx.play("tick")
 	_timer_label.text = "%d ث" % ceili(maxf(time_left, 0.0))
 	if time_left <= 0.0:
 		end_now()
@@ -148,6 +149,7 @@ func end_now() -> void:
 	if not running:
 		return
 	running = false
+	Sfx.play("timeup")
 	# Wrong answers join the review list like in any round, so they come back later.
 	var summary := Profiles.finish_round("speed", "", 0, results)
 	_clear(_content)
@@ -177,7 +179,4 @@ func _clear(node: Node) -> void:
 
 
 func _play(ok: bool) -> void:
-	var path := "res://assets/sfx/%s.wav" % ("correct" if ok else "wrong")
-	if ResourceLoader.exists(path):
-		_sfx.stream = load(path)
-		_sfx.play()
+	Sfx.play("correct" if ok else "wrong")

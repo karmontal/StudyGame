@@ -44,6 +44,8 @@ func go_back() -> void:
 static func add_rewards(content: VBoxContainer, summary: Dictionary, color: Color) -> void:
 	if summary.is_empty():
 		return
+	var big: bool = int(summary.level_after) > int(summary.level_before) or not summary.new_badges.is_empty()
+	Sfx.play("fanfare" if big else ("coin" if int(summary.coins) > 0 else "wrong"))
 	if int(summary.level_after) > int(summary.level_before):
 		var up := UI.label("مستوى جديد! صرت في المستوى %d · %s" % [summary.level_after, Rewards.level_title(int(summary.level_after))], 44, Color.WHITE)
 		up.name = "LevelUp"

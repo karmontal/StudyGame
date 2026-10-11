@@ -20,8 +20,14 @@ config/quit_on_go_back=false
 
 [autoload]
 
+Settings="*res://scripts/autoload/settings.gd"
+Sfx="*res://scripts/autoload/sfx.gd"
 Content="*res://scripts/autoload/content.gd"
 Profiles="*res://scripts/autoload/profiles.gd"
+
+[audio]
+
+general/text_to_speech=true
 
 [display]
 
