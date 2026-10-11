@@ -19,12 +19,40 @@ func build() -> void:
 	for p in Profiles.profiles:
 		if p.get("toddler", false):
 			content.add_child(_toddler_card(p))
+	content.add_child(_family_button())
 	content.add_child(UI.label("العملات تنحسب كل أسبوع من جديد، يوم الإثنين", 30, UI.MUTED))
 	var row := UI.hbox(24)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_child(_sound_toggle())
 	row.add_child(_parents_button())
 	content.add_child(row)
+
+
+## Everyone together: the family contest for gatherings.
+func _family_button() -> Button:
+	var b := UI.button("", Color("#16A085"), 44, 170)
+	b.name = "Family"
+	var row := UI.hbox(-24)
+	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	for p in Profiles.profiles:
+		row.add_child(Avatar.make(p.name, Color.WHITE, 96, p.id))
+	var spacer := Control.new()
+	spacer.custom_minimum_size.x = 48
+	row.add_child(spacer)
+	var v := UI.vbox(0)
+	v.alignment = BoxContainer.ALIGNMENT_CENTER
+	var t := UI.label("مسابقة العيلة", 48, Color.WHITE)
+	t.autowrap_mode = TextServer.AUTOWRAP_OFF
+	v.add_child(t)
+	var sub := UI.label("كلنا مع بعض!", 30, Color(1, 1, 1, 0.85))
+	sub.autowrap_mode = TextServer.AUTOWRAP_OFF
+	v.add_child(sub)
+	row.add_child(v)
+	b.add_child(row)
+	_ignore_taps(row)
+	b.pressed.connect(func(): main.goto("family"))
+	return b
 
 
 ## The parents' settings open only after holding the button, so the kids don't wander in.

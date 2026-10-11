@@ -4,7 +4,7 @@ extends Node
 ## Screens: profiles, books, map, quiz, feedback, result, speed, speed_end, badges, album,
 ## toddler, toddler_color, toddler_color_filled, toddler_draw, toddler_sort, toddler_sort_round3,
 ## toddler_shapes, toddler_shapes_stage5, toddler_puzzle, toddler_puzzle4, toddler_animals,
-## toddler_balloons, toddler_rest.
+## toddler_balloons, toddler_rest, family, family_turn, family_question, family_aya, family_results.
 ## Optional: profile id, book id.
 
 func _ready() -> void:
@@ -62,6 +62,23 @@ func _ready() -> void:
 				main.screen.end_now()
 		"profiles", "badges", "album":
 			main.goto(which)
+		"family":
+			main.goto("family", {"teams": true})
+		"family_turn", "family_question", "family_aya", "family_results":
+			var ids := ["lamees", "mufeed", "lujain", "nada", "aya"]
+			main.goto("family_play", {"players": ids, "teams": false, "rounds": 1, "rng_seed": 7})
+			await _frames(3)
+			var s = main.screen
+			var stop: int = {"family_turn": 2, "family_question": 2, "family_aya": 4, "family_results": 5}[which]
+			for i in stop:
+				s.show_question()
+				if s.question.type == "picture":
+					s.tap_picture(int(s.question.answer))
+				else:
+					s.submit(s.question.answer if i % 2 == 0 else -1)
+				s._show_handoff()
+			if which in ["family_question", "family_aya"]:
+				s.show_question()
 	await _frames(60)
 	_save(out)
 

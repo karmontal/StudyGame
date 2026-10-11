@@ -30,6 +30,7 @@ func _ready() -> void:
 	await _test_sound()
 	await _test_sync_and_tasks()
 	await _test_toddler()
+	await _test_family()
 	Profiles.delete_save()
 	print("\n%d checks, %d failures" % [_checks, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
@@ -742,3 +743,130 @@ func _test_toddler() -> void:
 	await _frames()
 	ToddlerScreen.play_seconds = 0.0
 	Settings.reset()
+
+
+func _test_family() -> void:
+	Profiles.delete_save()
+	var ids := ["lamees", "mufeed", "lujain", "nada", "aya"]
+	# Rules
+	var split := FamilyContest.split_teams(ids)
+	eq(split["lamees"], 0, "oldest starts team A")
+	eq(split["mufeed"], 1, "next two go to team B")
+	eq(split["lujain"], 1, "next two go to team B")
+	eq(split["nada"], 0, "then team A again")
+	eq(split["aya"], 0, "youngest dealt to team A")
+	var solo := FamilyContest.make(ids, false, 2, 11)
+	eq(solo.order.size(), 10, "solo: everyone once per round")
+	eq(solo.round_number(), 1, "starts in round 1")
+	var teams := FamilyContest.make(ids, true, 2, 11)
+	var turns := {0: 0, 1: 0}
+	for id in teams.order:
+		turns[int(teams.team_of[id])] += 1
+	eq(turns[0], turns[1], "both teams get the same number of turns")
+	eq(int(teams.team_of[teams.order[0]]), 0, "teams alternate, A first")
+	eq(int(teams.team_of[teams.order[1]]), 1, "teams alternate, then B")
+	var seen := {}
+	for i in 6:
+		var q := solo.next_question("lamees")
+		check(q.type in ["mcq", "tf"], "older kids get mcq/tf questions")
+		check(q.key.begins_with("g10_"), "Lamees gets grade 10 questions (%s)" % q.key)
+		check(not seen.has(q.key), "no repeated question in one game")
+		seen[q.key] = true
+	check(solo.next_question("nada").key.begins_with("g3_"), "Nada gets grade 3 questions")
+	var pic := solo.next_question("aya")
+	eq(pic.type, "picture", "Aya gets picture questions")
+	eq(pic.options.size(), 3, "three pictures to choose from")
+	check(ToddlerVoice.PHRASES.has(("w_" if pic.kind == "animal" else "wc_") + pic.options[pic.answer]), "the picture question can be said")
+	for a in FamilyContest.PICTURE_ANIMALS:
+		check(ToddlerVoice.PHRASES.has("w_" + a), "phrase for %s" % a)
+	for c in FamilyContest.PICTURE_COLORS:
+		check(ToddlerVoice.PHRASES.has("wc_" + c), "phrase for %s" % c)
+	var two := FamilyContest.make(["lamees", "nada"], false, 1, 3)
+	two.answer(true, "k1")
+	two.answer(false, "k2")
+	eq(two.points, {"lamees": 1, "nada": 0}, "one point per right answer")
+	eq(two.winners(), ["lamees"], "most points wins")
+	check(two.done(), "game ends after every turn")
+	eq(two.ranking(), ["lamees", "nada"] as Array[String], "ranking by points")
+	var tie := FamilyContest.make(["lamees", "nada"], false, 1, 3)
+	tie.answer(true, "k1")
+	tie.answer(true, "k2")
+	eq(tie.winners().size(), 2, "a tie has two winners")
+	# Screens
+	var main: Node = MAIN_SCENE.instantiate()
+	add_child(main)
+	await _frames()
+	main.goto("profiles")
+	await _frames()
+	var fam: Button = main.find_child("Family", true, false)
+	check(fam != null, "family contest button on the profile screen")
+	fam.pressed.emit()
+	await _frames()
+	eq(str(main.screen.name), "family", "family button opens the setup")
+	eq(main.screen.players().size(), 5, "everyone plays by default")
+	for id in ["mufeed", "lujain", "nada", "aya"]:
+		main.find_child("Pick_" + id, true, false).pressed.emit()
+		await _frames(2)
+	check(main.find_child("Start", true, false).disabled, "can't start with one player")
+	main.find_child("Pick_nada", true, false).pressed.emit()
+	await _frames(2)
+	main.find_child("Pick_aya", true, false).pressed.emit()
+	await _frames(2)
+	main.find_child("Mode_teams", true, false).pressed.emit()
+	await _frames(2)
+	check(main.find_child("TeamsPreview", true, false) != null, "teams preview shows")
+	main.find_child("Rounds_5", true, false).pressed.emit()
+	await _frames(2)
+	eq(main.screen.rounds, 5, "rounds picked")
+	main.find_child("Mode_solo", true, false).pressed.emit()
+	await _frames(2)
+	main.find_child("Rounds_3", true, false).pressed.emit()
+	await _frames(2)
+	eq(main.screen.players(), ["lamees", "nada", "aya"] as Array[String], "picked players")
+	main.find_child("Start", true, false).pressed.emit()
+	await _frames()
+	eq(str(main.screen.name), "family_play", "start opens the game")
+	var s = main.screen
+	var coins_before := int(Profiles.info("lamees").coins)
+	var events_before := Sync.events.size()
+	var right := 0
+	var guard := 0
+	while s.phase != "results" and guard < 40:
+		guard += 1
+		var who: String = s.contest.current_player()
+		eq(s.phase, "handoff", "turn starts with passing the phone")
+		check(str(main.find_child("Turn", true, false).text).contains(Profiles.get_profile(who).name), "says whose turn")
+		main.find_child("Ready", true, false).pressed.emit()
+		await _frames()
+		if who == "aya":
+			var wrong := (int(s.question.answer) + 1) % 3
+			main.find_child("Pic_%d" % wrong, true, false).pressed.emit()
+			await _frames()
+			eq(s.phase, "question", "a wrong picture just says try again")
+			eq(ToddlerVoice.last_key, "try", "Aya hears try again")
+			main.find_child("Pic_%d" % int(s.question.answer), true, false).pressed.emit()
+		elif s.question.type == "mcq":
+			var pick: int = int(s.question.answer) if who == "lamees" else (int(s.question.answer) + 1) % s.question.choices.size()
+			main.find_child("Choice%d" % pick, true, false).pressed.emit()
+		else:
+			var value: bool = s.question.answer if who == "lamees" else not s.question.answer
+			main.find_child("True" if value else "False", true, false).pressed.emit()
+		await _frames()
+		eq(s.phase, "feedback", "answer shows feedback")
+		main.find_child("Next", true, false).pressed.emit()
+		await _frames()
+	eq(s.phase, "results", "game reaches the results")
+	eq(s.contest.points, {"lamees": 3, "nada": 0, "aya": 3}, "points counted for each player")
+	eq(str(main.find_child("Winner", true, false).text), "الفائزين: لميس، آية", "two winners named")
+	check(int(Profiles.info("lamees").coins) > coins_before, "Lamees earns coins")
+	check(s.earned.has("nada") and not s.earned.has("aya"), "coins for school kids, not the toddler")
+	eq(Sync.events.size() - events_before, 2, "one dashboard round per school kid")
+	eq(str(Sync.events[-1].kind), "family", "rounds are sent as family")
+	main.find_child("Again", true, false).pressed.emit()
+	await _frames()
+	eq(str(main.screen.name), "family_play", "play again")
+	eq(main.screen.contest.players, ["lamees", "nada", "aya"] as Array[String], "same players again")
+	main.queue_free()
+	await _frames()
+	Sync.reset()
+	Profiles.delete_save()

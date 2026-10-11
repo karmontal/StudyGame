@@ -7,7 +7,8 @@ from .content import BADGES, level_title
 
 WEEKDAYS = ["الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد"]
 KIND_NAMES = {"lesson": "درس", "unit": "اختبار وحدة", "review": "مراجعة", "daily": "تحدي اليوم",
-              "speed": "تحدي السرعة", "assignment": "اختبار من الأهل"}
+              "speed": "تحدي السرعة", "assignment": "اختبار من الأهل",
+              "family": "مسابقة العيلة"}
 
 
 def since(days: int, now=None) -> str:

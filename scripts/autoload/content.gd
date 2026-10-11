@@ -93,12 +93,12 @@ func unit_questions(book_id: String, unit_id: String) -> Array[Dictionary]:
 ## Every question from the books of one grade (for the daily and speed challenges).
 ## `types` limits the question types; empty means all. With `done_only` only lessons the current kid
 ## finished (at least one star) count.
-func grade_questions(grade: int, types: Array = [], done_only := false) -> Array[Dictionary]:
+func grade_questions(grade: int, types: Array = [], done_only := false, profile_id := "") -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for meta in books_for_grade(grade):
 		for u in book(meta.id).get("units", []):
 			for l in u.get("lessons", []):
-				if done_only and Profiles.stars(Profiles.lesson_key(meta.id, u.id, l.id)) < 1:
+				if done_only and Profiles.stars(Profiles.lesson_key(meta.id, u.id, l.id), profile_id) < 1:
 					continue
 				for q in lesson_questions(meta.id, u.id, l.id):
 					if types.is_empty() or q.type in types:

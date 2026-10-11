@@ -25,3 +25,6 @@
   10 min). Nothing to read, no losing/timers/coins; parents leave with a 1.5 s long press (`ToddlerHold`).
   Shapes are drawn by `ToddlerArt`; voice goes through `ToddlerVoice.say(key)`, which plays
   `assets/toddler/voice/<key>.ogg` when recorded, else the phone's TTS (keys in `ToddlerVoice.PHRASES`).
+- Family contest (gatherings): rules in `scripts/game/family_contest.gd` (turn order, teams, one point per right
+  answer, each kid's questions from their own grade, picture questions for the toddler); screens "family" and
+  "family_play". Each school kid's answers go through `finish_round("family", ...)` at the end.
