@@ -4,52 +4,114 @@
 وأكثر الأسئلة اللي بغلط فيها، وتقدر تضيف له **اختبار على دروس معيّنة مع جائزة**.
 اللعبة بتشتغل بدون إنترنت، ولما يكون في نت بترفع التقدّم للسيرفر وبتنزّل الاختبارات الجديدة.
 
-## 1. التشغيل (Docker)
+## 1. التشغيل على VPS (Docker، معزول عن باقي الخدمات)
 
-على السيرفر (لازم يكون عليه Docker و Docker Compose):
+اللوحة بتشتغل بكونتينر لحالها، بشبكة و volume خاصين فيها، وما بتلمس أي إشي ثاني على السيرفر:
+- بتسمع بس على `127.0.0.1:8090`، يعني ما حدا بيوصلها من برا إلا عن طريق الـ HTTPS proxy.
+- محدودة بـ 256MB رام ونص معالج.
+- نظام الملفات read-only، وبتشتغل كمستخدم عادي (مش root).
+- اللوغز محدودة بـ 30MB.
+
+**أ. نزّل الكود** (بس مجلدي `server` و `data`، بدون كتب الـ PDF الكبيرة). المستودع خاص، فبدك
+[توكن GitHub](https://github.com/settings/tokens) بصلاحية قراءة للمستودع:
 
 ```bash
-git clone <رابط مستودع اللعبة> studygame
-cd studygame/server
-cp .env.example .env
-nano .env        # غيّر المفتاح وكلمة السر
-docker compose up -d --build
+cd ~
+git clone --filter=blob:none --sparse -b feat/game-foundation https://<TOKEN>@github.com/karmontal/StudyGame.git studygame
+cd studygame && git sparse-checkout set server data
+cd server
 ```
 
-في ملف `.env`:
+(بعد ما ندمج الـ PR استخدم `-b main`.)
 
-| المتغير | معناه |
+**ب. الإعدادات:**
+
+```bash
+cp .env.example .env
+openssl rand -hex 16    # انسخ الناتج كمفتاح الجهاز
+nano .env               # حط المفتاح وكلمة سر طويلة
+```
+
+**ج. شغّل:**
+
+```bash
+docker compose up -d --build
+docker ps                 # لازم يطلع studygame-dashboard ... (healthy) بعد دقيقة
+curl -H "X-Device-Key: <المفتاح>" http://127.0.0.1:8090/api/ping    # {"ok":true}
+```
+
+| المتغير في `.env` | معناه |
 |---|---|
 | `STUDYGAME_DEVICE_KEY` | مفتاح الجهاز: نفس المفتاح بتكتبه في اللعبة. 8 أحرف على الأقل، والأفضل طويل وعشوائي. |
 | `STUDYGAME_ADMIN_PASSWORD` | كلمة سر دخول لوحة الأهل. 8 أحرف على الأقل. |
 | `STUDYGAME_SECURE_COOKIE` | خلّيها `1` لما يكون الموقع على HTTPS. |
 | `TZ` | المنطقة الزمنية (مثلاً `Asia/Gaza`) عشان "اليوم" و"هالأسبوع" يكونوا صح. |
-
-لعمل مفتاح عشوائي: `openssl rand -hex 16`
+| `STUDYGAME_PORT` | البورت المحلي (افتراضي 8090). غيّره إذا في خدمة ثانية عليه: `sudo ss -tlnp \| grep 8090` |
+| `STUDYGAME_DOMAIN` | الدومين، بس إذا استخدمت Caddy اللي معنا (الخيار الثاني تحت). |
 
 السيرفر ما بيشتغل إذا المفتاح أو كلمة السر ناقصين أو أقصر من 8 أحرف (هذا مقصود).
-البيانات محفوظة في volume اسمه `studygame-db` وما بتضيع لما تحدّث أو تعيد التشغيل.
+البيانات محفوظة في volume اسمه `studygame_studygame-db` وما بتضيع لما تحدّث أو تعيد التشغيل.
 
-للتحديث بعد ما تنزل نسخة جديدة من اللعبة: `git pull && docker compose up -d --build`
+للتحديث: `git pull && docker compose up -d --build`
 
-## 2. HTTPS (ضروري)
+نسخة احتياطية من البيانات:
+`docker exec studygame-dashboard python -c "import sqlite3; s=sqlite3.connect('/app/data/studygame.db'); s.backup(sqlite3.connect('/app/data/backup.db'))" && docker cp studygame-dashboard:/app/data/backup.db ~/studygame-backup-$(date +%F).db`
 
-السيرفر بيسمع فقط على `127.0.0.1:8000`، وبتحط قدامه Caddy عشان يعطيك HTTPS تلقائي.
-محتاج دومين (أو subdomain) بيأشّر على عنوان السيرفر. مثال `Caddyfile`:
+## 2. HTTPS (ضروري للعبة)
 
-```caddy
-study.example.com {
-    encode gzip
-    reverse_proxy 127.0.0.1:8000
+أولاً، اعمل subdomain (مثلاً `study.yourdomain.com`) بيأشّر بسجل A على IP السيرفر. بعدين شوف إذا
+في إشي شغّال على البورتات 80 و 443:
+
+```bash
+sudo ss -tlnp | grep -E ':80 |:443 '
+```
+
+**الخيار الأول: في nginx أو Caddy أو Traefik شغّال أصلاً** (الأغلب إذا عندك مواقع ثانية).
+لا تشغّل Caddy تبعنا، بس زيد موقع جديد عالـ proxy الموجود:
+
+nginx (`/etc/nginx/sites-available/study`):
+
+```nginx
+server {
+    server_name study.yourdomain.com;
+    location / {
+        proxy_pass http://127.0.0.1:8090;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
 }
 ```
 
-بعدها `sudo systemctl reload caddy`، وافتح `https://study.example.com` من الموبايل وادخل بكلمة السر.
+```bash
+sudo ln -s /etc/nginx/sites-available/study /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx
+sudo certbot --nginx -d study.yourdomain.com
+```
+
+Caddy موجود: زيد بالـ `Caddyfile`:
+
+```caddy
+study.yourdomain.com {
+    reverse_proxy 127.0.0.1:8090
+}
+```
+
+**الخيار الثاني: البورتات 80 و 443 فاضية.** حط الدومين بـ `STUDYGAME_DOMAIN` بالـ `.env` وشغّل:
+
+```bash
+docker compose --profile https up -d --build
+```
+
+Caddy بكونتينر بيطلع شهادة HTTPS لحاله. تأكد إن البورتين 80 و 443 مفتوحين بالـ firewall
+(عند Hostinger: hPanel > VPS > Security > Firewall، وإذا في `ufw`: `sudo ufw allow 80,443/tcp`).
+
+افتح `https://study.yourdomain.com` من الموبايل وادخل بكلمة السر.
 
 ## 3. ربط اللعبة
 
-1. في اللعبة افتح **إعدادات الأهل**.
-2. اكتب عنوان السيرفر: `https://study.example.com`
+1. في اللعبة، بشاشة اختيار الولد، اضغط مطوّلاً على زر **للأهل**.
+2. اكتب عنوان السيرفر: `https://study.yourdomain.com`
 3. اكتب **مفتاح الجهاز** (نفس `STUDYGAME_DEVICE_KEY`).
 4. اضغط زر فحص الاتصال. إذا نجح، اللعبة بتزامن لحالها كل ما يخلص الولد جولة ويكون في إنترنت.
 
