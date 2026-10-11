@@ -2,7 +2,8 @@ extends Node
 ## Sound effects (assets/sfx/*.wav, made by tools/make_sfx.py) and reading questions aloud with the
 ## phone's text-to-speech voice. Both follow the sound switch in Settings.
 
-const NAMES := ["click", "correct", "wrong", "coin", "win", "fanfare", "tick", "timeup", "start", "buy"]
+const NAMES := ["click", "correct", "wrong", "coin", "win", "fanfare", "tick", "timeup", "start", "buy",
+	"pop", "boing", "cheer", "whoosh"]
 
 var _streams := {}
 var _players: Array[AudioStreamPlayer] = []

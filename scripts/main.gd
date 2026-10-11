@@ -11,6 +11,13 @@ const SCREENS := {
 	"badges": preload("res://scripts/ui/badges_screen.gd"),
 	"album": preload("res://scripts/ui/album_screen.gd"),
 	"parents": preload("res://scripts/ui/parents_screen.gd"),
+	"toddler": preload("res://scripts/toddler/toddler_hub.gd"),
+	"toddler_color": preload("res://scripts/toddler/toddler_color.gd"),
+	"toddler_sort": preload("res://scripts/toddler/toddler_sort.gd"),
+	"toddler_shapes": preload("res://scripts/toddler/toddler_shapes.gd"),
+	"toddler_animals": preload("res://scripts/toddler/toddler_animals.gd"),
+	"toddler_balloons": preload("res://scripts/toddler/toddler_balloons.gd"),
+	"toddler_rest": preload("res://scripts/toddler/toddler_rest.gd"),
 }
 
 var screen: Screen

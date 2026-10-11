@@ -4,6 +4,7 @@ extends Screen
 
 func build() -> void:
 	var p := Profiles.current()
+	add_child(Backdrop.make(Color(p.color), 460))
 	var content := page("أهلاً %s!" % p.name, Color(p.color))
 	content.add_child(_status_card(p))
 	var tasks := Sync.assignments_for(p.id)
@@ -49,7 +50,7 @@ func _book_card(meta: Dictionary) -> Button:
 			for l in u.lessons:
 				if not l.get("questions", []).is_empty():
 					possible += 3
-		v.add_child(UI.label("%d / %d نجمة" % [earned, possible], 32, Color(1, 1, 1, 0.85)))
+		v.add_child(UI.label("%d من %d نجمة" % [earned, possible], 32, Color(1, 1, 1, 0.85)))
 		b.pressed.connect(func(): main.goto("map", {"book": meta.id}))
 	else:
 		v.add_child(UI.label("قريباً", 34, Color(1, 1, 1, 0.9)))
@@ -80,8 +81,18 @@ func _status_card(p: Dictionary) -> PanelContainer:
 	card.name = "Status"
 	var v := UI.vbox(14)
 	card.add_child(v)
+	var top := UI.hbox(28)
+	v.add_child(top)
+	var avatar := Avatar.make(p.name, Color(p.color), 190, p.id)
+	avatar.name = "Avatar"
+	avatar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	top.add_child(avatar)
+	var side := UI.vbox(14)
+	side.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	side.alignment = BoxContainer.ALIGNMENT_CENTER
+	top.add_child(side)
 	var row := UI.hbox(24)
-	v.add_child(row)
+	side.add_child(row)
 	var coins := CoinIcon.with_amount(int(info.coins), 48)
 	coins.name = "Coins"
 	row.add_child(coins)
@@ -101,8 +112,8 @@ func _status_card(p: Dictionary) -> PanelContainer:
 	bar.value = Rewards.level_progress(xp)
 	bar.add_theme_stylebox_override("background", UI.box(Color("#EEE8DA"), 13))
 	bar.add_theme_stylebox_override("fill", UI.box(Color(p.color), 13))
-	v.add_child(bar)
-	v.add_child(UI.label("باقي %d نقطة للمستوى %d" % [Rewards.XP_PER_LEVEL - xp % Rewards.XP_PER_LEVEL, level + 1], 28, UI.MUTED))
+	side.add_child(bar)
+	side.add_child(UI.label("باقي %d نقطة للمستوى %d" % [Rewards.XP_PER_LEVEL - xp % Rewards.XP_PER_LEVEL, level + 1], 28, UI.MUTED))
 	return card
 
 

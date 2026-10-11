@@ -29,6 +29,7 @@ func _ready() -> void:
 	await _test_challenges_ui()
 	await _test_sound()
 	await _test_sync_and_tasks()
+	await _test_toddler()
 	Profiles.delete_save()
 	print("\n%d checks, %d failures" % [_checks, _failures])
 	get_tree().quit(1 if _failures > 0 else 0)
@@ -53,7 +54,8 @@ func _test_curriculum_index() -> void:
 		check(Content.subjects.has(b.subject), "%s subject '%s' is defined" % [b.id, b.subject])
 		check(FileAccess.file_exists("res://" + b.source), "%s source PDF exists" % b.id)
 	for p in Profiles.profiles:
-		check(not Content.books_for_grade(int(p.grade)).is_empty(), "%s has books for grade %d" % [p.name, p.grade])
+		if not p.get("toddler", false):
+			check(not Content.books_for_grade(int(p.grade)).is_empty(), "%s has books for grade %d" % [p.name, p.grade])
 
 
 func _test_all_books_valid() -> void:
@@ -144,7 +146,23 @@ func _test_stars() -> void:
 
 
 func _test_progress_and_save() -> void:
-	eq(Profiles.profiles.size(), 4, "four kids by default")
+	eq(Profiles.profiles.size(), 5, "five kids by default")
+	check(Profiles.get_profile("aya").get("toddler", false), "Aya is the toddler")
+	eq(UI.grade_name(0), "ألعاب الصغار", "toddler shows no school grade")
+	# A save from before Aya was added keeps its kids and gains her.
+	var old_kids: Array = []
+	for k in Profiles.profiles:
+		if k.id != "aya":
+			old_kids.append(k.duplicate())
+	old_kids[0].name = "لميس الحلوة"
+	var f := FileAccess.open(Profiles.path, FileAccess.WRITE)
+	f.store_string(JSON.stringify({"profiles": old_kids, "progress": {}}))
+	f.close()
+	Profiles.load_save()
+	eq(Profiles.profiles.size(), 5, "old save gains the new kid")
+	eq(str(Profiles.profiles[0].name), "لميس الحلوة", "old save keeps its own kids")
+	eq(str(Profiles.profiles[4].id), "aya", "new kid added at the end")
+	Profiles.delete_save()
 	Profiles.select("nada")
 	check(Profiles.is_young(), "Nada (grade 3) gets the young style")
 	check(not Profiles.is_young(Profiles.get_profile("lamees")), "Lamees (grade 10) gets the older style")
@@ -531,4 +549,196 @@ func _test_sync_and_tasks() -> void:
 	main.queue_free()
 	await get_tree().process_frame
 	Sync.reset()
+	Settings.reset()
+
+
+func _frames(n: int = 1) -> void:
+	for i in n:
+		await get_tree().process_frame
+
+
+func _test_toddler() -> void:
+	Settings.reset()
+	ToddlerScreen.play_seconds = 0.0
+	# Phrases: short ascii keys for recorded clips, one for every colour, shape, animal and picture.
+	var key_re := RegEx.create_from_string("^[a-z0-9_]+$")
+	for k in ToddlerVoice.PHRASES:
+		check(key_re.search(k) != null, "voice key '%s' is a short ascii id" % k)
+	for c in ToddlerArt.COLORS:
+		check(ToddlerVoice.PHRASES.has("c_" + c.id), "phrase for colour %s" % c.id)
+	for a in ToddlerArt.ANIMALS:
+		check(ToddlerVoice.PHRASES.has("a_" + a), "phrase for animal %s" % a)
+	for sh in ToddlerArt.SHAPES:
+		check(ToddlerVoice.PHRASES.has("s_" + sh), "phrase for shape %s" % sh)
+	for id in ToddlerArt.COLORING + ToddlerArt.PUZZLES:
+		check(ToddlerVoice.PHRASES.has("p_" + id), "phrase for picture %s" % id)
+	check(not ToddlerVoice.has_clip("hello"), "no recorded clip: falls back to the phone voice")
+	ToddlerVoice.say("bravo")
+	check(ToddlerVoice.last_text == "برافو آية!" and not ToddlerVoice.last_was_clip, "say() uses the phrase text")
+	# Pictures: 3-6 fill regions for colouring, and every region can be hit.
+	for id in ToddlerArt.COLORING:
+		var n: int = ToddlerArt.picture(id).regions.size()
+		check(n >= 3 and n <= 6, "colouring picture %s has 3-6 regions (%d)" % [id, n])
+	for id in ToddlerArt.COLORING + ToddlerArt.ANIMALS + ToddlerArt.PUZZLES:
+		var pic := ToddlerArt.picture(id)
+		for i in pic.regions.size():
+			eq(ToddlerArt.region_at(pic, ToddlerArt.region_point(pic, i)), i, "%s region %d can be tapped" % [id, i])
+	var main: Node = MAIN_SCENE.instantiate()
+	add_child(main)
+	await _frames()
+	# Hub, opened from Aya's card on the profile screen
+	main.goto("profiles")
+	await _frames()
+	var aya_card: Button = main.find_child("Profile_aya", true, false)
+	check(aya_card != null, "Aya has a card")
+	aya_card.pressed.emit()
+	await _frames()
+	eq(str(main.screen.name), "toddler", "Aya's card opens the toddler hub")
+	eq(ToddlerVoice.last_key, "hello", "hub greets Aya")
+	for g in ["color", "sort", "shapes", "animals", "balloons"]:
+		var b: Control = main.screen.find_child("Game_" + g, true, false)
+		check(b is ToddlerButton and b.size.x >= 200 and b.size.y >= 200, "hub has a big %s button" % g)
+	# The exit needs a 1.5 s press: a tap, a short press and the Android back do nothing.
+	var exit: ToddlerHold = main.screen.find_child("Exit", true, false)
+	var mid := exit.size / 2.0
+	exit.send_tap(mid)
+	exit._process(2.0)
+	exit._send(mid, true, false)
+	exit._process(1.0)
+	exit._send(mid, false, false)
+	exit._process(1.0)
+	main.screen.go_back()
+	eq(str(main.screen.name), "toddler", "short presses and back don't leave the hub")
+	exit._send(mid, true, false)
+	exit._process(1.0)
+	eq(str(main.screen.name), "toddler", "still on the hub after 1 s")
+	exit._process(0.6)
+	eq(str(main.screen.name), "profiles", "1.5 s press leaves to the profiles")
+	await _frames()
+	main.goto("toddler")
+	await _frames()
+	(main.screen.find_child("Game_color", true, false) as Button).pressed.emit()
+	await _frames()
+	# Colouring
+	eq(str(main.screen.name), "toddler_color", "colour button opens colouring")
+	var col = main.screen
+	(col.find_child("Color_blue", true, false) as Button).pressed.emit()
+	eq(ToddlerVoice.last_text, "أزرق", "picking a colour says its name")
+	var blue: Color = ToddlerArt.color_by_id("blue").color
+	col.canvas.send_tap(col.region_point(2))
+	eq(col.current_fills()[2], blue, "tapping a region fills it")
+	eq(col.current_fills()[0], Color.WHITE, "other regions stay white")
+	eq(Sfx.last_played, "pop", "filling makes a sound")
+	col.canvas.send_tap(col.region_point(0), true)
+	eq(col.current_fills()[0], blue, "a touch with no new pick uses the last colour")
+	(col.find_child("Next", true, false) as Button).pressed.emit()
+	eq(col.picture_id(), "apple", "arrow changes picture")
+	(col.find_child("Prev", true, false) as Button).pressed.emit()
+	eq(col.current_fills()[2], blue, "a picture keeps its colours")
+	(col.find_child("Mode", true, false) as Button).pressed.emit()
+	check(col.drawing, "brush button switches to free drawing")
+	col.canvas.send_drag(Vector2(100, 100), Vector2(600, 400), true)
+	check(col.strokes.size() == 1 and col.strokes[0].points.size() >= 4, "finger paints a stroke")
+	var twin := InputEventScreenTouch.new()
+	twin.device = InputEvent.DEVICE_ID_EMULATION
+	twin.pressed = true
+	twin.position = Vector2(300, 300)
+	col.canvas._gui_input(twin)
+	eq(col.strokes.size(), 1, "emulated twin events are ignored")
+	(col.find_child("Next", true, false) as Button).pressed.emit()
+	eq(col.strokes.size(), 0, "arrow gives a clean page while drawing")
+	col.go_back()
+	await _frames()
+	eq(str(main.screen.name), "toddler", "a game goes back to the hub")
+	# Sorting
+	main.goto("toddler_sort")
+	await _frames()
+	var sort = main.screen
+	eq(sort.baskets.size(), 2, "sorting starts with 2 baskets")
+	eq(sort.balls.size(), 4, "2 balls per basket")
+	eq([sort.basket_count(1), sort.basket_count(2), sort.basket_count(4)], [2, 3, 4], "more baskets after a few rounds")
+	var ball: Dictionary = sort.balls[0]
+	var right: int = sort.basket_index(ball.color_id)
+	var wrong: int = 1 - right
+	sort.board.send_drag(ball.pos, (sort.baskets[wrong].rect as Rect2).get_center() - Vector2(0, 80))
+	check(not ball.placed, "wrong basket doesn't take the ball")
+	eq(ball.target, ball.home, "the ball floats back home")
+	check(Sfx.last_played != "wrong", "no error sound")
+	sort.board.send_drag(ball.pos, (sort.baskets[right].rect as Rect2).get_center() - Vector2(0, 80), true)
+	check(ball.placed, "right basket takes the ball (touch drag)")
+	eq(ToddlerVoice.last_key, "c_" + ball.color_id, "ball in place says its colour")
+	eq(Sfx.last_played, "correct", "cheerful sound for a ball in place")
+	for b in sort.balls.duplicate():
+		if not b.placed:
+			sort.board.send_drag(b.pos, (sort.baskets[sort.basket_index(b.color_id)].rect as Rect2).get_center() - Vector2(0, 80))
+	eq(sort.placed_count(), 4, "all balls sorted")
+	check(sort.celebrating and sort.board.effect_count() > 30, "confetti when the round is done")
+	eq(ToddlerVoice.last_key, "bravo", "round done says bravo")
+	eq(sort.round_number, 1, "next round counted")
+	# Shapes
+	main.goto("toddler_shapes")
+	await _frames()
+	var sh = main.screen
+	eq(sh.stage_kind(), "holes", "shapes start with the hole board")
+	eq(sh.holes.size(), 3, "three holes first")
+	var pc: Dictionary = sh.pieces[0]
+	var other: Dictionary = sh.holes.filter(func(h): return h.kind != pc.kind)[0]
+	sh.board.send_drag(pc.pos, other.pos)
+	check(not pc.placed and pc.target == pc.home, "a piece doesn't go in the wrong hole")
+	sh.board.send_drag(pc.pos, sh.snap_point(pc) + Vector2(40, 30))
+	check(pc.placed and pc.target == sh.snap_point(pc), "a piece snaps into its hole when close")
+	eq(ToddlerVoice.last_key, "s_" + pc.kind, "the shape says its name")
+	for p in sh.pieces.duplicate():
+		if not p.placed:
+			sh.board.send_drag(p.pos, sh.snap_point(p))
+	check(sh.celebrating, "board done: celebration")
+	sh.next_stage()
+	eq(sh.stage_kind(), "puzzle", "then a picture puzzle")
+	eq(sh.pieces.size(), 2, "first puzzle has 2 pieces")
+	for p in sh.pieces.duplicate():
+		sh.board.send_drag(p.pos + Vector2(40, 40), p.slot + Vector2(70, 50))
+		check(p.placed, "puzzle piece snaps into the frame")
+	check(sh.celebrating, "puzzle done: celebration")
+	eq(ToddlerVoice.last_key, "p_" + sh.picture_id, "finished puzzle says the picture's name")
+	# Tap and hear
+	main.goto("toddler_animals")
+	await _frames()
+	for a in ToddlerArt.ANIMALS:
+		var ab: Control = main.screen.find_child("Animal_" + a, true, false)
+		check(ab != null and ab.size.x >= 200 and ab.size.y >= 200, "big %s button" % a)
+	var cow: ToddlerButton = main.screen.find_child("Animal_cow", true, false)
+	cow.button_down.emit()
+	cow.pressed.emit()
+	eq(ToddlerVoice.last_text, "بقرة! مووو", "the cow says its name and moo")
+	eq(Sfx.last_played, "boing", "tap plays a sound")
+	check(cow._bounce > 0.0, "the cow bounces")
+	# Balloons
+	main.goto("toddler_balloons")
+	await _frames()
+	var bal = main.screen
+	bal.balloons.clear()
+	var bl: Dictionary = bal.spawn(2, Vector2(540, 900))
+	bal.board.send_tap(bal.balloon_pos(bl), true)
+	eq(bal.popped, 1, "tapping a balloon pops it")
+	eq(bal.balloons.size(), 0, "popped balloon is gone")
+	eq(Sfx.last_played, "pop", "pop sound")
+	eq(ToddlerVoice.last_key, "c_blue", "popped balloon says its colour")
+	bal.board.send_tap(Vector2(540, 900))
+	eq(bal.popped, 1, "tapping the sky pops nothing (and loses nothing)")
+	# Ten minutes of play: time to rest; a parent's long press continues.
+	ToddlerScreen.play_seconds = ToddlerScreen.PLAY_LIMIT - 0.001
+	await _frames(3)
+	eq(str(main.screen.name), "toddler_rest", "rest screen after 10 minutes")
+	eq(ToddlerVoice.last_key, "rest", "rest screen says let's rest")
+	main.screen.go_back()
+	main.screen._process(5.0)
+	eq(str(main.screen.name), "toddler_rest", "rest screen stays until a parent continues")
+	var cont: ToddlerHold = main.screen.find_child("Continue", true, false)
+	cont._send(cont.size / 2.0, true, false)
+	cont._process(1.6)
+	eq(str(main.screen.name), "toddler", "long press continues to the hub")
+	check(ToddlerScreen.play_seconds < 1.0, "play time starts again")
+	main.queue_free()
+	await _frames()
+	ToddlerScreen.play_seconds = 0.0
 	Settings.reset()

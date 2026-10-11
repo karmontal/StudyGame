@@ -6,7 +6,7 @@
   <span class="avatar big">{{ kid.name[:1] }}</span>
   <div>
     <h1>{{ kid.name }}</h1>
-    <span class="muted">الصف {{ kid.grade }} · المستوى {{ card.level }} ({{ card.level_title }})
+    <span class="muted">{{ grade_label(kid.grade) }} · المستوى {{ card.level }} ({{ card.level_title }})
       {% if card.synced %} · آخر مزامنة {{ card.synced | fmt_time }}{% endif %}</span>
   </div>
 </div>

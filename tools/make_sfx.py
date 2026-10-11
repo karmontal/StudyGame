@@ -44,6 +44,33 @@ def noise(dur, vol=0.2, decay=40.0):
     return [vol * math.exp(-decay * i / RATE) * (rnd.random() * 2 - 1) for i in range(int(RATE * dur))]
 
 
+def boing(dur=0.45, vol=0.45):
+    """A springy wobble: the pitch bounces around a low note and settles."""
+    out = []
+    phase = 0.0
+    for i in range(int(RATE * dur)):
+        t = i / RATE
+        freq = 260 + 140 * math.sin(2 * math.pi * 9 * t) * math.exp(-5 * t) + 120 * t
+        phase += 2 * math.pi * freq / RATE
+        env = min(1.0, t / 0.005) * math.exp(-5.5 * t)
+        out.append(vol * env * (math.sin(phase) + 0.2 * math.sin(2 * phase)))
+    return out
+
+
+def whoosh(dur=0.45, vol=0.35):
+    """Soft air: noise through a low-pass filter that opens and closes."""
+    rnd = random.Random(11)
+    out = []
+    y = 0.0
+    for i in range(int(RATE * dur)):
+        t = i / RATE
+        shape = math.sin(math.pi * t / dur)
+        k = 0.02 + 0.18 * shape
+        y += k * ((rnd.random() * 2 - 1) - y)
+        out.append(vol * 4.0 * shape * y)
+    return out
+
+
 def write(name, samples):
     peak = max(1e-6, max(abs(s) for s in samples))
     scale = 0.85 / peak if peak > 0.85 else 1.0
@@ -82,6 +109,13 @@ SOUNDS = {
     "start": mix(tone(440, 0.35, 0.35, decay=6, slide=1.0), at(0.2, tone(C6, 0.35, 0.35, decay=8))),
     # Sticker bought: sparkle.
     "buy": mix(*[at(i * 0.05, tone(f, 0.3, 0.25, decay=12)) for i, f in enumerate([C6, E6, G6, C6 * 2])]),
+    # Toddler games: a balloon pop, a springy boing, a cheer for a finished round, a soft whoosh.
+    "pop": mix(noise(0.06, 0.45, 70), tone(700, 0.09, 0.35, decay=35, overtone=0.1, slide=-0.5)),
+    "boing": boing(),
+    "cheer": mix(*[at(i * 0.07, tone(f, 0.4, 0.3, decay=7)) for i, f in enumerate([C5, E5, G5, C6, E6, G6])],
+                 at(0.45, tone(C6, 0.8, 0.25, decay=3, slide=0.02)), at(0.45, tone(G6, 0.8, 0.2, decay=3)),
+                 *[at(0.5 + i * 0.06, tone(f, 0.15, 0.12, decay=20)) for i, f in enumerate([2637, 3136, 2349, 3520])]),
+    "whoosh": whoosh(),
 }
 
 if __name__ == "__main__":

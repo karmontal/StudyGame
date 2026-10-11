@@ -97,6 +97,8 @@ static func margin(child: Control, side: int = 48, top: int = 48) -> MarginConta
 
 
 static func grade_name(grade: int) -> String:
+	if grade <= 0:
+		return "ألعاب الصغار"
 	var names := {1: "الأول", 2: "الثاني", 3: "الثالث", 4: "الرابع", 5: "الخامس", 6: "السادس",
 		7: "السابع", 8: "الثامن", 9: "التاسع", 10: "العاشر", 11: "الحادي عشر", 12: "الثاني عشر"}
 	return "الصف " + names.get(grade, str(grade))

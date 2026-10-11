@@ -8,7 +8,7 @@
       <span class="avatar">{{ k.name[:1] }}</span>
       <div>
         <h2>{{ k.name }}</h2>
-        <span class="muted">الصف {{ k.grade }} · المستوى {{ k.level }} ({{ k.level_title }})</span>
+        <span class="muted">{{ grade_label(k.grade) }} · المستوى {{ k.level }} ({{ k.level_title }})</span>
       </div>
     </div>
     <dl class="stats">

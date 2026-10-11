@@ -275,10 +275,15 @@ func load_save() -> void:
 		var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
 		if typeof(parsed) == TYPE_DICTIONARY:
 			data = parsed
-	if data.get("profiles", []).is_empty():
-		var defaults = JSON.parse_string(FileAccess.get_file_as_string(DEFAULTS_PATH))
-		data["profiles"] = defaults.get("profiles", []) if typeof(defaults) == TYPE_DICTIONARY else []
-	for p in data.profiles:
+	var defaults = JSON.parse_string(FileAccess.get_file_as_string(DEFAULTS_PATH))
+	var default_profiles: Array = defaults.get("profiles", []) if typeof(defaults) == TYPE_DICTIONARY else []
+	var saved: Array = data.get("profiles", [])
+	# Saves from before a kid was added get the new kid too (matched by id).
+	var ids := saved.map(func(p): return str(p.get("id", "")))
+	for p in default_profiles:
+		if not ids.has(p.id):
+			saved.append(p)
+	for p in saved:
 		p.grade = int(p.grade)
 		profiles.append(p)
 	progress = data.get("progress", {})

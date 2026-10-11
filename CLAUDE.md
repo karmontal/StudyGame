@@ -21,3 +21,7 @@
   the phone's TTS (`Sfx.speak`). `Settings` (user://settings.cfg) holds the sound switch and dashboard address.
 - Parent dashboard: `server/` (FastAPI + SQLite, `cd server && pytest -q`). Game side is the `Sync` autoload;
   `Profiles.finish_round()` queues every round. The contract is `docs/sync_api.md`; change both sides together.
+- Toddler section (Aya, age 2): `scripts/toddler/` (hub screen "toddler", games `toddler_*`, rest screen after
+  10 min). Nothing to read, no losing/timers/coins; parents leave with a 1.5 s long press (`ToddlerHold`).
+  Shapes are drawn by `ToddlerArt`; voice goes through `ToddlerVoice.say(key)`, which plays
+  `assets/toddler/voice/<key>.ogg` when recorded, else the phone's TTS (keys in `ToddlerVoice.PHRASES`).
