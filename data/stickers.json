@@ -1,0 +1,76 @@
+{
+	"stickers": [
+		{
+			"id": "lion",
+			"name": "الأسد الخرّيج",
+			"price": 150,
+			"file": "res://assets/stickers/lion.jpg"
+		},
+		{
+			"id": "rocket",
+			"name": "الصاروخ",
+			"price": 150,
+			"file": "res://assets/stickers/rocket.jpg"
+		},
+		{
+			"id": "owl",
+			"name": "البومة القارئة",
+			"price": 200,
+			"file": "res://assets/stickers/owl.jpg"
+		},
+		{
+			"id": "turtle",
+			"name": "السلحفاة",
+			"price": 200,
+			"file": "res://assets/stickers/turtle.jpg"
+		},
+		{
+			"id": "dino",
+			"name": "الديناصور",
+			"price": 250,
+			"file": "res://assets/stickers/dino.jpg"
+		},
+		{
+			"id": "olive",
+			"name": "غصن الزيتون",
+			"price": 250,
+			"file": "res://assets/stickers/olive.jpg"
+		},
+		{
+			"id": "camel",
+			"name": "الجمل",
+			"price": 300,
+			"file": "res://assets/stickers/camel.jpg"
+		},
+		{
+			"id": "dolphin",
+			"name": "الدلفين",
+			"price": 300,
+			"file": "res://assets/stickers/dolphin.jpg"
+		},
+		{
+			"id": "falcon",
+			"name": "الصقر",
+			"price": 400,
+			"file": "res://assets/stickers/falcon.jpg"
+		},
+		{
+			"id": "flask",
+			"name": "دورق الكيمياء",
+			"price": 400,
+			"file": "res://assets/stickers/flask.jpg"
+		},
+		{
+			"id": "saturn",
+			"name": "كوكب زحل",
+			"price": 500,
+			"file": "res://assets/stickers/saturn.jpg"
+		},
+		{
+			"id": "trophy",
+			"name": "كأس الأبطال",
+			"price": 800,
+			"file": "res://assets/stickers/trophy.jpg"
+		}
+	]
+}

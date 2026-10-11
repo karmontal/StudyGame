@@ -1,0 +1,1562 @@
+{
+	"id": "g8_english",
+	"title": "English for Palestine - Grade 8",
+	"lang": "en",
+	"units": [
+		{
+			"id": "u1",
+			"title": "Phase 1: Units 1-3",
+			"lessons": [
+				{
+					"id": "l1",
+					"title": "Unit 1: Hello World!",
+					"pages": [
+						4,
+						7
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Where are Nadia's family living at the moment?",
+							"choices": [
+								"London",
+								"Jenin",
+								"Gaza",
+								"New York"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Why was Nadia's landline busy?",
+							"choices": [
+								"Mum was using it to call Grandma",
+								"Sami was using it",
+								"Dad was watching TV on it",
+								"It was broken"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Where does Nadia's grandma live?",
+							"choices": [
+								"Jenin",
+								"London",
+								"Haifa",
+								"Jericho"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What is Sami doing on the computer?",
+							"choices": [
+								"Chatting to his friends online",
+								"Doing his homework",
+								"Watching cartoons",
+								"Writing a letter"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the correct verb: Listen! Someone ___ at the door.",
+							"choices": [
+								"is knocking",
+								"knocks",
+								"knock",
+								"knocked"
+							],
+							"answer": 0,
+							"explain": "'Listen!' shows the action is happening now, so we use the present continuous."
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the correct verb: I usually ___ my friend at the weekend.",
+							"choices": [
+								"visit",
+								"am visiting",
+								"visiting",
+								"visits"
+							],
+							"answer": 0,
+							"explain": "'Usually' shows a habit, so we use the present simple."
+						},
+						{
+							"type": "mcq",
+							"q": "Which tense do we use for actions happening now, at the moment?",
+							"choices": [
+								"Present continuous",
+								"Present simple",
+								"Past simple",
+								"Present perfect"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "We use the present simple for things that happen many times, like 'They talk on the phone every week'.",
+							"answer": true
+						},
+						{
+							"type": "match",
+							"q": "Match each word with its opposite",
+							"pairs": [
+								[
+									"cheap",
+									"expensive"
+								],
+								[
+									"old",
+									"young"
+								],
+								[
+									"ancient",
+									"modern"
+								],
+								[
+									"never",
+									"always"
+								]
+							]
+						},
+						{
+							"type": "match",
+							"q": "Match the TV programme with its kind",
+							"pairs": [
+								[
+									"Tom and Jerry",
+									"cartoon"
+								],
+								[
+									"Football Special",
+									"sports programme"
+								],
+								[
+									"The World Tonight",
+									"the news"
+								],
+								[
+									"The Birds of Palestine",
+									"documentary"
+								]
+							]
+						}
+					]
+				},
+				{
+					"id": "l2",
+					"title": "Unit 2: A taste of Palestinian culture",
+					"pages": [
+						8,
+						11
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Tina said the sfeeha looks like a ___.",
+							"choices": [
+								"pizza",
+								"cake",
+								"kebab",
+								"sandwich"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What is a tablah?",
+							"choices": [
+								"A drum",
+								"A guitar",
+								"A kind of food",
+								"A dance"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which modern instrument developed from the 'oud?",
+							"choices": [
+								"The guitar",
+								"The piano",
+								"The drum",
+								"The violin"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "At what age could Mr Kamal play the 'oud quite well?",
+							"choices": [
+								"18",
+								"11",
+								"30",
+								"8"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the best verb: The kebabs ___ delicious. (with your nose)",
+							"choices": [
+								"smell",
+								"sound",
+								"seem",
+								"look"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the best verb: That drum music ___ great.",
+							"choices": [
+								"sounds",
+								"tastes",
+								"smells",
+								"looks"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "When I was four, I ___ run, but my baby sister couldn't.",
+							"choices": [
+								"could",
+								"can",
+								"can't",
+								"used"
+							],
+							"answer": 0,
+							"explain": "'When I was four' is in the past, so we use 'could'."
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the correct sentence with used to.",
+							"choices": [
+								"He used to text his friends.",
+								"He use to texting his friends.",
+								"He used to texted his friends.",
+								"He uses to text his friends."
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "Rock music developed in the 1950s.",
+							"answer": true
+						},
+						{
+							"type": "match",
+							"q": "Match the word with the person",
+							"pairs": [
+								[
+									"sing",
+									"singer"
+								],
+								[
+									"music",
+									"musician"
+								],
+								[
+									"guitar",
+									"guitarist"
+								]
+							]
+						}
+					]
+				},
+				{
+					"id": "l3",
+					"title": "Unit 3: Going to a National Park",
+					"pages": [
+						12,
+						19
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "In which country is Yosemite National Park?",
+							"choices": [
+								"America",
+								"Palestine",
+								"Britain",
+								"Spain"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How tall are some of the huge trees in Yosemite?",
+							"choices": [
+								"90 metres",
+								"9 metres",
+								"19 metres",
+								"900 metres"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "In which year did Yosemite become a National Park?",
+							"choices": [
+								"1890",
+								"1950",
+								"1711",
+								"2020"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What is the name of the volunteer group Tony Ross works for?",
+							"choices": [
+								"Young Friends of Yosemite",
+								"Yosemite Football Club",
+								"Friends of the Lake",
+								"Young Hikers of America"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What did Tony's group do last Saturday?",
+							"choices": [
+								"White water rafting",
+								"Went to the cinema",
+								"Played football",
+								"Climbed a tree"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: I haven't found my trainers ___.",
+							"choices": [
+								"yet",
+								"already",
+								"just",
+								"ever"
+							],
+							"answer": 0,
+							"explain": "We use 'yet' at the end of negative sentences and questions."
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: We have ___ eaten them!",
+							"choices": [
+								"already",
+								"yet",
+								"ever",
+								"since"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: ___ you ever been to Jenin?",
+							"choices": [
+								"Have",
+								"Did",
+								"Has",
+								"Are"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Make compound words",
+							"pairs": [
+								[
+									"water",
+									"fall"
+								],
+								[
+									"wild",
+									"life"
+								],
+								[
+									"home",
+									"work"
+								],
+								[
+									"foot",
+									"ball"
+								]
+							]
+						},
+						{
+							"type": "match",
+							"q": "Match each word from the Yosemite text with its opposite",
+							"pairs": [
+								[
+									"lowest",
+									"highest"
+								],
+								[
+									"heavy",
+									"light"
+								],
+								[
+									"dangerous",
+									"safe"
+								],
+								[
+									"stopped",
+									"started"
+								]
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "u2",
+			"title": "Phase 2: Units 4-6",
+			"lessons": [
+				{
+					"id": "l1",
+					"title": "Unit 4: How to get healthy",
+					"pages": [
+						20,
+						23
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Why did Sami go to the doctor?",
+							"choices": [
+								"He felt sick and tired for several weeks",
+								"He broke his leg",
+								"He had toothache",
+								"He wanted a new book"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What did Sami eat for lunch?",
+							"choices": [
+								"Just fries",
+								"Fruit and vegetables",
+								"Fish and rice",
+								"Nothing"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What did the doctor call fries?",
+							"choices": [
+								"Junk food",
+								"Real food",
+								"Healthy food",
+								"Fast fruit"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The doctor told Sami to read a book called:",
+							"choices": [
+								"Get fit and healthy",
+								"Eat more fries",
+								"Football Special",
+								"Sleep well"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: The team players have been training ___ a week now.",
+							"choices": [
+								"for",
+								"since",
+								"yet",
+								"already"
+							],
+							"answer": 0,
+							"explain": "We use 'for' with a period of time (a week) and 'since' with a starting point."
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: I have been learning English ___ I was young.",
+							"choices": [
+								"since",
+								"for",
+								"yet",
+								"ago"
+							],
+							"answer": 0,
+							"explain": "'I was young' is a starting point, so we use 'since'."
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the correct present perfect continuous sentence.",
+							"choices": [
+								"She has been sleeping since yesterday.",
+								"She has been sleeping for yesterday.",
+								"She have been sleeping since yesterday.",
+								"She has be sleeping since yesterday."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "I feel really ill. You'd better ___ to school today.",
+							"choices": [
+								"not go",
+								"go",
+								"not to go",
+								"going"
+							],
+							"answer": 0,
+							"explain": "After 'had better not' we use the verb without 'to'."
+						},
+						{
+							"type": "mcq",
+							"q": "In 'I'd like a drink of cold water', the word 'drink' is a:",
+							"choices": [
+								"noun",
+								"verb",
+								"adjective",
+								"adverb"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "In a list we use commas between the items and 'and' before the last one: I like apples, dates, lemons and figs.",
+							"answer": true
+						}
+					]
+				},
+				{
+					"id": "l2",
+					"title": "Unit 5: People and games",
+					"pages": [
+						24,
+						26
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "What do people in America call football?",
+							"choices": [
+								"Soccer",
+								"Basketball",
+								"Volleyball",
+								"Rugby"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Whose sports bag did Omar see?",
+							"choices": [
+								"Yasmeen's",
+								"Adnan's",
+								"Omar's",
+								"The coach's"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: That bag isn't mine. It's ___. (Yasmeen)",
+							"choices": [
+								"hers",
+								"her",
+								"his",
+								"theirs"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: Our team is much stronger than ___ team.",
+							"choices": [
+								"their",
+								"theirs",
+								"them",
+								"they"
+							],
+							"answer": 0,
+							"explain": "Before a noun (team) we use the possessive adjective 'their'."
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: Sorry, this is my bag, not ___.",
+							"choices": [
+								"yours",
+								"your",
+								"you",
+								"you're"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "A: I don't like junk food. B: My mum doesn't, ___.",
+							"choices": [
+								"either",
+								"too",
+								"also",
+								"so"
+							],
+							"answer": 0,
+							"explain": "We use 'either' after negative sentences and 'too' after positive ones."
+						},
+						{
+							"type": "mcq",
+							"q": "A: Sami always gets high grades. B: His sister does, ___.",
+							"choices": [
+								"too",
+								"either",
+								"neither",
+								"yet"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: I am very hungry; I need ___ to eat.",
+							"choices": [
+								"something",
+								"everyone",
+								"someone",
+								"everywhere"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How do we say the year 2020?",
+							"choices": [
+								"twenty twenty",
+								"two thousand twenty-twenty",
+								"twenty hundred twenty",
+								"two zero two zero"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match the possessive adjective with its pronoun",
+							"pairs": [
+								[
+									"my",
+									"mine"
+								],
+								[
+									"our",
+									"ours"
+								],
+								[
+									"their",
+									"theirs"
+								],
+								[
+									"her",
+									"hers"
+								]
+							]
+						}
+					]
+				},
+				{
+					"id": "l3",
+					"title": "Unit 6: Friends",
+					"pages": [
+						27,
+						32
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "What happened to Tina's younger brother Tim?",
+							"choices": [
+								"He fell from a tree",
+								"He lost his bike",
+								"He failed a test",
+								"He got lost in the park"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What did Tina shout at Nadia when she was upset?",
+							"choices": [
+								"Leave me alone!",
+								"Help me!",
+								"Guess what!",
+								"You're the best!"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "When people are embarrassed, they often go ___.",
+							"choices": [
+								"red",
+								"white",
+								"green",
+								"blue"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "When people are scared, they often go ___.",
+							"choices": [
+								"white",
+								"red",
+								"happy",
+								"tall"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: I will feel terrible ___ something bad happens.",
+							"choices": [
+								"if",
+								"when",
+								"which",
+								"who"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: If he is a real friend, he ___ understand.",
+							"choices": [
+								"will",
+								"would",
+								"is",
+								"did"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the adverb: Please explain it more ___.",
+							"choices": [
+								"clearly",
+								"clear",
+								"clearness",
+								"clearful"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Othman has a beautiful voice. Othman sings ___.",
+							"choices": [
+								"beautifully",
+								"beautiful",
+								"beauty",
+								"more beautiful"
+							],
+							"answer": 0,
+							"explain": "Adverbs with -ly tell us more about verbs."
+						},
+						{
+							"type": "tf",
+							"q": "In 'When I think about it later, I always feel bad', both parts use the present simple.",
+							"answer": true
+						},
+						{
+							"type": "match",
+							"q": "Match the adjective with its adverb",
+							"pairs": [
+								[
+									"complete",
+									"completely"
+								],
+								[
+									"dangerous",
+									"dangerously"
+								],
+								[
+									"immediate",
+									"immediately"
+								],
+								[
+									"recent",
+									"recently"
+								]
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "u3",
+			"title": "Phase 3: Units 7-9",
+			"lessons": [
+				{
+					"id": "l1",
+					"title": "Unit 7: Different people, different clothes",
+					"pages": [
+						33,
+						36
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "What sport is Ahmad crazy about?",
+							"choices": [
+								"Basketball",
+								"Football",
+								"Volleyball",
+								"Swimming"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What did Mrs Haifawi buy for Ahmad?",
+							"choices": [
+								"Trainers",
+								"A T-shirt",
+								"A jacket",
+								"A ball"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What shoe size does Ahmad need?",
+							"choices": [
+								"36",
+								"32",
+								"44",
+								"38"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How much were the trainers?",
+							"choices": [
+								"$99.99",
+								"$79.99",
+								"$89.99",
+								"$129"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: good, better, ___",
+							"choices": [
+								"best",
+								"goodest",
+								"most good",
+								"bestest"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: bad, ___, worst",
+							"choices": [
+								"worse",
+								"badder",
+								"more bad",
+								"worst"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: It's the most ___ bag I have ever seen.",
+							"choices": [
+								"expensive",
+								"expensiver",
+								"expensivest",
+								"more expensive"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Ahmad is taller than Omar. That means:",
+							"choices": [
+								"Omar is not as tall as Ahmad.",
+								"Omar is as tall as Ahmad.",
+								"Ahmad is not as tall as Omar.",
+								"They are both short."
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What is the adverb of 'comfortable'?",
+							"choices": [
+								"comfortably",
+								"comfortablely",
+								"comfortly",
+								"uncomfortable"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match these adjectives with their adverbs",
+							"pairs": [
+								[
+									"tidy",
+									"tidily"
+								],
+								[
+									"good",
+									"well"
+								],
+								[
+									"fast",
+									"fast"
+								],
+								[
+									"bad",
+									"badly"
+								]
+							]
+						}
+					]
+				},
+				{
+					"id": "l2",
+					"title": "Unit 8: The world of food",
+					"pages": [
+						37,
+						41
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "How much ground meat did Mrs Haifawi want?",
+							"choices": [
+								"A kilo",
+								"Two kilos",
+								"Half a kilo",
+								"A litre"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What did Mrs Haifawi want to make with the ground meat?",
+							"choices": [
+								"Kebabs",
+								"Pizza",
+								"Soup",
+								"Cake"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How much olive oil did they need to buy?",
+							"choices": [
+								"A two-litre can",
+								"A small jar",
+								"A regular tub",
+								"A large carton"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "How should they buy the olives?",
+							"choices": [
+								"In a small jar",
+								"In a large can",
+								"In a tub",
+								"In a carton"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: How ___ olives are there?",
+							"choices": [
+								"many",
+								"much",
+								"any",
+								"some"
+							],
+							"answer": 0,
+							"explain": "'Olives' is a countable noun, so we use 'how many'."
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: How ___ sugar do we still have?",
+							"choices": [
+								"much",
+								"many",
+								"some",
+								"lot"
+							],
+							"answer": 0,
+							"explain": "'Sugar' is uncountable, so we use 'how much'."
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: Are there ___ cakes left?",
+							"choices": [
+								"any",
+								"some",
+								"much",
+								"a"
+							],
+							"answer": 0,
+							"explain": "We usually use 'any' in questions and negatives, and 'some' in positive sentences."
+						},
+						{
+							"type": "mcq",
+							"q": "Which noun is uncountable?",
+							"choices": [
+								"bread",
+								"burger",
+								"apple",
+								"lemon"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "Kuwait has a hot and dry climate that is bad for olive trees.",
+							"answer": true
+						},
+						{
+							"type": "match",
+							"q": "Match the words that go together",
+							"pairs": [
+								[
+									"ground",
+									"meat"
+								],
+								[
+									"tomato",
+									"paste"
+								],
+								[
+									"olive",
+									"oil"
+								],
+								[
+									"ice",
+									"cream"
+								]
+							]
+						}
+					]
+				},
+				{
+					"id": "l3",
+					"title": "Unit 9: Back home in Palestine",
+					"pages": [
+						42,
+						49
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Where was Omar's family picnic?",
+							"choices": [
+								"Near Jericho",
+								"Near Jenin",
+								"In London",
+								"In Yosemite"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Who is the uncle with a moustache?",
+							"choices": [
+								"Uncle Nazmi",
+								"Uncle Ameer",
+								"Hazem",
+								"Ahmad"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Who took the family photo?",
+							"choices": [
+								"Ahmad",
+								"Omar",
+								"Ali",
+								"Aunt Rania"
+							],
+							"answer": 0,
+							"explain": "Ahmad is 'the one behind the camera'."
+						},
+						{
+							"type": "mcq",
+							"q": "Which boy has short, curly hair?",
+							"choices": [
+								"Sameer",
+								"Ali",
+								"Hazem",
+								"Omar"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: The Dead Sea is a salt lake ___ is 400 metres below sea level.",
+							"choices": [
+								"that",
+								"who",
+								"where",
+								"whose"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: Mr Jamal is the teacher ___ taught me English.",
+							"choices": [
+								"who",
+								"which",
+								"where",
+								"what"
+							],
+							"answer": 0,
+							"explain": "We use 'who' or 'that' for people and 'which' or 'that' for things."
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: Thousands of ___ visit Bethlehem every year. (tour)",
+							"choices": [
+								"tourists",
+								"tours",
+								"touring",
+								"tourers"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Replace the noun: Samia is good at languages. ___ speaks French well.",
+							"choices": [
+								"She",
+								"Her",
+								"Hers",
+								"It"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: There's a green apple and a red apple. Have the red ___.",
+							"choices": [
+								"one",
+								"ones",
+								"it",
+								"them"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match the activity with the person",
+							"pairs": [
+								[
+									"farm",
+									"farmer"
+								],
+								[
+									"science",
+									"scientist"
+								],
+								[
+									"travel",
+									"traveller"
+								],
+								[
+									"art",
+									"artist"
+								]
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "u4",
+			"title": "Phase 4: Units 10-12",
+			"lessons": [
+				{
+					"id": "l1",
+					"title": "Unit 10: A Palestinian wedding",
+					"pages": [
+						50,
+						53
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "What is the Sahra?",
+							"choices": [
+								"A party before the wedding day",
+								"The wedding cake",
+								"The bride's dress",
+								"The end of the wedding"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "In the Zaffa, how does the groom ride round town?",
+							"choices": [
+								"On a horse",
+								"In a car",
+								"On a bike",
+								"On a bus"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What traditional dance do the men dance?",
+							"choices": [
+								"Dabka",
+								"Rock",
+								"Ballet",
+								"Zaffa"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What did Tina say when she didn't want another cake?",
+							"choices": [
+								"No, thanks. I'm full!",
+								"Yes, please!",
+								"I'd love another one!",
+								"Come on, say yes!"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: Would you ___ a cup of coffee?",
+							"choices": [
+								"like",
+								"prefer to",
+								"love to",
+								"liking"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Complete: Thanks, but I'd ___ to play computer games.",
+							"choices": [
+								"prefer",
+								"like have",
+								"loves",
+								"preferring"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What is the plural of 'half'?",
+							"choices": [
+								"halves",
+								"halfs",
+								"halfes",
+								"half"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What is the plural of 'monkey'?",
+							"choices": [
+								"monkeys",
+								"monkies",
+								"monkeyes",
+								"monkey"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Choose the correct punctuation.",
+							"choices": [
+								"Tala is the girl with long, yellow hair.",
+								"Tala is the girl, with long yellow hair",
+								"Tala, is the girl with long yellow, hair.",
+								"Tala is the girl with long yellow hair,"
+							],
+							"answer": 0
+						},
+						{
+							"type": "match",
+							"q": "Match the singular with its plural",
+							"pairs": [
+								[
+									"knife",
+									"knives"
+								],
+								[
+									"box",
+									"boxes"
+								],
+								[
+									"child",
+									"children"
+								],
+								[
+									"country",
+									"countries"
+								]
+							]
+						}
+					]
+				},
+				{
+					"id": "l2",
+					"title": "Unit 11: Finding out about names",
+					"pages": [
+						54,
+						59
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "Who is Rose Hill?",
+							"choices": [
+								"Yasmeen's new school counsellor",
+								"Yasmeen's teacher",
+								"Yasmeen's aunt",
+								"A doctor"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What does the name Yasmeen mean?",
+							"choices": [
+								"The name of a flower",
+								"Light",
+								"A bird",
+								"A city"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The family name Romano shows the family was once from:",
+							"choices": [
+								"Rome",
+								"Haifa",
+								"Paris",
+								"Germany"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The name Haifawi means the family was from:",
+							"choices": [
+								"Haifa",
+								"Hebron",
+								"Jenin",
+								"Gaza"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The German name Schumacher means:",
+							"choices": [
+								"shoe maker",
+								"farmer",
+								"fisher",
+								"John's son"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What does the name Lucy mean?",
+							"choices": [
+								"light",
+								"flower",
+								"rose",
+								"son"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Report: 'I need to check your details.' The counsellor says ___.",
+							"choices": [
+								"she needs to check my details",
+								"I need to check your details",
+								"she need check my details",
+								"she needed checking my details"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Report the question: 'What does my name mean?' He asks ___.",
+							"choices": [
+								"what his name means",
+								"what does his name mean",
+								"what his name mean?",
+								"what does my name mean"
+							],
+							"answer": 0,
+							"explain": "In reported questions the word order is like a statement: subject + verb."
+						},
+						{
+							"type": "tf",
+							"q": "When we report, 'I' usually changes to 'he' or 'she'.",
+							"answer": true
+						},
+						{
+							"type": "mcq",
+							"q": "How does the formal letter from Sally Green end?",
+							"choices": [
+								"Yours truly",
+								"Love",
+								"See you soon",
+								"Bye"
+							],
+							"answer": 0
+						}
+					]
+				},
+				{
+					"id": "l3",
+					"title": "Unit 12: When Islam came to Spain",
+					"pages": [
+						60,
+						66
+					],
+					"questions": [
+						{
+							"type": "mcq",
+							"q": "In which year did the Muslims arrive in Spain?",
+							"choices": [
+								"711",
+								"1890",
+								"800",
+								"1711"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "For about how long did the Muslims stay in Spain?",
+							"choices": [
+								"Almost 800 years",
+								"About 80 years",
+								"Six years",
+								"About 200 years"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "What did the Muslims call the land of Spain?",
+							"choices": [
+								"Al-Andalus",
+								"Baghdad",
+								"Alhambra",
+								"Granada"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Which city became the Muslims' capital in Spain?",
+							"choices": [
+								"Cordoba",
+								"Granada",
+								"Baghdad",
+								"Rome"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Who worked out many new medical operations?",
+							"choices": [
+								"Al-Zahrawi",
+								"Al-Khatib",
+								"Tariq Ibn Ziyad",
+								"Musa Ibn Nusayr"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "Who sailed over from North Africa with 7,000 men in 711?",
+							"choices": [
+								"Tariq Ibn Ziyad",
+								"Musa Ibn Nusayr",
+								"Al-Zahrawi",
+								"Al-Khatib"
+							],
+							"answer": 0
+						},
+						{
+							"type": "mcq",
+							"q": "The Alhambra Palace is in:",
+							"choices": [
+								"Granada",
+								"Cordoba",
+								"Baghdad",
+								"Jerusalem"
+							],
+							"answer": 0
+						},
+						{
+							"type": "tf",
+							"q": "Al-Khatib and Al-Zahrawi were famous for new ideas in architecture.",
+							"answer": false,
+							"explain": "They were famous in medicine: Al-Khatib found how diseases pass on, and Al-Zahrawi worked out medical operations."
+						},
+						{
+							"type": "mcq",
+							"q": "What does 'look up' mean in 'I'll look up the date in my book'?",
+							"choices": [
+								"Find information in a book",
+								"Look at the sky",
+								"Stand up",
+								"Turn off"
+							],
+							"answer": 0
+						},
+						{
+							"type": "order",
+							"q": "Put the events of Islamic Spain in order",
+							"items": [
+								"Tariq Ibn Ziyad arrived with 7,000 men (711)",
+								"Musa Ibn Nusayr brought 18,000 more (712)",
+								"Most of the south was in Muslim hands (715)",
+								"Cordoba was chosen as the capital (717)"
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}

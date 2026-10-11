@@ -1,0 +1,8 @@
+{
+	"profiles": [
+		{"id": "lamees", "name": "لميس", "grade": 10, "color": "#8E44AD"},
+		{"id": "mufeed", "name": "مفيد", "grade": 8, "color": "#2980B9"},
+		{"id": "lujain", "name": "لجين", "grade": 5, "color": "#E67E22"},
+		{"id": "nada", "name": "ندى", "grade": 3, "color": "#E84393"}
+	]
+}

@@ -1,0 +1,55 @@
+# Runs the parent dashboard in its own container, network and volume, so it can share a VPS with
+# other services without touching them. Port, memory and CPU are capped; see README.md.
+name: studygame
+
+services:
+  studygame:
+    build: .
+    container_name: studygame-dashboard
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      STUDYGAME_DB: /app/data/studygame.db
+      STUDYGAME_CONTENT: /content
+    volumes:
+      - studygame-db:/app/data
+      - ../data:/content:ro          # the game's curriculum (books, subjects, stickers)
+    ports:
+      # Only this machine can reach it; the HTTPS proxy forwards to it. Change STUDYGAME_PORT in .env
+      # if another service already uses 8090.
+      - "127.0.0.1:${STUDYGAME_PORT:-8090}:8000"
+    mem_limit: 256m
+    cpus: 0.5
+    pids_limit: 100
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Optional HTTPS in a container, only for a VPS where nothing else uses ports 80/443:
+  #   docker compose --profile https up -d
+  # If the VPS already has nginx/Caddy/Traefik, skip this and add a site to that proxy (README.md).
+  caddy:
+    image: caddy:2.8-alpine
+    profiles: [https]
+    restart: unless-stopped
+    command: caddy reverse-proxy --from ${STUDYGAME_DOMAIN:-localhost} --to studygame:8000
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy-data:/data
+    mem_limit: 128m
+    depends_on:
+      - studygame
+
+volumes:
+  studygame-db:
+  caddy-data:

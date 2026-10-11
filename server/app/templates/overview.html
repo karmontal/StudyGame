@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>الأولاد</h1>
+<div class="grid">
+{% for k in cards %}
+  <a class="card kid" href="/kid/{{ k.id }}" style="--kid: {{ k.color or '#4a6cf7' }}">
+    <div class="kid-head">
+      <span class="avatar">{{ k.name[:1] }}</span>
+      <div>
+        <h2>{{ k.name }}</h2>
+        <span class="muted">الصف {{ k.grade }} · المستوى {{ k.level }} ({{ k.level_title }})</span>
+      </div>
+    </div>
+    <dl class="stats">
+      <div><dt>العملات</dt><dd>{{ k.coins }}</dd></div>
+      <div><dt>أيام متتالية</dt><dd>{{ k.streak }}</dd></div>
+      <div><dt>دروس هالأسبوع</dt><dd>{{ k.week_lessons }}</dd></div>
+      <div><dt>الدقة</dt><dd>{{ k.accuracy ~ '%' if k.accuracy is not none else '—' }}</dd></div>
+    </dl>
+    <div class="kid-foot">
+      <span>آخر نشاط: {{ k.last | ago }}</span>
+      {% if k.open %}<span class="pill open">{{ k.open }} اختبار مفتوح</span>{% endif %}
+      {% if k.to_give %}<span class="pill done">{{ k.to_give }} جائزة مستحقة</span>{% endif %}
+    </div>
+  </a>
+{% endfor %}
+</div>
+{% if not cards %}<p class="muted">لا يوجد أولاد بعد. شغّل اللعبة وفعّل المزامنة من إعدادات الأهل.</p>{% endif %}
+{% endblock %}

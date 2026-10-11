@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% from "macros.html" import stars, status %}
+{% block title %}{{ kid.name }}{% endblock %}
+{% block body %}
+<div class="page-head" style="--kid: {{ kid.color or '#4a6cf7' }}">
+  <span class="avatar big">{{ kid.name[:1] }}</span>
+  <div>
+    <h1>{{ kid.name }}</h1>
+    <span class="muted">الصف {{ kid.grade }} · المستوى {{ card.level }} ({{ card.level_title }})
+      {% if card.synced %} · آخر مزامنة {{ card.synced | fmt_time }}{% endif %}</span>
+  </div>
+</div>
+<div class="actions">
+  <a class="btn" href="/assignments/new?kid={{ kid.id }}">اختبار جديد</a>
+  <a class="btn ghost" href="/kid/{{ kid.id }}/week">تقرير الأسبوع</a>
+</div>
+
+<dl class="stats card">
+  <div><dt>العملات</dt><dd>{{ card.coins }}</dd></div>
+  <div><dt>أيام متتالية</dt><dd>{{ card.streak }}</dd></div>
+  <div><dt>إجابات صحيحة</dt><dd>{{ summary.get('correct', 0) }} من {{ summary.get('answered', 0) }}</dd></div>
+  <div><dt>الدقة</dt><dd>{{ card.accuracy ~ '%' if card.accuracy is not none else '—' }}</dd></div>
+</dl>
+
+{% if assignments %}
+<section>
+  <h2>الاختبارات</h2>
+  <ul class="list card">
+  {% for a in assignments %}
+    <li><div><strong>{{ a.title }}</strong><br><span class="muted">{{ a.lessons | join('، ') }}</span></div>
+      <div class="end">{{ status(a) }}{% if a.best_stars %} {{ stars(a.best_stars) }}{% endif %}</div></li>
+  {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<section>
+  <h2>الدروس</h2>
+  {% for s in subjects %}
+  <details class="card subject" style="--subj: {{ s.color }}">
+    <summary><span class="dot"></span>{{ s.name }} <span class="muted">{{ s.done }} من {{ s.total }} درس</span></summary>
+    {% for u in s.units %}
+      <h3>{{ u.title }}</h3>
+      <ul class="lessons">
+      {% for l in u.lessons %}
+        <li class="{{ 'played' if l.rounds or l.stars else '' }}">
+          <span>{{ l.title }}</span>
+          <span class="end">{{ stars(l.stars) }}<small class="muted">{{ l.last | ago if l.last else '' }}</small></span>
+        </li>
+      {% endfor %}
+      </ul>
+    {% endfor %}
+  </details>
+  {% endfor %}
+</section>
+
+<section>
+  <h2>آخر النشاطات</h2>
+  {% if events %}
+  <ul class="list card">
+  {% for e in events %}
+    <li><div><strong>{{ e.display_title or e.kind_name }}</strong><br>
+      <span class="muted">{{ e.kind_name }} · {{ e.at | fmt_time }}</span></div>
+      <div class="end">{{ stars(e.stars) }}<small>{{ e.correct }}/{{ e.total }}</small></div></li>
+  {% endfor %}
+  </ul>
+  {% else %}<p class="muted">لا يوجد نشاط بعد.</p>{% endif %}
+</section>
+
+<section>
+  <h2>أكثر الأسئلة خطأً</h2>
+  {% if wrong %}
+  <ol class="list card wrong">
+  {% for w in wrong %}
+    <li><div><strong>{{ w.text }}</strong>
+      {% if w.answer %}<br><span class="answer">الإجابة: {{ w.answer }}</span>{% endif %}
+      {% if w.lesson %}<br><span class="muted">{{ w.lesson }}</span>{% endif %}</div>
+      <div class="end"><span class="pill">{% if w.count == 1 %}مرة{% elif w.count == 2 %}مرتين{% else %}{{ w.count }} مرات{% endif %}</span></div></li>
+  {% endfor %}
+  </ol>
+  {% else %}<p class="muted">ما في أخطاء مسجّلة.</p>{% endif %}
+</section>
+
+<section class="two">
+  <div>
+    <h2>الأوسمة</h2>
+    <div class="chips">{% for b in badges %}<span class="chip">{{ b }}</span>{% else %}<span class="muted">لا يوجد بعد</span>{% endfor %}</div>
+  </div>
+  <div>
+    <h2>الملصقات</h2>
+    <div class="chips">{% for x in stickers %}<span class="chip">{{ x }}</span>{% else %}<span class="muted">لا يوجد بعد</span>{% endfor %}</div>
+  </div>
+</section>
+{% endblock %}

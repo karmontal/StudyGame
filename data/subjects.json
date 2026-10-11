@@ -1,0 +1,9 @@
+{
+	"arabic": {"name": "اللغة العربية", "color": "#E2725B", "icon": "ض"},
+	"english": {"name": "English", "color": "#4A90D9", "icon": "Aa"},
+	"math": {"name": "الرياضيات", "color": "#F5A623", "icon": "١٢٣"},
+	"science": {"name": "العلوم والحياة", "color": "#4CAF50", "icon": "ع"},
+	"biology": {"name": "العلوم الحياتية", "color": "#2E9E6B", "icon": "ح"},
+	"physics": {"name": "الفيزياء", "color": "#7E57C2", "icon": "ف"},
+	"chemistry": {"name": "الكيمياء", "color": "#00A3A3", "icon": "ك"}
+}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}اختبار جديد{% endblock %}
+{% block body %}
+<h1>اختبار جديد</h1>
+{% if error %}<p class="error">{% if error == 'lessons' %}اختر درساً واحداً على الأقل.{% elif error == 'numbers' %}عدد الأسئلة 5 إلى 20 والنجوم 1 إلى 3.{% else %}اختر الولد والكتاب.{% endif %}</p>{% endif %}
+
+<form method="get" action="/assignments/new" class="card step">
+  <label for="kid">1. لمين الاختبار؟</label>
+  <select id="kid" name="kid" onchange="this.form.submit()">
+    <option value="">اختر...</option>
+    {% for k in kids %}<option value="{{ k.id }}" {{ 'selected' if kid and kid.id == k.id }}>{{ k.name }} (الصف {{ k.grade }})</option>{% endfor %}
+  </select>
+  {% if kid %}
+  <label for="book">2. المادة</label>
+  <select id="book" name="book" onchange="this.form.submit()">
+    <option value="">اختر...</option>
+    {% for b in books %}<option value="{{ b.id }}" {{ 'selected' if book and book.id == b.id }}>{{ b.name }}</option>{% endfor %}
+  </select>
+  {% endif %}
+  <noscript><button class="btn ghost">التالي</button></noscript>
+</form>
+
+{% if kid and book %}
+<form method="post" action="/assignments" class="card step">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <input type="hidden" name="kid" value="{{ kid.id }}">
+  <input type="hidden" name="book" value="{{ book.id }}">
+  <p class="label">3. الدروس</p>
+  {% for u in book.units %}
+  <fieldset class="unit">
+    <legend><label><input type="checkbox" class="unit-all"> {{ u.title }}</label></legend>
+    {% for l in u.lessons %}
+    <label class="check"><input type="checkbox" name="lessons" value="{{ book.id }}/{{ u.id }}/{{ l.id }}"> {{ l.title }}</label>
+    {% endfor %}
+  </fieldset>
+  {% endfor %}
+  <label for="title">4. اسم الاختبار</label>
+  <input id="title" name="title" maxlength="80" placeholder="مثلاً: اختبار النباتات">
+  <label for="note">رسالة للولد (تظهر في اللعبة)</label>
+  <textarea id="note" name="note" maxlength="300" rows="2" placeholder="إذا جبت 3 نجوم بنروح على الملاهي"></textarea>
+  <label for="reward">الجائزة</label>
+  <input id="reward" name="reward" maxlength="120" placeholder="مثلاً: رحلة للملاهي">
+  <div class="two">
+    <div><label for="min_stars">أقل عدد نجوم للنجاح</label>
+      <select id="min_stars" name="min_stars"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option></select></div>
+    <div><label for="count">عدد الأسئلة</label>
+      <input id="count" name="count" type="number" min="5" max="20" value="10" required></div>
+  </div>
+  <button class="btn">حفظ الاختبار</button>
+</form>
+<script>
+document.querySelectorAll('.unit-all').forEach(function (box) {
+  box.addEventListener('change', function () {
+    box.closest('fieldset').querySelectorAll('input[name=lessons]').forEach(function (c) { c.checked = box.checked; });
+  });
+});
+</script>
+{% endif %}
+{% endblock %}
