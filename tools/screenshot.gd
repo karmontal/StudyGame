@@ -1,7 +1,10 @@
 extends Node
 ## Renders a screen and saves a PNG (needs a display or xvfb, not --headless). Example:
 ##   xvfb-run -s "-screen 0 1080x1920x24" godot --path . --rendering-driver opengl3 res://tools/screenshot.tscn -- quiz out.png nada g3_science
-## Screens: profiles, books, map, quiz, feedback, result, speed, speed_end, badges, album.
+## Screens: profiles, books, map, quiz, feedback, result, speed, speed_end, badges, album,
+## toddler, toddler_color, toddler_color_filled, toddler_draw, toddler_sort, toddler_sort_round3,
+## toddler_shapes, toddler_shapes_stage5, toddler_puzzle, toddler_puzzle4, toddler_animals,
+## toddler_balloons, toddler_rest.
 ## Optional: profile id, book id.
 
 func _ready() -> void:
@@ -17,6 +20,11 @@ func _ready() -> void:
 	var main: Node = load("res://scenes/main.tscn").instantiate()
 	add_child(main)
 	await _frames(5)
+	if which.begins_with("toddler"):
+		await _toddler(main, which)
+		await _frames(60)
+		_save(out)
+		return
 	var data := Content.book(book_id)
 	var u: Dictionary = data.units[0]
 	var l: Dictionary = u.lessons[0]
@@ -55,11 +63,68 @@ func _ready() -> void:
 		"profiles", "badges", "album":
 			main.goto(which)
 	await _frames(60)
+	_save(out)
+
+
+func _save(out: String) -> void:
 	var img := get_viewport().get_texture().get_image()
 	img.save_png(out)
 	print("saved ", out, " ", img.get_size())
 	Profiles.delete_save()
 	get_tree().quit()
+
+
+## The toddler screens, with a little play already done so the picture shows something.
+func _toddler(main: Node, which: String) -> void:
+	ToddlerScreen.play_seconds = 0.0
+	match which:
+		"toddler_color_filled":
+			main.goto("toddler_color")
+			await _frames(3)
+			var s = main.screen
+			s.change_picture(1)  # apple
+			s.change_picture(1)  # fish
+			var ids := ["orange", "red", "blue", "yellow", "pink", "green"]
+			for i in ids.size():
+				s.pick(ids[i])
+				s.canvas.send_tap(s.region_point(i))
+			s.pick("blue")
+		"toddler_draw":
+			main.goto("toddler_color")
+			await _frames(3)
+			var s = main.screen
+			s.set_drawing(true)
+			var ids := ["red", "blue", "green", "yellow"]
+			for k in ids.size():
+				s.pick(ids[k])
+				var pts := []
+				for i in 24:
+					pts.append(Vector2(120 + i * 28, 180 + k * 170 + sin(i * 0.5 + k) * 70))
+				s.canvas._send(pts[0], true, false)
+				for i in range(1, pts.size()):
+					var m := InputEventMouseMotion.new()
+					m.position = pts[i]
+					s.canvas._gui_input(m)
+				s.canvas._send(pts[-1], false, false)
+		"toddler_sort_round3":
+			main.goto("toddler_sort")
+			await _frames(3)
+			main.screen.round_number = 4
+			main.screen.new_round()
+			var s = main.screen
+			var b: Dictionary = s.balls[0]
+			var target: Rect2 = s.baskets[s.basket_index(b.color_id)].rect
+			s.board.send_drag(b.pos, target.get_center() - Vector2(0, 60))
+		"toddler_shapes_stage5", "toddler_puzzle", "toddler_puzzle4":
+			main.goto("toddler_shapes")
+			await _frames(3)
+			main.screen.start_stage({"toddler_shapes_stage5": 4, "toddler_puzzle": 1, "toddler_puzzle4": 5}[which])
+			var s = main.screen
+			var pc: Dictionary = s.pieces[0]
+			s.board.send_drag(pc.pos + Vector2(20, 20), s.snap_point(pc) + Vector2(20, 20))
+		_:
+			main.goto(which)
+	await _frames(3)
 
 
 func _frames(n: int) -> void:
