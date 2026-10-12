@@ -56,6 +56,8 @@ class SyncRequest(BaseModel):
     profiles: Annotated[list[Profile], Field(max_length=20)] = []
     events: Annotated[list[Event], Field(max_length=MAX_EVENTS)] = []
     summary: Annotated[dict[Id, dict[str, Any]], Field(max_length=20)] = {}
+    # Ids of parent adjustments this phone has applied since its last sync ("j<rowid>").
+    applied: Annotated[list[Id], Field(max_length=500)] = []
 
 
 def make_router(settings) -> APIRouter:
@@ -91,8 +93,10 @@ def make_router(settings) -> APIRouter:
         def work():
             with db.connect(settings.db_path) as conn:
                 db.apply_sync(conn, req)
-                return db.pending_assignments(conn)
+                # Only kids who played on this phone can have their coins or lessons changed here.
+                return db.pending_assignments(conn), db.adjustments_for_device(conn, req.device, list(req.summary))
 
-        return {"ok": True, "assignments": await run_in_threadpool(work)}
+        assignments, adjustments = await run_in_threadpool(work)
+        return {"ok": True, "assignments": assignments, "adjustments": adjustments}
 
     return router

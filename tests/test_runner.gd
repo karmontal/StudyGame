@@ -29,6 +29,7 @@ func _ready() -> void:
 	await _test_challenges_ui()
 	await _test_sound()
 	await _test_sync_and_tasks()
+	_test_adjustments()
 	await _test_toddler()
 	await _test_family()
 	Profiles.delete_save()
@@ -261,10 +262,56 @@ func _test_reward_rules() -> void:
 	eq(Rewards.level_for(0), 1, "level 1 at 0 xp")
 	eq(Rewards.level_for(Rewards.XP_PER_LEVEL - 1), 1, "still level 1 just below the threshold")
 	eq(Rewards.level_for(Rewards.XP_PER_LEVEL), 2, "level 2 at the threshold")
+	eq(Rewards.level_for(2699), 9, "level 9 just below 2700 xp")
+	eq(Rewards.level_for(2700), 10, "level 10 at 2700 xp (same as before)")
+	eq(Rewards.level_for(3149), 10, "level 10 still just below 3150")
+	eq(Rewards.level_for(3150), 11, "level 11 needs 450 xp more: the top levels get harder")
+	eq(Rewards.xp_to_next(0), 300, "first level needs 300 xp")
+	check(Rewards.level_progress(150) > 0.4 and Rewards.level_progress(150) < 0.6, "progress is half-way at 150 xp")
+	eq(Rewards.level_title(12), "ملك العلم", "the last title is the top one")
 	eq(Rewards.streak_bonus(2), 20, "streak bonus grows per day")
 	eq(Rewards.streak_bonus(30), Rewards.STREAK_BONUS_MAX, "streak bonus is capped")
 	for b in Rewards.BADGES:
 		check(Rewards.badge(b.id).name != "", "badge %s has a name" % b.id)
+
+
+## The parent's decisions: coins and xp taken away (never below 0), lessons, badges and stickers removed.
+func _test_adjustments() -> void:
+	Profiles.delete_save()
+	Sync.reset()
+	var p := Profiles.info("nada")
+	p.coins = 100
+	p.xp = 250
+	p.stars["g3_science/u1/l2"] = 3
+	p.badges["perfect"] = true
+	p.stickers["lion"] = true
+	Profiles.save()
+	var deduct := {"id": "j1", "profile": "nada", "kind": "coins", "amount": 30}
+	var cancel_lesson := {"id": "j2", "profile": "nada", "kind": "lesson", "target": "g3_science/u1/l2"}
+	var cancel_badge := {"id": "j3", "profile": "nada", "kind": "badge", "target": "perfect"}
+	var cancel_sticker := {"id": "j4", "profile": "nada", "kind": "sticker", "target": "lion"}
+	Sync.apply_response({"ok": true, "assignments": [], "adjustments": [deduct, cancel_lesson, cancel_badge, cancel_sticker]}, [])
+	p = Profiles.info("nada")
+	eq([p.coins, p.xp], [70, 220], "coins and xp go down by the amount")
+	check(not p.stars.has("g3_science/u1/l2"), "cancelled lesson loses its stars")
+	check(not p.badges.has("perfect") and p.badges_revoked.has("perfect"), "cancelled badge is gone for good")
+	check(not p.stickers.has("lion"), "cancelled sticker is gone")
+	eq(Sync.adjust_done, ["j1", "j2", "j3", "j4"], "applied ids are kept until the server acknowledges them")
+	# The server still lists them (ack not received yet): nothing is applied twice.
+	Sync.apply_response({"ok": true, "assignments": [], "adjustments": [deduct]}, [])
+	eq(Profiles.info("nada").coins, 70, "an adjustment is applied only once")
+	# The server no longer lists them: it has them, so the phone forgets them.
+	Sync.apply_response({"ok": true, "assignments": [], "adjustments": []}, [])
+	eq(Sync.adjust_done, [], "acknowledged adjustments are forgotten")
+	Sync.apply_response({"ok": true, "assignments": [], "adjustments": [{"id": "j9", "profile": "nada",
+		"kind": "coins", "amount": 9999}]}, [])
+	eq([Profiles.info("nada").coins, Profiles.info("nada").xp], [0, 0], "a deduction never goes below zero")
+	check(not Rewards.earned_badges({"badges": {}, "badges_revoked": {"perfect": true}, "rounds": 0},
+		{"perfect": true}).has("perfect"), "a cancelled badge is not earned again")
+	check(Rewards.earned_badges({"badges": {}, "rounds": 0}, {"family_goal": true}).has("family_goal"),
+		"family goal badge when the family reached the weekly goal")
+	Profiles.delete_save()
+	Sync.reset()
 
 
 func _test_finish_round() -> void:

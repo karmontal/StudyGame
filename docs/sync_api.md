@@ -24,7 +24,8 @@ Request body (JSON):
     "nada": {"coins": 320, "xp": 900, "level": 4, "streak": 3, "speed_best": 12,
              "badges": ["first_round", "perfect"], "stickers": ["lion"],
              "stars": {"g3_science/u1/l2": 3}, "answered": 40, "correct": 33}
-  }
+  },
+  "applied": ["j3", "j4"]
 }
 ```
 
@@ -39,8 +40,11 @@ Request body (JSON):
   kid's devices: coins, xp, answered and correct are summed; stars per lesson, streak and speed_best take
   the highest; badges and stickers are joined; the level is recomputed from the summed xp.
 - `at` is the phone's local time, `YYYY-MM-DDTHH:MM:SS`.
+- `applied` lists the adjustment ids (see below) this phone has applied and has not yet seen acknowledged.
+  The server stores them as acknowledged for this device; it is safe to send an id again.
 
-Response (JSON), always the full list of open and recently finished assignments:
+Response (JSON), always the full list of open and recently finished assignments, and the parent's
+adjustments this phone still has to apply:
 
 ```json
 {"ok": true, "assignments": [
@@ -48,8 +52,23 @@ Response (JSON), always the full list of open and recently finished assignments:
    "reward": "رحلة للملاهي", "lesson_keys": ["g3_science/u1/l1", "g3_science/u1/l2"],
    "count": 10, "min_stars": 2, "created_at": "2026-10-11T09:00:00",
    "done_at": null, "best_stars": 0}
+], "adjustments": [
+  {"id": "j3", "profile": "nada", "kind": "coins", "target": "", "amount": 30, "reason": "", "created_at": "2026-10-12T21:50:00"},
+  {"id": "j4", "profile": "nada", "kind": "lesson", "target": "g3_science/u1/l2", "amount": 0, "reason": "", "created_at": "2026-10-12T21:51:00"}
 ]}
 ```
+
+Adjustments are made by the parent on the dashboard (never by the game):
+
+- `coins`: take `amount` coins **and** the same amount of xp away, never below 0. Only one phone gets it: the
+  first phone that syncs a summary for that kid.
+- `lesson`: remove the stars of `target` (a lesson key). Every phone that has the kid gets it.
+- `badge`: take the badge `target` away for good (it is not earned again). Every phone that has the kid gets it.
+- `sticker`: take the sticker `target` away. Every phone that has the kid gets it.
+
+The phone applies each id once. It remembers the ids it applied and sends them back in `applied`; once the
+server stops listing an id, the phone forgets it. Daily and speed challenges are not cancelled: they are
+bound to one day.
 
 An assignment is done when an event with `kind == "assignment"`, `assignment == id` and
 `stars >= min_stars` arrives; the server stores `done_at` and `best_stars` (best stars over all tries).

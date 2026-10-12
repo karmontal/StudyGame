@@ -7,6 +7,7 @@ func build() -> void:
 	add_child(Backdrop.make(Color(p.color), 460))
 	var content := page("أهلاً %s!" % p.name, Color(p.color))
 	content.add_child(_status_card(p))
+	content.add_child(_family_goal())
 	var tasks := Sync.assignments_for(p.id)
 	if not tasks.is_empty():
 		content.add_child(_tasks(tasks, Color(p.color)))
@@ -113,7 +114,29 @@ func _status_card(p: Dictionary) -> PanelContainer:
 	bar.add_theme_stylebox_override("background", UI.box(Color("#EEE8DA"), 13))
 	bar.add_theme_stylebox_override("fill", UI.box(Color(p.color), 13))
 	side.add_child(bar)
-	side.add_child(UI.label("باقي %d نقطة للمستوى %d" % [Rewards.XP_PER_LEVEL - xp % Rewards.XP_PER_LEVEL, level + 1], 28, UI.MUTED))
+	side.add_child(UI.label("باقي %d نقطة للمستوى %d" % [Rewards.xp_to_next(xp), level + 1], 28, UI.MUTED))
+	return card
+
+
+## What the whole family earned together this week: everyone plays for the same goal.
+func _family_goal() -> PanelContainer:
+	var total := Profiles.family_week_coins()
+	var goal := Rewards.FAMILY_WEEK_GOAL
+	var card := UI.card(Color("#E8F8F5"))
+	card.name = "FamilyGoal"
+	var v := UI.vbox(10)
+	card.add_child(v)
+	var reached := total >= goal
+	v.add_child(UI.label("وصلتو هدف العيلة!" if reached else "هدف العيلة هالأسبوع", 40, Color("#117864")))
+	var bar := ProgressBar.new()
+	bar.show_percentage = false
+	bar.custom_minimum_size.y = 26
+	bar.max_value = 1.0
+	bar.value = minf(1.0, float(total) / goal)
+	bar.add_theme_stylebox_override("background", UI.box(Color("#D1F2EB"), 13))
+	bar.add_theme_stylebox_override("fill", UI.box(Color("#16A085"), 13))
+	v.add_child(bar)
+	v.add_child(UI.label("%d من %d عملة · كل واحد يساعد" % [total, goal], 28, UI.MUTED))
 	return card
 
 

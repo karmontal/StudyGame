@@ -3,7 +3,7 @@ import json
 from collections import Counter
 from datetime import datetime, timedelta
 
-from .content import BADGES, level_title
+from .content import BADGES, level_for, level_title
 
 WEEKDAYS = ["الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد"]
 KIND_NAMES = {"lesson": "درس", "unit": "اختبار وحدة", "review": "مراجعة", "daily": "تحدي اليوم",
@@ -30,9 +30,6 @@ def profile(conn, pid: str):
     return dict(row) if row else None
 
 
-XP_PER_LEVEL = 300  # same as Rewards.XP_PER_LEVEL in the game
-
-
 def merge_summaries(parts: list) -> dict:
     """One kid's state from several devices. Each device's save only counts play on that device, so
     totals add up; best stars, best speed and streak take the highest; badges and stickers join."""
@@ -48,7 +45,7 @@ def merge_summaries(parts: list) -> dict:
             out[k] += [x for x in d.get(k, []) or [] if x not in out[k]]
         for key, n in (d.get("stars", {}) or {}).items():
             out["stars"][key] = max(int(out["stars"].get(key, 0)), int(n))
-    out["level"] = out["xp"] // XP_PER_LEVEL + 1
+    out["level"] = level_for(out["xp"])
     out["devices"] = len(parts)
     return out
 
@@ -197,3 +194,37 @@ def assignments(conn, content, pid=None) -> list:
         a["status"] = "given" if a["reward_given_at"] else ("done" if a["done_at"] else "open")
         out.append(a)
     return out
+
+
+ADJUST_NAMES = {"coins": "خصم عملات", "lesson": "إلغاء درس", "badge": "إلغاء وسام", "sticker": "إلغاء ملصق"}
+
+
+def adjustments(conn, pid: str) -> list:
+    """The parent's decisions for one kid, newest first, with whether a phone has applied them yet."""
+    rows = conn.execute("SELECT a.*, (SELECT COUNT(*) FROM adjustment_acks k WHERE k.adjustment_id = a.id) AS acks "
+                        "FROM adjustments a WHERE a.profile=? ORDER BY a.id DESC LIMIT 30", (pid,)).fetchall()
+    out = []
+    for r in rows:
+        a = dict(r)
+        a["name"] = ADJUST_NAMES.get(a["kind"], a["kind"])
+        a["what"] = ("-%d عملة" % a["amount"]) if a["kind"] == "coins" else a["target"]
+        a["applied"] = a["acks"] > 0
+        out.append(a)
+    return out
+
+
+def lesson_choices(content, s: dict) -> list:
+    """Lessons with stars on the kid's phones, for the cancel-a-lesson picker."""
+    out = []
+    for key, n in (s.get("stars", {}) or {}).items():
+        if int(n) > 0 and content.find_lesson(key):
+            out.append({"key": key, "title": content.lesson_title(key), "stars": int(n)})
+    return sorted(out, key=lambda x: x["title"])
+
+
+def badge_choices(s: dict) -> list:
+    return [{"id": b, "name": BADGES.get(b, b)} for b in s.get("badges", []) or []]
+
+
+def sticker_choices(content, s: dict) -> list:
+    return [{"id": x, "name": content.stickers.get(x, x)} for x in s.get("stickers", []) or []]

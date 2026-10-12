@@ -29,6 +29,17 @@ CREATE TABLE IF NOT EXISTS assignments (
     count INTEGER NOT NULL, min_stars INTEGER NOT NULL, created_at TEXT NOT NULL,
     done_at TEXT, best_stars INTEGER NOT NULL DEFAULT 0, reward_given_at TEXT
 );
+-- Parent decisions the phone must apply: coins (taken by one phone), lesson stars, badges, stickers
+-- (applied by every phone that has the kid). adjustment_acks records which phone applied what.
+CREATE TABLE IF NOT EXISTS adjustments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, profile TEXT NOT NULL, kind TEXT NOT NULL,
+    target TEXT NOT NULL DEFAULT '', amount INTEGER NOT NULL DEFAULT 0, reason TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL, coins_device TEXT
+);
+CREATE TABLE IF NOT EXISTS adjustment_acks (
+    adjustment_id INTEGER NOT NULL, device TEXT NOT NULL, applied_at TEXT NOT NULL,
+    PRIMARY KEY (adjustment_id, device)
+);
 """
 
 
@@ -113,6 +124,11 @@ def pending_assignments(conn) -> list:
 def apply_sync(conn, req) -> None:
     """Store one /api/sync request. Events already stored (same id) are ignored entirely."""
     now = now_str()
+    for raw in req.applied:
+        aid = parse_adjustment_id(raw)
+        if aid is not None:
+            conn.execute("INSERT OR IGNORE INTO adjustment_acks (adjustment_id, device, applied_at) VALUES (?,?,?)",
+                         (aid, req.device, now))
     for p in req.profiles:
         conn.execute(
             "INSERT INTO profiles (id, name, grade, updated_at) VALUES (?,?,?,?) "
@@ -148,3 +164,32 @@ def _apply_assignment_try(conn, e) -> None:
     if done_at is None and e.stars >= row["min_stars"]:
         done_at = e.at
     conn.execute("UPDATE assignments SET best_stars=?, done_at=? WHERE id=?", (best, done_at, aid))
+
+
+# ---------- parent adjustments (coins taken away, lessons/badges/stickers cancelled) ----------
+
+def parse_adjustment_id(text: str):
+    if text.startswith("j") and text[1:].isdigit():
+        return int(text[1:])
+    return None
+
+
+def adjustments_for_device(conn, device: str, profiles: list) -> list:
+    """Adjustments this phone must still apply. A coin deduction goes to the first phone that asks for
+    the kid (coins_device); the other kinds go to every phone that has the kid, until that phone acks them."""
+    if not profiles:
+        return []
+    marks = ",".join("?" * len(profiles))
+    conn.execute(f"UPDATE adjustments SET coins_device=? WHERE kind='coins' AND coins_device IS NULL "
+                 f"AND profile IN ({marks})", (device, *profiles))
+    rows = conn.execute(
+        f"SELECT a.* FROM adjustments a WHERE a.profile IN ({marks}) AND "
+        "(a.kind != 'coins' OR a.coins_device = ?) AND "
+        "a.id NOT IN (SELECT adjustment_id FROM adjustment_acks WHERE device = ?) ORDER BY a.id",
+        (*profiles, device, device)).fetchall()
+    return [adjustment_public(r) for r in rows]
+
+
+def adjustment_public(row) -> dict:
+    return {"id": f"j{row['id']}", "profile": row["profile"], "kind": row["kind"], "target": row["target"],
+            "amount": row["amount"], "reason": row["reason"], "created_at": row["created_at"]}

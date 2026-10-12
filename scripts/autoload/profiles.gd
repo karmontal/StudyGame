@@ -139,7 +139,8 @@ func finish_round(kind: String, lesson_key_: String, earned_stars: int, results:
 		pay.lines.append(["أوسمة جديدة × %d" % new_badges.size(), new_badges.size() * BADGE_COINS])
 		pay.total += new_badges.size() * BADGE_COINS
 	_add_coins(p, int(pay.total))
-	# A level-5 badge can only be checked after the coins land.
+	# Level and family badges can only be checked after the coins land.
+	extra["family_goal"] = family_week_coins() >= Rewards.FAMILY_WEEK_GOAL
 	for id in Rewards.earned_badges(p, extra):
 		if not p.badges.has(id):
 			p.badges[id] = true
@@ -197,6 +198,40 @@ func week_coins(id: String) -> int:
 	return int(w.coins) if int(w.id) == week_number(today()) else 0
 
 
+## Coins all the kids earned together this week (the family goal).
+func family_week_coins() -> int:
+	var total := 0
+	for p in profiles:
+		total += week_coins(p.id)
+	return total
+
+
+## A parent's decision from the dashboard, applied once by the phone (see Sync.apply_response).
+## kind: "coins" (take away coins and xp, never below 0), "lesson" (remove the stars of a lesson),
+## "badge" (take a badge away for good), "sticker" (take a sticker away).
+func apply_adjustment(a: Dictionary) -> void:
+	var id := str(a.get("profile", ""))
+	if get_profile(id).is_empty():
+		return
+	var p := info(id)
+	var target := str(a.get("target", ""))
+	match str(a.get("kind", "")):
+		"coins":
+			var amount := int(a.get("amount", 0))
+			p.coins = maxi(0, int(p.coins) - amount)
+			p.xp = maxi(0, int(p.xp) - amount)
+		"lesson":
+			p.stars.erase(target)
+		"badge":
+			p.badges.erase(target)
+			p.badges_revoked[target] = true
+		"sticker":
+			p.stickers.erase(target)
+		_:
+			return
+	save()
+
+
 ## Streak days, or 0 when the kid missed a day (the streak is broken until they play again).
 func live_streak(id: String = "") -> int:
 	var s: Dictionary = info(id).streak
@@ -252,7 +287,7 @@ func _progress(id: String) -> Dictionary:
 
 ## Older saves miss the newer fields; JSON also turns ints into floats.
 static func _fill_defaults(p: Dictionary) -> void:
-	for k in ["stars", "review", "badges", "stickers"]:
+	for k in ["stars", "review", "badges", "stickers", "badges_revoked"]:
 		if typeof(p.get(k)) != TYPE_DICTIONARY:
 			p[k] = {}
 	for k in ["answered", "correct", "rounds", "fixed", "coins", "xp", "speed_best"]:
