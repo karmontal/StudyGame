@@ -146,6 +146,9 @@ func _error_text(result: int, code: int) -> String:
 		return "مفتاح الجهاز غلط"
 	if code == 200:
 		return "الاتصال شغّال"
+	if code == 422:
+		# The server rejected the data: almost always a dashboard older than the game (new kinds or fields).
+		return "نسخة السيرفر أقدم من اللعبة: حدّث السيرفر (422)"
 	return "خطأ من السيرفر (%d)" % code
 
 
