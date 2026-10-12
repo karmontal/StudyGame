@@ -34,7 +34,10 @@ Request body (JSON):
 - `events` are the rounds finished since the last successful sync. `id` is unique per event; the server
   must ignore an event id it already has (the game resends when a sync fails halfway).
 - `assignment` is the assignment id when `kind == "assignment"`, else "".
-- `summary` is the full current state per kid (replaces the previous one).
+- `summary` is the current state on this device of each kid who played on it (kids with nothing on this
+  device are left out). It replaces that device's previous summary for the kid. The dashboard adds up a
+  kid's devices: coins, xp, answered and correct are summed; stars per lesson, streak and speed_best take
+  the highest; badges and stickers are joined; the level is recomputed from the summed xp.
 - `at` is the phone's local time, `YYYY-MM-DDTHH:MM:SS`.
 
 Response (JSON), always the full list of open and recently finished assignments:

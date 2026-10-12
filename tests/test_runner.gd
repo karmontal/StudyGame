@@ -48,7 +48,7 @@ func eq(actual: Variant, expected: Variant, label: String) -> void:
 
 
 func _test_curriculum_index() -> void:
-	eq(Content.books.size(), 18, "index lists the 18 books")
+	eq(Content.books.size(), 22, "index lists the 22 books")
 	for grade in [3, 5, 8, 10]:
 		check(Content.books_for_grade(grade).size() >= 4, "grade %d has at least 4 books" % grade)
 	for b in Content.books:
@@ -507,6 +507,7 @@ func _test_sync_and_tasks() -> void:
 	var body := Sync.build_body()
 	eq(body.profiles.size(), Profiles.profiles.size(), "sync body has every kid")
 	eq(int(body.summary[nada].stars[key]), 2, "sync summary has stars")
+	eq(body.summary.keys(), [nada], "only kids who played on this phone send a summary")
 	check(str(body.device).begins_with("dev-"), "sync body has a device id")
 	# The server answers with an assignment for Nada.
 	Sync.apply_response({"ok": true, "assignments": [{"id": "a1", "profile": nada, "title": "اختبار بابا",
@@ -573,9 +574,13 @@ func _test_toddler() -> void:
 		check(ToddlerVoice.PHRASES.has("s_" + sh), "phrase for shape %s" % sh)
 	for id in ToddlerArt.COLORING + ToddlerArt.PUZZLES:
 		check(ToddlerVoice.PHRASES.has("p_" + id), "phrase for picture %s" % id)
-	check(not ToddlerVoice.has_clip("hello"), "no recorded clip: falls back to the phone voice")
+	for key in ToddlerVoice.PHRASES:
+		check(ToddlerVoice.has_clip(key), "recorded clip for %s" % key)
 	ToddlerVoice.say("bravo")
-	check(ToddlerVoice.last_text == "برافو آية!" and not ToddlerVoice.last_was_clip, "say() uses the phrase text")
+	check(ToddlerVoice.last_text == "برافو آية!" and ToddlerVoice.last_was_clip == Settings.sound_on(), "say() plays the recorded clip")
+	check(not ToddlerVoice.has_clip("no_such_key"), "no recorded clip: falls back to the phone voice")
+	ToddlerVoice.say("no_such_key", "مرحبا")
+	check(ToddlerVoice.last_text == "مرحبا" and not ToddlerVoice.last_was_clip, "say() without a clip uses the phone voice")
 	# Pictures: 3-6 fill regions for colouring, and every region can be hit.
 	for id in ToddlerArt.COLORING:
 		var n: int = ToddlerArt.picture(id).regions.size()

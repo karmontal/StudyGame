@@ -125,6 +125,34 @@
 			"subject": "chemistry",
 			"source": "Books/كيمياء ١٠ المتمازجة غزة.pdf",
 			"file": "res://data/books/g10_chemistry.json"
+		},
+		{
+			"id": "g3_islamic",
+			"grade": 3,
+			"subject": "islamic",
+			"source": "Books/كتاب التربية الإسلامية للصف الثالث الفصل الأول الطبعة الثانية 2020.pdf",
+			"file": "res://data/books/g3_islamic.json"
+		},
+		{
+			"id": "g5_islamic",
+			"grade": 5,
+			"subject": "islamic",
+			"source": "Books/كتاب التربية الإسلامية للصف الخامس الفصل الأول الطبعة الثالثة 2020.pdf",
+			"file": "res://data/books/g5_islamic.json"
+		},
+		{
+			"id": "g8_islamic",
+			"grade": 8,
+			"subject": "islamic",
+			"source": "Books/كتاب التربية الإسلامية للصف الثامن الفصل الأول الطبعة الثالثة 2020.pdf",
+			"file": "res://data/books/g8_islamic.json"
+		},
+		{
+			"id": "g10_islamic",
+			"grade": 10,
+			"subject": "islamic",
+			"source": "Books/كتاب التربية الإسلامية للصف العاشر الفصل الأول الطبعة الثالثة 2020.pdf",
+			"file": "res://data/books/g10_islamic.json"
 		}
 	]
 }
