@@ -9,3 +9,7 @@
 *.apk
 *.aab
 *.pck
+
+# Local tooling
+__pycache__/
+/.claude/worktrees/
