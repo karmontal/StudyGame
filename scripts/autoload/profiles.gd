@@ -117,6 +117,8 @@ func finish_round(kind: String, lesson_key_: String, earned_stars: int, results:
 	if kind == "daily":
 		p.daily.last = day
 		p.daily.count = int(p.daily.count) + 1
+	if kind == "speed":
+		p.speed_last = day
 	var correct := 0
 	for r in results:
 		if r.correct:
@@ -184,6 +186,11 @@ func daily_done(id: String = "") -> bool:
 	return info(id).daily.last == today()
 
 
+## The speed challenge is once a day, like the daily challenge.
+func speed_done(id: String = "") -> bool:
+	return str(info(id).speed_last) == today()
+
+
 ## Coins earned this week (the brothers-and-sisters board on the profile screen).
 func week_coins(id: String) -> int:
 	var w: Dictionary = info(id).week
@@ -217,6 +224,8 @@ func buy_sticker(id: String) -> Variant:
 		return null
 	p.coins = int(p.coins) - int(st.price)
 	p.stickers[id] = true
+	# Buying happens between rounds, so send it now; otherwise the dashboard only sees it after the next round.
+	Sync.sync_now.call_deferred()
 	var new_badges: Array[String] = []
 	for b in Rewards.earned_badges(p):
 		if not p.badges.has(b):
@@ -254,6 +263,7 @@ static func _fill_defaults(p: Dictionary) -> void:
 	if typeof(p.get("daily")) != TYPE_DICTIONARY:
 		p.daily = {}
 	p.daily = {"last": str(p.daily.get("last", "")), "count": int(p.daily.get("count", 0))}
+	p.speed_last = str(p.get("speed_last", ""))
 	if typeof(p.get("week")) != TYPE_DICTIONARY:
 		p.week = {}
 	p.week = {"id": int(p.week.get("id", 0)), "coins": int(p.week.get("coins", 0))}

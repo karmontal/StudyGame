@@ -297,6 +297,7 @@ func _test_finish_round() -> void:
 	check(s.new_best and s.speed_best == 12, "speed best saved")
 	check(s.new_badges.has("speed10"), "speed badge")
 	check(not Profiles.finish_round("speed", "", 0, _results("11")).new_best, "lower speed score is not a record")
+	check(Profiles.speed_done(), "speed challenge is locked for the rest of the day")
 	check(Profiles.week_coins("lamees") > 0, "coins count for this week")
 	eq(Profiles.week_coins("nada"), 0, "other kids start the week at 0")
 	Profiles.today_override = "2026-10-19"  # next Monday
