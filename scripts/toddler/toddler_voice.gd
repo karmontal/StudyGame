@@ -1,8 +1,9 @@
 class_name ToddlerVoice
 extends RefCounted
-## What the toddler games say. A recorded clip res://assets/toddler/voice/<key>.ogg wins when it
-## exists (a parent's voice is nicer than the phone's); otherwise the phone's text-to-speech reads
-## the text. To add a recording, save it under the key from PHRASES below.
+## What the toddler games say. A recorded clip res://assets/toddler/voice/<key>.ogg (or .mp3/.wav) wins
+## when it exists (a parent's voice is nicer than the phone's); otherwise the phone's text-to-speech reads
+## the text. To add a recording, save it under the key from PHRASES below; docs/aya_voice.md lists them
+## (regenerate it with `python3 tools/aya_voice_list.py` after changing PHRASES).
 
 const DIR := "res://assets/toddler/voice/"
 
@@ -70,12 +71,20 @@ static var last_was_clip := false
 static var _player: AudioStreamPlayer
 
 
+const CLIP_TYPES := ["ogg", "mp3", "wav"]
+
+
+## The recorded clip for a phrase (<key>.ogg, .mp3 or .wav in DIR), or "" when there is none.
 static func clip_path(key: String) -> String:
-	return DIR + key + ".ogg"
+	for ext in CLIP_TYPES:
+		var p: String = DIR + key + "." + ext
+		if ResourceLoader.exists(p):
+			return p
+	return ""
 
 
 static func has_clip(key: String) -> bool:
-	return ResourceLoader.exists(clip_path(key))
+	return clip_path(key) != ""
 
 
 ## Says a phrase: the recorded clip when there is one, else the phone's voice. `text` defaults to

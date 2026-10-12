@@ -30,12 +30,36 @@ def profile(conn, pid: str):
     return dict(row) if row else None
 
 
+XP_PER_LEVEL = 300  # same as Rewards.XP_PER_LEVEL in the game
+
+
+def merge_summaries(parts: list) -> dict:
+    """One kid's state from several devices. Each device's save only counts play on that device, so
+    totals add up; best stars, best speed and streak take the highest; badges and stickers join."""
+    parts = [d for d in parts if d.get("answered") or d.get("coins") or d.get("stars")] or parts[:1]
+    out = {"coins": 0, "xp": 0, "answered": 0, "correct": 0, "streak": 0, "speed_best": 0,
+           "badges": [], "stickers": [], "stars": {}}
+    for d in parts:
+        for k in ("coins", "xp", "answered", "correct"):
+            out[k] += int(d.get(k, 0) or 0)
+        for k in ("streak", "speed_best"):
+            out[k] = max(out[k], int(d.get(k, 0) or 0))
+        for k in ("badges", "stickers"):
+            out[k] += [x for x in d.get(k, []) or [] if x not in out[k]]
+        for key, n in (d.get("stars", {}) or {}).items():
+            out["stars"][key] = max(int(out["stars"].get(key, 0)), int(n))
+    out["level"] = out["xp"] // XP_PER_LEVEL + 1
+    out["devices"] = len(parts)
+    return out
+
+
 def summary(conn, pid: str) -> dict:
-    row = conn.execute("SELECT data, updated_at FROM summaries WHERE profile=?", (pid,)).fetchone()
-    if not row:
+    rows = conn.execute("SELECT data, updated_at FROM device_summaries WHERE profile=? ORDER BY updated_at",
+                        (pid,)).fetchall()
+    if not rows:
         return {"_synced": None}
-    data = json.loads(row["data"])
-    data["_synced"] = row["updated_at"]
+    data = merge_summaries([json.loads(r["data"]) for r in rows])
+    data["_synced"] = rows[-1]["updated_at"]
     return data
 
 

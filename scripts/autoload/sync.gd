@@ -68,13 +68,16 @@ func record(profile_id: String, kind: String, lesson_key: String, book: String, 
 		sync_now.call_deferred()
 
 
-## The request body: all queued rounds plus the full current state of every kid.
+## The request body: all queued rounds plus the current state of every kid who played on this phone.
 func build_body() -> Dictionary:
 	var kids: Array = []
 	var summary := {}
 	for p in Profiles.profiles:
 		kids.append({"id": p.id, "name": p.name, "grade": int(p.grade)})
 		var info := Profiles.info(p.id)
+		# Only kids who played on this phone: the dashboard adds up each kid's phones.
+		if int(info.answered) == 0 and int(info.coins) == 0 and info.stars.is_empty():
+			continue
 		summary[p.id] = {"coins": int(info.coins), "xp": int(info.xp), "level": Rewards.level_for(int(info.xp)),
 			"streak": Profiles.live_streak(p.id), "speed_best": int(info.speed_best),
 			"badges": info.badges.keys(), "stickers": info.stickers.keys(), "stars": info.stars,

@@ -19,8 +19,9 @@ CREATE TABLE IF NOT EXISTS events (
     at TEXT NOT NULL, device TEXT NOT NULL DEFAULT '', received_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS events_profile_at ON events(profile, at);
-CREATE TABLE IF NOT EXISTS summaries (
-    profile TEXT PRIMARY KEY, data TEXT NOT NULL, device TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL
+CREATE TABLE IF NOT EXISTS device_summaries (
+    profile TEXT NOT NULL, device TEXT NOT NULL, data TEXT NOT NULL, updated_at TEXT NOT NULL,
+    PRIMARY KEY (profile, device)
 );
 CREATE TABLE IF NOT EXISTS assignments (
     id INTEGER PRIMARY KEY AUTOINCREMENT, profile TEXT NOT NULL, title TEXT NOT NULL,
@@ -41,6 +42,7 @@ def init(path: str, default_profiles: list) -> None:
     os.makedirs(folder, exist_ok=True)
     raw = sqlite3.connect(path)
     raw.executescript(SCHEMA)  # runs outside connect(): executescript commits on its own
+    _migrate(raw)
     raw.close()
     with connect(path) as conn:
         for p in default_profiles:
@@ -48,6 +50,15 @@ def init(path: str, default_profiles: list) -> None:
                 "INSERT OR IGNORE INTO profiles (id, name, grade, color, updated_at) VALUES (?,?,?,?,?)",
                 (p["id"], p["name"], int(p["grade"]), p.get("color", ""), now_str()),
             )
+
+
+def _migrate(raw) -> None:
+    """Version 1 kept one summary per kid, so each device overwrote the others; keep them per device now."""
+    if raw.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='summaries'").fetchone():
+        with raw:
+            raw.execute("INSERT OR IGNORE INTO device_summaries (profile, device, data, updated_at) "
+                        "SELECT profile, device, data, updated_at FROM summaries")
+            raw.execute("DROP TABLE summaries")
 
 
 @contextmanager
@@ -119,9 +130,9 @@ def apply_sync(conn, req) -> None:
             _apply_assignment_try(conn, e)
     for profile, data in req.summary.items():
         conn.execute(
-            "INSERT INTO summaries (profile, data, device, updated_at) VALUES (?,?,?,?) "
-            "ON CONFLICT(profile) DO UPDATE SET data=excluded.data, device=excluded.device, updated_at=excluded.updated_at",
-            (profile, json.dumps(data, ensure_ascii=False), req.device, now),
+            "INSERT INTO device_summaries (profile, device, data, updated_at) VALUES (?,?,?,?) "
+            "ON CONFLICT(profile, device) DO UPDATE SET data=excluded.data, updated_at=excluded.updated_at",
+            (profile, req.device, json.dumps(data, ensure_ascii=False), now),
         )
 
 

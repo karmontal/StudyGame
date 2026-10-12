@@ -49,10 +49,10 @@ def test_duplicate_ids_in_one_request(client, settings):
     assert rows(settings, "SELECT COUNT(*) FROM events")[0][0] == 1
 
 
-def test_summary_replaces_previous(client, settings):
+def test_summary_replaces_previous(client, settings):  # same device: its summary is replaced
     sync(client, summary={"nada": {"coins": 10, "level": 1, "badges": ["first_round"]}})
     sync(client, summary={"nada": {"coins": 320, "level": 4}})
-    data = json.loads(rows(settings, "SELECT data FROM summaries WHERE profile='nada'")[0][0])
+    data = json.loads(rows(settings, "SELECT data FROM device_summaries WHERE profile='nada'")[0][0])
     assert data == {"coins": 320, "level": 4}
 
 
@@ -124,3 +124,47 @@ def test_invalid_input(client):
     assert sync(client, [event("b3", at="yesterday")]).status_code == 422
     r = client.post("/api/sync", content=b"{not json", headers={"X-Device-Key": KEY})
     assert r.status_code == 422
+
+
+def test_summaries_from_two_devices_add_up(client, settings):
+    def send(device, summary):
+        body = {"device": device, "profiles": [{"id": "nada", "name": "ندى", "grade": 3}], "events": [],
+                "summary": summary}
+        assert client.post("/api/sync", json=body, headers={"X-Device-Key": KEY}).status_code == 200
+
+    send("phone-a", {"nada": {"coins": 100, "xp": 250, "answered": 10, "correct": 8, "streak": 2,
+                              "badges": ["first_round"], "stickers": [], "stars": {"g3_science/u1/l1": 3}}})
+    send("phone-b", {"nada": {"coins": 50, "xp": 100, "answered": 5, "correct": 5, "streak": 4,
+                              "badges": ["first_round", "perfect"], "stickers": ["lion"],
+                              "stars": {"g3_science/u1/l1": 1, "g3_science/u1/l2": 2}}})
+    # A phone where Nada never played must not wipe her numbers.
+    send("phone-c", {"nada": {"coins": 0, "xp": 0, "answered": 0, "correct": 0, "stars": {}}})
+    from app import db, stats
+    with db.connect(settings.db_path) as conn:
+        s = stats.summary(conn, "nada")
+    assert s["coins"] == 150 and s["answered"] == 15 and s["correct"] == 13
+    assert s["level"] == 2 and s["streak"] == 4
+    assert s["badges"] == ["first_round", "perfect"] and s["stickers"] == ["lion"]
+    assert s["stars"] == {"g3_science/u1/l1": 3, "g3_science/u1/l2": 2}
+    # The same phone syncing again replaces its own numbers, it doesn't add them twice.
+    send("phone-a", {"nada": {"coins": 120, "xp": 270, "answered": 12, "correct": 9, "stars": {}}})
+    with db.connect(settings.db_path) as conn:
+        assert stats.summary(conn, "nada")["coins"] == 170
+
+
+def test_old_single_summary_table_is_migrated(tmp_path):
+    import json as _json
+    import sqlite3
+    from app import db, stats
+    path = str(tmp_path / "old.db")
+    raw = sqlite3.connect(path)
+    raw.execute("CREATE TABLE summaries (profile TEXT PRIMARY KEY, data TEXT NOT NULL, "
+                "device TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL)")
+    raw.execute("INSERT INTO summaries VALUES (?,?,?,?)",
+                ("nada", _json.dumps({"coins": 42, "xp": 0, "answered": 3}), "phone-a", "2026-10-11T10:00:00"))
+    raw.commit()
+    raw.close()
+    db.init(path, [])
+    with db.connect(path) as conn:
+        assert stats.summary(conn, "nada")["coins"] == 42
+        assert not conn.execute("SELECT name FROM sqlite_master WHERE name='summaries'").fetchone()
