@@ -3,7 +3,7 @@ import json
 import os
 import sqlite3
 from contextlib import contextmanager
-from datetime import datetime
+from datetime import datetime, timedelta
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS profiles (
@@ -43,6 +43,15 @@ CREATE TABLE IF NOT EXISTS adjustments (
 def now_str() -> str:
     """Server local time in the same format the game uses for `at`."""
     return datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+
+
+def after(stamp: str) -> str:
+    """A change time later than `stamp` (a phone's) and than now, so the phone that sent `stamp` takes the stored state."""
+    try:
+        one_later = (datetime.fromisoformat(stamp) + timedelta(seconds=1)).strftime("%Y-%m-%dT%H:%M:%S")
+    except ValueError:
+        return now_str()
+    return max(now_str(), one_later)
 
 
 def init(path: str, default_profiles: list) -> None:
@@ -134,7 +143,9 @@ def apply_sync(conn, req) -> None:
         if not changed or (stored and not changed > stored["changed_at"]):
             continue
         data = dict(sent)
-        apply_adjustments(data, kid_adjustments(conn, profile))
+        if apply_adjustments(data, kid_adjustments(conn, profile)):
+            # The phone does not have this decision yet: store the state as newer, so the phone takes it back.
+            changed = after(changed)
         conn.execute(
             "INSERT INTO kid_state (profile, data, changed_at, device, updated_at) VALUES (?,?,?,?,?) "
             "ON CONFLICT(profile) DO UPDATE SET data=excluded.data, changed_at=excluded.changed_at, "
@@ -218,6 +229,6 @@ def reapply_stored(conn, profile: str) -> None:
         return  # no state yet: the first phone that sends one gets the decisions when it is stored
     data = json.loads(row["data"])
     if apply_adjustments(data, kid_adjustments(conn, profile)):
-        now = now_str()
+        changed = after(row["changed_at"])
         conn.execute("UPDATE kid_state SET data=?, changed_at=?, updated_at=? WHERE profile=?",
-                     (json.dumps(data, ensure_ascii=False), now, now, profile))
+                     (json.dumps(data, ensure_ascii=False), changed, now_str(), profile))
