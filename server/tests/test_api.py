@@ -183,8 +183,10 @@ def test_newer_phone_state_that_lacks_a_deduction_still_gets_it(client, admin, s
     push(client, "phone-a", {"coins": 100, "changed_at": "2026-10-12T10:00:00"})
     add_adjustment(admin, "coins", amount=30)
     # phone-b changed its state after the server stored the deduction (server time is later than phone time).
-    push(client, "phone-b", {"coins": 90, "changed_at": "2099-01-01T00:00:00"})
+    got = push(client, "phone-b", {"coins": 90, "changed_at": "2099-01-01T00:00:00"})
     assert stored(settings)["coins"] == 60
+    # phone-b gets the deduction back, so its own copy shows it (the stored state is newer than what it sent).
+    assert got["nada"]["coins"] == 60 and got["nada"]["adjustments_applied"] == ["j1"]
     # The same decision is never applied twice, even when the phone sends it back.
     push(client, "phone-b", {"coins": 60, "changed_at": "2099-01-02T00:00:00", "adjustments_applied": ["j1"]})
     assert stored(settings)["coins"] == 60
