@@ -94,9 +94,12 @@ def make_router(settings) -> APIRouter:
             with db.connect(settings.db_path) as conn:
                 db.apply_sync(conn, req)
                 # Only kids who played on this phone can have their coins or lessons changed here.
-                return db.pending_assignments(conn), db.adjustments_for_device(conn, req.device, list(req.summary))
+                sent = {pid: str(s.get("changed_at", "")) for pid, s in req.summary.items()}
+                sent.update({p.id: sent.get(p.id, "") for p in req.profiles})
+                return (db.pending_assignments(conn), db.adjustments_for_device(conn, req.device, list(req.summary)),
+                        db.newer_kid_states(conn, sent))
 
-        assignments, adjustments = await run_in_threadpool(work)
-        return {"ok": True, "assignments": assignments, "adjustments": adjustments}
+        assignments, adjustments, kids = await run_in_threadpool(work)
+        return {"ok": True, "assignments": assignments, "adjustments": adjustments, "kids": kids}
 
     return router

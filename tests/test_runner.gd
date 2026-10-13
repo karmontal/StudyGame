@@ -30,6 +30,7 @@ func _ready() -> void:
 	await _test_sound()
 	await _test_sync_and_tasks()
 	_test_adjustments()
+	_test_newest_state()
 	await _test_toddler()
 	await _test_family()
 	Profiles.delete_save()
@@ -314,6 +315,30 @@ func _test_adjustments() -> void:
 	Sync.reset()
 
 
+## Newest wins: the server's copy of a kid replaces this phone's only when it changed later.
+func _test_newest_state() -> void:
+	Profiles.delete_save()
+	Sync.reset()
+	var p := Profiles.info("nada")
+	p.coins = 100
+	p.changed_at = "2026-10-12T10:00:00"
+	var newer := Profiles.info("nada").duplicate(true)
+	newer.coins = 320
+	newer.changed_at = "2026-10-12T11:00:00"
+	Sync.apply_response({"ok": true, "assignments": [], "adjustments": [], "kids": {"nada": newer}}, [])
+	eq(Profiles.coins("nada"), 320, "a newer state from the server replaces the phone's")
+	var older := Profiles.info("nada").duplicate(true)
+	older.coins = 5
+	older.changed_at = "2026-10-12T09:00:00"
+	Sync.apply_response({"ok": true, "assignments": [], "adjustments": [], "kids": {"nada": older}}, [])
+	eq(Profiles.coins("nada"), 320, "an older state from the server is ignored")
+	Profiles.info("nada").changed_at = "2026-10-13T08:00:00"
+	Sync.apply_response({"ok": true, "assignments": [], "adjustments": [], "kids": {"nada": older}}, [])
+	eq(Profiles.coins("nada"), 320, "the phone keeps its own state when that is the newer one")
+	Profiles.delete_save()
+	Sync.reset()
+
+
 func _test_finish_round() -> void:
 	Profiles.delete_save()
 	Profiles.select("lamees")
@@ -555,7 +580,9 @@ func _test_sync_and_tasks() -> void:
 	var body := Sync.build_body()
 	eq(body.profiles.size(), Profiles.profiles.size(), "sync body has every kid")
 	eq(int(body.summary[nada].stars[key]), 2, "sync summary has stars")
-	eq(body.summary.keys(), [nada], "only kids who played on this phone send a summary")
+	eq(body.summary.size(), Profiles.profiles.size(), "every kid's state is sent (newest change wins on the server)")
+	check(str(body.summary[nada].changed_at) != "", "a kid who played has a change time")
+	check(str(body.summary["lamees"].changed_at) == "", "a kid who did not play has no change time")
 	check(str(body.device).begins_with("dev-"), "sync body has a device id")
 	# The server answers with an assignment for Nada.
 	Sync.apply_response({"ok": true, "assignments": [{"id": "a1", "profile": nada, "title": "اختبار بابا",

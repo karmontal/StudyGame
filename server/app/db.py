@@ -19,9 +19,10 @@ CREATE TABLE IF NOT EXISTS events (
     at TEXT NOT NULL, device TEXT NOT NULL DEFAULT '', received_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS events_profile_at ON events(profile, at);
-CREATE TABLE IF NOT EXISTS device_summaries (
-    profile TEXT NOT NULL, device TEXT NOT NULL, data TEXT NOT NULL, updated_at TEXT NOT NULL,
-    PRIMARY KEY (profile, device)
+-- One state per kid: the phone's whole progress, kept only if its changed_at is newer than what is stored.
+CREATE TABLE IF NOT EXISTS kid_state (
+    profile TEXT PRIMARY KEY, data TEXT NOT NULL, changed_at TEXT NOT NULL, device TEXT NOT NULL,
+    updated_at TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS assignments (
     id INTEGER PRIMARY KEY AUTOINCREMENT, profile TEXT NOT NULL, title TEXT NOT NULL,
@@ -53,7 +54,6 @@ def init(path: str, default_profiles: list) -> None:
     os.makedirs(folder, exist_ok=True)
     raw = sqlite3.connect(path)
     raw.executescript(SCHEMA)  # runs outside connect(): executescript commits on its own
-    _migrate(raw)
     raw.close()
     with connect(path) as conn:
         for p in default_profiles:
@@ -61,15 +61,6 @@ def init(path: str, default_profiles: list) -> None:
                 "INSERT OR IGNORE INTO profiles (id, name, grade, color, updated_at) VALUES (?,?,?,?,?)",
                 (p["id"], p["name"], int(p["grade"]), p.get("color", ""), now_str()),
             )
-
-
-def _migrate(raw) -> None:
-    """Version 1 kept one summary per kid, so each device overwrote the others; keep them per device now."""
-    if raw.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='summaries'").fetchone():
-        with raw:
-            raw.execute("INSERT OR IGNORE INTO device_summaries (profile, device, data, updated_at) "
-                        "SELECT profile, device, data, updated_at FROM summaries")
-            raw.execute("DROP TABLE summaries")
 
 
 @contextmanager
@@ -144,12 +135,32 @@ def apply_sync(conn, req) -> None:
         )
         if cur.rowcount == 1 and e.kind == "assignment":
             _apply_assignment_try(conn, e)
+    # Newest wins: a phone's state replaces the stored one only if it was changed later.
     for profile, data in req.summary.items():
+        changed = str(data.get("changed_at", ""))
+        if not changed:
+            continue
         conn.execute(
-            "INSERT INTO device_summaries (profile, device, data, updated_at) VALUES (?,?,?,?) "
-            "ON CONFLICT(profile, device) DO UPDATE SET data=excluded.data, updated_at=excluded.updated_at",
-            (profile, req.device, json.dumps(data, ensure_ascii=False), now),
+            "INSERT INTO kid_state (profile, data, changed_at, device, updated_at) VALUES (?,?,?,?,?) "
+            "ON CONFLICT(profile) DO UPDATE SET data=excluded.data, changed_at=excluded.changed_at, "
+            "device=excluded.device, updated_at=excluded.updated_at WHERE excluded.changed_at > kid_state.changed_at",
+            (profile, json.dumps(data, ensure_ascii=False), changed, req.device, now),
         )
+
+
+def kid_state(conn, profile: str):
+    row = conn.execute("SELECT * FROM kid_state WHERE profile=?", (profile,)).fetchone()
+    return dict(row) if row else None
+
+
+def newer_kid_states(conn, sent: dict) -> dict:
+    """Stored states that are newer than the changed_at a phone sent for that kid (kid -> changed_at)."""
+    out = {}
+    for profile, changed in sent.items():
+        row = kid_state(conn, profile)
+        if row and row["changed_at"] > changed:
+            out[profile] = json.loads(row["data"])
+    return out
 
 
 def _apply_assignment_try(conn, e) -> None:

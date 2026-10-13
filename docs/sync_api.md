@@ -35,16 +35,17 @@ Request body (JSON):
 - `events` are the rounds finished since the last successful sync. `id` is unique per event; the server
   must ignore an event id it already has (the game resends when a sync fails halfway).
 - `assignment` is the assignment id when `kind == "assignment"`, else "".
-- `summary` is the current state on this device of each kid who played on it (kids with nothing on this
-  device are left out). It replaces that device's previous summary for the kid. The dashboard adds up a
-  kid's devices: coins, xp, answered and correct are summed; stars per lesson, streak and speed_best take
-  the highest; badges and stickers are joined; the level is recomputed from the summed xp.
+- `summary` has each kid's whole progress on this phone (coins, xp, stars, badges, stickers, streak, daily,
+  review list and so on), plus `changed_at`: the phone's time of the last change to that kid, `""` if the kid
+  never changed. **Newest wins:** the server keeps one state per kid and replaces it only when a phone sends
+  one whose `changed_at` is later. A kid's coins are not added up across phones.
 - `at` is the phone's local time, `YYYY-MM-DDTHH:MM:SS`.
 - `applied` lists the adjustment ids (see below) this phone has applied and has not yet seen acknowledged.
   The server stores them as acknowledged for this device; it is safe to send an id again.
 
-Response (JSON), always the full list of open and recently finished assignments, and the parent's
-adjustments this phone still has to apply:
+Response (JSON): the full list of open and recently finished assignments, the parent's adjustments this
+phone still has to apply, and `kids`: the stored state of each kid whose stored `changed_at` is later than the
+one this phone sent (empty when the phone is up to date). The phone replaces its own state for those kids:
 
 ```json
 {"ok": true, "assignments": [
@@ -52,7 +53,7 @@ adjustments this phone still has to apply:
    "reward": "رحلة للملاهي", "lesson_keys": ["g3_science/u1/l1", "g3_science/u1/l2"],
    "count": 10, "min_stars": 2, "created_at": "2026-10-11T09:00:00",
    "done_at": null, "best_stars": 0}
-], "adjustments": [
+], "kids": {}, "adjustments": [
   {"id": "j3", "profile": "nada", "kind": "coins", "target": "", "amount": 30, "reason": "", "created_at": "2026-10-12T21:50:00"},
   {"id": "j4", "profile": "nada", "kind": "lesson", "target": "g3_science/u1/l2", "amount": 0, "reason": "", "created_at": "2026-10-12T21:51:00"}
 ]}

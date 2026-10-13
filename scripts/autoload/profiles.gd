@@ -82,6 +82,7 @@ func unit_stars(book_id: String, unit_data: Dictionary, id: String = "") -> int:
 ## right answers leave it.
 func record_quiz(lesson_key_: String, earned_stars: int, results: Array) -> void:
 	var p := _progress(current_id)
+	_touch(p)
 	if lesson_key_ != "":
 		p.stars[lesson_key_] = maxi(int(p.stars.get(lesson_key_, 0)), earned_stars)
 	p.rounds = int(p.rounds) + 1
@@ -152,7 +153,13 @@ func finish_round(kind: String, lesson_key_: String, earned_stars: int, results:
 		"speed_best": int(p.speed_best), "new_best": new_best}
 
 
+## Stamps a change so the parent sync knows this state is newer than the one on the server.
+static func _touch(p: Dictionary) -> void:
+	p.changed_at = Time.get_datetime_string_from_system()
+
+
 func _add_coins(p: Dictionary, amount: int) -> void:
+	_touch(p)
 	p.coins = int(p.coins) + amount
 	p.xp = int(p.xp) + amount
 	var week := week_number(today())
@@ -214,6 +221,7 @@ func apply_adjustment(a: Dictionary) -> void:
 	if get_profile(id).is_empty():
 		return
 	var p := info(id)
+	_touch(p)
 	var target := str(a.get("target", ""))
 	match str(a.get("kind", "")):
 		"coins":
@@ -259,6 +267,7 @@ func buy_sticker(id: String) -> Variant:
 		return null
 	p.coins = int(p.coins) - int(st.price)
 	p.stickers[id] = true
+	_touch(p)
 	# Buying happens between rounds, so send it now; otherwise the dashboard only sees it after the next round.
 	Sync.sync_now.call_deferred()
 	var new_badges: Array[String] = []
@@ -302,6 +311,19 @@ static func _fill_defaults(p: Dictionary) -> void:
 	if typeof(p.get("week")) != TYPE_DICTIONARY:
 		p.week = {}
 	p.week = {"id": int(p.week.get("id", 0)), "coins": int(p.week.get("coins", 0))}
+	# Saves from before the newest-wins sync have no change time: give them one, so they reach the dashboard.
+	p.changed_at = str(p.get("changed_at", ""))
+	if p.changed_at == "" and (int(p.answered) > 0 or int(p.coins) > 0 or not p.stars.is_empty()):
+		p.changed_at = "2000-01-01T00:00:00"
+
+
+## Replaces a kid's progress with the state the server holds, when that state is newer (see Sync).
+func adopt_state(id: String, state: Dictionary) -> void:
+	if get_profile(id).is_empty():
+		return
+	progress[id] = state
+	_fill_defaults(progress[id])
+	save()
 
 
 func save() -> void:
