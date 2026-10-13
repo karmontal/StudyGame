@@ -70,6 +70,16 @@ def test_phone_gets_the_newer_stored_state(client):
     assert client.post("/api/sync", json=body, headers={"X-Device-Key": KEY}).json()["kids"] == {}
 
 
+def test_first_sync_without_change_time_gets_the_stored_state(client, settings):
+    # A reinstalled phone sends no change time, so the server never overwrites with it and sends its copy back.
+    sync(client, summary={"nada": {"coins": 320, "changed_at": "2026-10-12T11:00:00", "stars": {}}})
+    body = {"device": "phone-new", "profiles": [{"id": "nada", "name": "ندى", "grade": 3}], "events": [],
+            "summary": {"nada": {"coins": 3, "changed_at": ""}}}
+    got = client.post("/api/sync", json=body, headers={"X-Device-Key": KEY}).json()["kids"]
+    assert got["nada"]["coins"] == 320
+    assert json.loads(rows(settings, "SELECT data FROM kid_state WHERE profile='nada'")[0][0])["coins"] == 320
+
+
 def test_assignment_completion(client, settings):
     aid = add_assignment(settings, min_stars=2)
     other = add_assignment(settings, min_stars=1)

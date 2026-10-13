@@ -76,6 +76,10 @@ func build_body() -> Dictionary:
 		kids.append({"id": p.id, "name": p.name, "grade": int(p.grade)})
 		# The whole progress of each kid, with the time it last changed: the server keeps the newest one.
 		summary[p.id] = Profiles.info(p.id).duplicate(true)
+		# First sync on this phone (fresh install, or never synced): its progress may be empty or only
+		# partial, so it claims no change time and the server's copy is adopted instead.
+		if last_sync == "":
+			summary[p.id].changed_at = ""
 	# The server takes at most MAX_EVENTS per request; the rest go on the next sync.
 	return {"device": Settings.device_id(), "profiles": kids, "events": events.slice(0, MAX_EVENTS), "summary": summary}
 
@@ -111,10 +115,12 @@ func _on_sync_done(result: int, code: int, _headers_: PackedStringArray, body: P
 func apply_response(data: Dictionary, sent_ids: Array) -> void:
 	events = events.filter(func(e): return not sent_ids.has(e.id))
 	assignments = data.get("assignments", [])
+	var first_sync := last_sync == ""
 	last_sync = Time.get_datetime_string_from_system()
 	# Newest wins: a kid's state from the server replaces this phone's only when it changed later.
+	# On the first sync the server's copy always wins, so a reinstalled phone gets its kids' progress back.
 	for pid in data.get("kids", {}):
-		if str(data.kids[pid].get("changed_at", "")) > str(Profiles.info(pid).get("changed_at", "")):
+		if first_sync or str(data.kids[pid].get("changed_at", "")) > str(Profiles.info(pid).get("changed_at", "")):
 			Profiles.adopt_state(pid, data.kids[pid])
 	save_state()
 
