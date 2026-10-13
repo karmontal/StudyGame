@@ -131,9 +131,10 @@ func _challenges(p: Dictionary) -> GridContainer:
 	daily.pressed.connect(_start_daily.bind(p))
 	grid.add_child(daily)
 	var best := int(Profiles.info().speed_best)
-	var speed_sub := ("أفضل نتيجة: %d" % best if best > 0 else "60 ثانية") if has_questions else "خلّص درس أولاً"
-	var speed := _big_button("Speed", "تحدي السرعة", speed_sub, Color("#E74C3C"))
-	speed.disabled = not has_questions
+	var speed_done := Profiles.speed_done()
+	var speed_sub := "ارجع بكرة" if speed_done else (("أفضل نتيجة: %d" % best if best > 0 else "60 ثانية") if has_questions else "خلّص درس أولاً")
+	var speed := _big_button("Speed", "تمّ تحدي السرعة" if speed_done else "تحدي السرعة", speed_sub, Color("#E74C3C"))
+	speed.disabled = speed_done or not has_questions
 	speed.pressed.connect(func(): main.goto("speed"))
 	grid.add_child(speed)
 	var badges := _big_button("Badges", "أوسمتي", "%d من %d" % [Profiles.info().badges.size(), Rewards.BADGES.size()], Color("#8E44AD"))

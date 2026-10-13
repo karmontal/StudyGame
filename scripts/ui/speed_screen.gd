@@ -36,6 +36,10 @@ func go_back() -> void:
 
 func _show_intro() -> void:
 	_clear(_content)
+	if Profiles.speed_done():
+		# The books screen shows it locked; this covers a screen that stays open past midnight.
+		_content.add_child(UI.label("تحدي السرعة خلص اليوم. ارجع بكرة!", 46, UI.TEXT))
+		return
 	_content.add_child(UI.label("جاوب أكبر عدد من الأسئلة قبل ما يخلص الوقت!", 46, UI.TEXT))
 	_content.add_child(UI.label("عندك %d ثانية. كل إجابة صح = %d عملات." % [int(time_left), Rewards.COIN_PER_CORRECT], 36, UI.MUTED))
 	var best := int(Profiles.info().speed_best)
