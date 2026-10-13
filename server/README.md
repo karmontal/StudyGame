@@ -54,6 +54,8 @@ curl -H "X-Device-Key: <المفتاح>" http://127.0.0.1:8090/api/ping    # {"o
 
 للتحديث: `git pull && docker compose up -d --build`
 
+حدّث السيرفر كل ما تنزّل نسخة جديدة من اللعبة. إذا اللعبة أحدث من السيرفر، المزامنة بتعطي خطأ 422 (مثلاً آية بالصف 0 أو مسابقة العيلة ما كانوا موجودين بالنسخة القديمة).
+
 نسخة احتياطية من البيانات:
 `docker exec studygame-dashboard python -c "import sqlite3; s=sqlite3.connect('/app/data/studygame.db'); s.backup(sqlite3.connect('/app/data/backup.db'))" && docker cp studygame-dashboard:/app/data/backup.db ~/studygame-backup-$(date +%F).db`
 
