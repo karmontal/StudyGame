@@ -2,8 +2,8 @@
 
 Use after a phone's fresh install overwrote kid_state: the rounds survive, the whole state does not.
 Recovers stars, answered/correct, rounds, wrong-answer review list, coins (as the sum of round coins),
-daily and speed records, and the streak. It cannot recover badges, stickers, badges_revoked or the
-weekly coins (week resets to 0). Dry run unless --apply is given.
+daily and speed records, the streak and this week's coins. It cannot recover badges, stickers or
+badges_revoked. Dry run unless --apply is given.
 
 Run inside the dashboard container (back up the database first; see server/README.md):
     docker exec -i studygame-dashboard python - --apply < tools/rebuild_from_rounds.py
@@ -39,6 +39,12 @@ def streaks(days: list[str]) -> tuple[int, int, str]:
     return current, best, dates[-1].isoformat()
 
 
+def week_number(day: str) -> int:
+    """Same as Profiles.week_number in the game: Monday-based weeks since 1970."""
+    days_since_epoch = date.fromisoformat(day).toordinal() - date(1970, 1, 1).toordinal()
+    return (days_since_epoch + 3) // 7
+
+
 def rebuild(conn, pid: str) -> dict:
     events = [dict(r) for r in conn.execute(
         "SELECT * FROM events WHERE profile=? ORDER BY at, received_at", (pid,))]
@@ -52,6 +58,8 @@ def rebuild(conn, pid: str) -> dict:
     coins = sum(e["coins"] for e in events)
     days = [e["at"][:10] for e in events]
     current, best, last = streaks(days)
+    this_week = week_number(date.today().isoformat())
+    week_coins = sum(e["coins"] for e in events if week_number(e["at"][:10]) == this_week)
     dailies = [e for e in events if e["kind"] == "daily"]
     speeds = [e["correct"] for e in events if e["kind"] == "speed"]
     return {
@@ -61,7 +69,7 @@ def rebuild(conn, pid: str) -> dict:
         "streak": {"days": current, "best": best, "last": last},
         "daily": {"last": max((e["at"][:10] for e in dailies), default=""), "count": len(dailies)},
         "speed_best": max(speeds, default=0), "speed_last": "",
-        "week": {"id": 0, "coins": 0},
+        "week": {"id": this_week, "coins": week_coins},
         "changed_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
     }
 
