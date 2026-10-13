@@ -30,16 +30,12 @@ CREATE TABLE IF NOT EXISTS assignments (
     count INTEGER NOT NULL, min_stars INTEGER NOT NULL, created_at TEXT NOT NULL,
     done_at TEXT, best_stars INTEGER NOT NULL DEFAULT 0, reward_given_at TEXT
 );
--- Parent decisions the phone must apply: coins (taken by one phone), lesson stars, badges, stickers
--- (applied by every phone that has the kid). adjustment_acks records which phone applied what.
+-- Parent decisions (coins taken away, lesson/badge/sticker cancelled). The server applies them to each
+-- stored kid state that does not have them yet (see apply_adjustments); phones never apply them.
 CREATE TABLE IF NOT EXISTS adjustments (
     id INTEGER PRIMARY KEY AUTOINCREMENT, profile TEXT NOT NULL, kind TEXT NOT NULL,
     target TEXT NOT NULL DEFAULT '', amount INTEGER NOT NULL DEFAULT 0, reason TEXT NOT NULL DEFAULT '',
-    created_at TEXT NOT NULL, coins_device TEXT
-);
-CREATE TABLE IF NOT EXISTS adjustment_acks (
-    adjustment_id INTEGER NOT NULL, device TEXT NOT NULL, applied_at TEXT NOT NULL,
-    PRIMARY KEY (adjustment_id, device)
+    created_at TEXT NOT NULL
 );
 """
 
@@ -115,11 +111,6 @@ def pending_assignments(conn) -> list:
 def apply_sync(conn, req) -> None:
     """Store one /api/sync request. Events already stored (same id) are ignored entirely."""
     now = now_str()
-    for raw in req.applied:
-        aid = parse_adjustment_id(raw)
-        if aid is not None:
-            conn.execute("INSERT OR IGNORE INTO adjustment_acks (adjustment_id, device, applied_at) VALUES (?,?,?)",
-                         (aid, req.device, now))
     for p in req.profiles:
         conn.execute(
             "INSERT INTO profiles (id, name, grade, updated_at) VALUES (?,?,?,?) "
@@ -135,15 +126,19 @@ def apply_sync(conn, req) -> None:
         )
         if cur.rowcount == 1 and e.kind == "assignment":
             _apply_assignment_try(conn, e)
-    # Newest wins: a phone's state replaces the stored one only if it was changed later.
-    for profile, data in req.summary.items():
-        changed = str(data.get("changed_at", ""))
-        if not changed:
+    # Newest wins: a phone's state replaces the stored one only if it was changed later. Parent decisions
+    # the phone's state does not have yet are applied to it first, so a newer state can't undo them.
+    for profile, sent in req.summary.items():
+        changed = str(sent.get("changed_at", ""))
+        stored = kid_state(conn, profile)
+        if not changed or (stored and not changed > stored["changed_at"]):
             continue
+        data = dict(sent)
+        apply_adjustments(data, kid_adjustments(conn, profile))
         conn.execute(
             "INSERT INTO kid_state (profile, data, changed_at, device, updated_at) VALUES (?,?,?,?,?) "
             "ON CONFLICT(profile) DO UPDATE SET data=excluded.data, changed_at=excluded.changed_at, "
-            "device=excluded.device, updated_at=excluded.updated_at WHERE excluded.changed_at > kid_state.changed_at",
+            "device=excluded.device, updated_at=excluded.updated_at",
             (profile, json.dumps(data, ensure_ascii=False), changed, req.device, now),
         )
 
@@ -179,28 +174,50 @@ def _apply_assignment_try(conn, e) -> None:
 
 # ---------- parent adjustments (coins taken away, lessons/badges/stickers cancelled) ----------
 
-def parse_adjustment_id(text: str):
-    if text.startswith("j") and text[1:].isdigit():
-        return int(text[1:])
-    return None
+def adjustment_key(row_id) -> str:
+    return f"j{row_id}"
 
 
-def adjustments_for_device(conn, device: str, profiles: list) -> list:
-    """Adjustments this phone must still apply. A coin deduction goes to the first phone that asks for
-    the kid (coins_device); the other kinds go to every phone that has the kid, until that phone acks them."""
-    if not profiles:
-        return []
-    marks = ",".join("?" * len(profiles))
-    conn.execute(f"UPDATE adjustments SET coins_device=? WHERE kind='coins' AND coins_device IS NULL "
-                 f"AND profile IN ({marks})", (device, *profiles))
-    rows = conn.execute(
-        f"SELECT a.* FROM adjustments a WHERE a.profile IN ({marks}) AND "
-        "(a.kind != 'coins' OR a.coins_device = ?) AND "
-        "a.id NOT IN (SELECT adjustment_id FROM adjustment_acks WHERE device = ?) ORDER BY a.id",
-        (*profiles, device, device)).fetchall()
-    return [adjustment_public(r) for r in rows]
+def kid_adjustments(conn, profile: str) -> list:
+    rows = conn.execute("SELECT * FROM adjustments WHERE profile=? ORDER BY id", (profile,)).fetchall()
+    return [dict(r) for r in rows]
 
 
-def adjustment_public(row) -> dict:
-    return {"id": f"j{row['id']}", "profile": row["profile"], "kind": row["kind"], "target": row["target"],
-            "amount": row["amount"], "reason": row["reason"], "created_at": row["created_at"]}
+def apply_adjustments(data: dict, adjustments: list) -> bool:
+    """Applies the parent's decisions that `data` does not have yet (its adjustments_applied list).
+    Returns True when something changed. Coins and xp never go below 0."""
+    done = list(data.get("adjustments_applied", []) or [])
+    changed = False
+    for a in adjustments:
+        key = adjustment_key(a["id"])
+        if key in done:
+            continue
+        done.append(key)
+        changed = True
+        target = a["target"]
+        if a["kind"] == "coins":
+            data["coins"] = max(0, int(data.get("coins", 0) or 0) - a["amount"])
+            data["xp"] = max(0, int(data.get("xp", 0) or 0) - a["amount"])
+        elif a["kind"] == "lesson":
+            (data.setdefault("stars", {}) or {}).pop(target, None)
+        elif a["kind"] == "badge":
+            data.setdefault("badges", {}).pop(target, None)
+            data.setdefault("badges_revoked", {})[target] = True
+        elif a["kind"] == "sticker":
+            data.setdefault("stickers", {}).pop(target, None)
+    if changed:
+        data["adjustments_applied"] = done
+    return changed
+
+
+def reapply_stored(conn, profile: str) -> None:
+    """After the parent adds a decision: apply it to the stored state now and mark that state as newer,
+    so the phones take it on their next sync."""
+    row = kid_state(conn, profile)
+    if not row:
+        return  # no state yet: the first phone that sends one gets the decisions when it is stored
+    data = json.loads(row["data"])
+    if apply_adjustments(data, kid_adjustments(conn, profile)):
+        now = now_str()
+        conn.execute("UPDATE kid_state SET data=?, changed_at=?, updated_at=? WHERE profile=?",
+                     (json.dumps(data, ensure_ascii=False), now, now, profile))

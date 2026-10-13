@@ -27,9 +27,9 @@
   Shapes are drawn by `ToddlerArt`; voice goes through `ToddlerVoice.say(key)`, which plays
   `assets/toddler/voice/<key>.ogg|.mp3|.wav` when recorded, else the phone's TTS (keys in `ToddlerVoice.PHRASES`).
   After changing PHRASES run `python3 tools/aya_voice_list.py` (regenerates `docs/aya_voice.md` for Karam).
-- Parent adjustments (coins taken away, lesson/badge/sticker cancelled): server table `adjustments`,
-  delivered in the `/api/sync` response and applied once by `Profiles.apply_adjustment()`; contract in
-  `docs/sync_api.md`. Change both sides together. Levels follow `Rewards.level_cost` (server copy in `app/content.py`).
+- Parent adjustments (coins taken away, lesson/badge/sticker cancelled): server table `adjustments`, applied by
+  the server to every stored kid state that lacks them (`app/db.py apply_adjustments`), never by the phone;
+  contract in `docs/sync_api.md`. Levels follow `Rewards.level_cost` (server copy in `app/content.py`).
 - Kid state sync is newest-wins: the server keeps one state per kid (`kid_state` table); each phone stamps
   `changed_at` when a kid's progress changes (`Profiles._touch`), sends its state on every sync, and adopts
   the server's copy when that is newer (`Sync.apply_response`, `Profiles.adopt_state`).

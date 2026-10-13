@@ -11,9 +11,6 @@ const MAX_EVENTS := 500
 var path := "user://sync.json"
 var events: Array = []
 var assignments: Array = []
-## Ids of parent adjustments this phone already applied; sent back as "applied" until the server stops
-## listing them (that means it has them).
-var adjust_done: Array = []
 var last_sync := ""
 var busy := false
 var _http: HTTPRequest
@@ -80,8 +77,7 @@ func build_body() -> Dictionary:
 		# The whole progress of each kid, with the time it last changed: the server keeps the newest one.
 		summary[p.id] = Profiles.info(p.id).duplicate(true)
 	# The server takes at most MAX_EVENTS per request; the rest go on the next sync.
-	return {"device": Settings.device_id(), "profiles": kids, "events": events.slice(0, MAX_EVENTS), "summary": summary,
-		"applied": adjust_done.duplicate()}
+	return {"device": Settings.device_id(), "profiles": kids, "events": events.slice(0, MAX_EVENTS), "summary": summary}
 
 
 func sync_now() -> void:
@@ -111,7 +107,7 @@ func _on_sync_done(result: int, code: int, _headers_: PackedStringArray, body: P
 		sync_now.call_deferred()
 
 
-## Drops the rounds the server now has, keeps its list of assignments and applies the parent's adjustments.
+## Drops the rounds the server now has, keeps its list of assignments and adopts newer kid states.
 func apply_response(data: Dictionary, sent_ids: Array) -> void:
 	events = events.filter(func(e): return not sent_ids.has(e.id))
 	assignments = data.get("assignments", [])
@@ -120,20 +116,7 @@ func apply_response(data: Dictionary, sent_ids: Array) -> void:
 	for pid in data.get("kids", {}):
 		if str(data.kids[pid].get("changed_at", "")) > str(Profiles.info(pid).get("changed_at", "")):
 			Profiles.adopt_state(pid, data.kids[pid])
-	var new_adjustments := false
-	if data.has("adjustments"):
-		var listed: Array = []
-		for a in data.adjustments:
-			listed.append(str(a.id))
-			if not adjust_done.has(str(a.id)):
-				Profiles.apply_adjustment(a)
-				adjust_done.append(str(a.id))
-				new_adjustments = true
-		# Ids the server no longer lists were applied and acknowledged by it.
-		adjust_done = adjust_done.filter(func(id): return listed.has(id))
 	save_state()
-	if new_adjustments:
-		sync_now.call_deferred()  # tells the server right away
 
 
 ## Calls back with (ok, message): checks the address and key without sending anything.
@@ -199,14 +182,12 @@ func _mark_local_done(id: String, stars: int) -> void:
 func save_state() -> void:
 	var f := FileAccess.open(path, FileAccess.WRITE)
 	if f:
-		f.store_string(JSON.stringify({"events": events, "assignments": assignments, "adjust_done": adjust_done,
-			"last_sync": last_sync}))
+		f.store_string(JSON.stringify({"events": events, "assignments": assignments, "last_sync": last_sync}))
 
 
 func load_state() -> void:
 	events = []
 	assignments = []
-	adjust_done = []
 	last_sync = ""
 	if not FileAccess.file_exists(path):
 		return
@@ -214,7 +195,6 @@ func load_state() -> void:
 	if typeof(data) == TYPE_DICTIONARY:
 		events = data.get("events", [])
 		assignments = data.get("assignments", [])
-		adjust_done = data.get("adjust_done", [])
 		last_sync = str(data.get("last_sync", ""))
 
 

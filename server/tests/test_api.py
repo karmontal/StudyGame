@@ -37,7 +37,7 @@ def test_sync_wrong_key_401(client, settings):
 
 def test_sync_is_idempotent(client, settings):
     r = sync(client, [event("e1"), event("e2", stars=1)])
-    assert r.status_code == 200 and r.json() == {"ok": True, "assignments": [], "adjustments": [], "kids": {}}
+    assert r.status_code == 200 and r.json() == {"ok": True, "assignments": [], "kids": {}}
     r = sync(client, [event("e1", stars=0, title="changed"), event("e3")])
     assert r.status_code == 200
     got = dict(rows(settings, "SELECT id, title FROM events"))
@@ -147,39 +147,57 @@ def add_adjustment(admin, kind, target="", amount=0, pid="nada"):
     assert r.status_code == 303
 
 
-def push(client, device, kids, applied=(), summary=None):
-    body = {"device": device, "profiles": [{"id": k, "name": k, "grade": 3} for k in kids], "events": [],
-            "summary": summary if summary is not None else {k: {"coins": 10, "stars": {}} for k in kids},
-            "applied": list(applied)}
+def push(client, device, state, pid="nada"):
+    """A phone sends the whole state of one kid; returns the kids the server sent back."""
+    body = {"device": device, "profiles": [{"id": pid, "name": pid, "grade": 3}], "events": [],
+            "summary": {pid: state}}
     r = client.post("/api/sync", json=body, headers={"X-Device-Key": KEY})
     assert r.status_code == 200, r.text
-    return r.json()["adjustments"]
+    return r.json()["kids"]
 
 
-def test_coin_deduction_goes_to_one_phone_only(client, admin):
+def stored(settings, pid="nada"):
+    return json.loads(rows(settings, "SELECT data FROM kid_state WHERE profile=?", pid)[0][0])
+
+
+def test_deduction_is_applied_to_the_stored_state(client, admin, settings):
+    push(client, "phone-a", {"coins": 100, "xp": 250, "changed_at": "2026-10-12T10:00:00"})
     add_adjustment(admin, "coins", amount=30)
-    got = push(client, "phone-a", ["nada"])
-    assert [(a["kind"], a["amount"]) for a in got] == [("coins", 30)]
-    assert push(client, "phone-b", ["nada"]) == []  # the coins were taken by phone-a
-    assert [a["id"] for a in push(client, "phone-a", ["nada"])] == [got[0]["id"]]  # not acked yet
-    assert push(client, "phone-a", ["nada"], applied=[got[0]["id"]]) == []
+    got = push(client, "phone-b", {"coins": 0, "changed_at": "2026-10-12T09:00:00"})  # phone-b is older
+    assert got["nada"]["coins"] == 70 and got["nada"]["xp"] == 220
+    assert got["nada"]["adjustments_applied"] == ["j1"]
 
 
-def test_lesson_and_badge_cancel_reach_every_phone_until_acked(client, admin):
+def test_newer_phone_state_that_lacks_a_deduction_still_gets_it(client, admin, settings):
+    # The race: phone-a applied the deduction, then phone-b sent a newer state without it.
+    push(client, "phone-a", {"coins": 100, "changed_at": "2026-10-12T10:00:00"})
+    add_adjustment(admin, "coins", amount=30)
+    # phone-b changed its state after the server stored the deduction (server time is later than phone time).
+    push(client, "phone-b", {"coins": 90, "changed_at": "2099-01-01T00:00:00"})
+    assert stored(settings)["coins"] == 60
+    # The same decision is never applied twice, even when the phone sends it back.
+    push(client, "phone-b", {"coins": 60, "changed_at": "2099-01-02T00:00:00", "adjustments_applied": ["j1"]})
+    assert stored(settings)["coins"] == 60
+
+
+def test_deduction_made_before_any_state_applies_to_the_first_one(client, admin, settings):
+    add_adjustment(admin, "coins", amount=20)
+    push(client, "phone-a", {"coins": 100, "changed_at": "2026-10-12T10:00:00"})
+    assert stored(settings)["coins"] == 80
+
+
+def test_cancelled_lesson_badge_and_sticker_stay_cancelled(client, admin, settings):
+    push(client, "phone-a", {"coins": 0, "stars": {"g3_science/u1/l2": 3}, "badges": {"perfect": True},
+                             "stickers": {"lion": True}, "changed_at": "2026-10-12T10:00:00"})
     add_adjustment(admin, "lesson", target="g3_science/u1/l2")
     add_adjustment(admin, "badge", target="perfect")
-    for device in ["phone-a", "phone-b"]:
-        got = push(client, device, ["nada"])
-        assert [(a["kind"], a["target"]) for a in got] == [("lesson", "g3_science/u1/l2"), ("badge", "perfect")]
-    ids = [a["id"] for a in push(client, "phone-a", ["nada"])]
-    assert push(client, "phone-a", ["nada"], applied=ids) == []
-    assert len(push(client, "phone-b", ["nada"])) == 2
-
-
-def test_adjustments_wait_for_a_phone_that_has_the_kid(client, admin):
-    add_adjustment(admin, "coins", amount=5, pid="lujain")
-    assert push(client, "phone-a", ["nada"]) == []
-    assert len(push(client, "phone-a", ["lujain"])) == 1
+    add_adjustment(admin, "sticker", target="lion")
+    # A phone that still has all three sends a newer state.
+    push(client, "phone-b", {"coins": 0, "stars": {"g3_science/u1/l2": 3}, "badges": {"perfect": True},
+                             "stickers": {"lion": True}, "changed_at": "2026-10-12T11:00:00"})
+    s = stored(settings)
+    assert s["stars"] == {} and s["badges"] == {} and s["stickers"] == {}
+    assert s["badges_revoked"] == {"perfect": True}
 
 
 def test_adjustment_form_validates(admin):
@@ -188,11 +206,12 @@ def test_adjustment_form_validates(admin):
     add_adjustment(admin, "badge", target="not_a_badge")
     add_adjustment(admin, "sticker", target="not_a_sticker")
     assert "ما انحفظ" in admin.get("/kid/nada?error=amount").text
-    assert "بانتظار الجوال" not in admin.get("/kid/nada").text  # nothing stored
+    assert "-9999" not in admin.get("/kid/nada").text  # nothing stored
 
 
 def test_adjustment_shows_on_dashboard(client, admin):
-    push(client, "phone-a", ["nada"])
+    push(client, "phone-a", {"coins": 50, "changed_at": "2026-10-12T10:00:00"})
     add_adjustment(admin, "coins", amount=20)
     page = admin.get("/kid/nada").text
-    assert "خصم عملات" in page and "-20 عملة" in page and "بانتظار الجوال" in page
+    assert "خصم عملات" in page and "-20 عملة" in page and "اتطبّق" in page
+    assert "30" in admin.get("/kid/nada").text  # the coins shown are already the new total

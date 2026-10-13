@@ -29,7 +29,6 @@ func _ready() -> void:
 	await _test_challenges_ui()
 	await _test_sound()
 	await _test_sync_and_tasks()
-	_test_adjustments()
 	_test_newest_state()
 	await _test_toddler()
 	await _test_family()
@@ -276,45 +275,6 @@ func _test_reward_rules() -> void:
 		check(Rewards.badge(b.id).name != "", "badge %s has a name" % b.id)
 
 
-## The parent's decisions: coins and xp taken away (never below 0), lessons, badges and stickers removed.
-func _test_adjustments() -> void:
-	Profiles.delete_save()
-	Sync.reset()
-	var p := Profiles.info("nada")
-	p.coins = 100
-	p.xp = 250
-	p.stars["g3_science/u1/l2"] = 3
-	p.badges["perfect"] = true
-	p.stickers["lion"] = true
-	Profiles.save()
-	var deduct := {"id": "j1", "profile": "nada", "kind": "coins", "amount": 30}
-	var cancel_lesson := {"id": "j2", "profile": "nada", "kind": "lesson", "target": "g3_science/u1/l2"}
-	var cancel_badge := {"id": "j3", "profile": "nada", "kind": "badge", "target": "perfect"}
-	var cancel_sticker := {"id": "j4", "profile": "nada", "kind": "sticker", "target": "lion"}
-	Sync.apply_response({"ok": true, "assignments": [], "adjustments": [deduct, cancel_lesson, cancel_badge, cancel_sticker]}, [])
-	p = Profiles.info("nada")
-	eq([p.coins, p.xp], [70, 220], "coins and xp go down by the amount")
-	check(not p.stars.has("g3_science/u1/l2"), "cancelled lesson loses its stars")
-	check(not p.badges.has("perfect") and p.badges_revoked.has("perfect"), "cancelled badge is gone for good")
-	check(not p.stickers.has("lion"), "cancelled sticker is gone")
-	eq(Sync.adjust_done, ["j1", "j2", "j3", "j4"], "applied ids are kept until the server acknowledges them")
-	# The server still lists them (ack not received yet): nothing is applied twice.
-	Sync.apply_response({"ok": true, "assignments": [], "adjustments": [deduct]}, [])
-	eq(Profiles.info("nada").coins, 70, "an adjustment is applied only once")
-	# The server no longer lists them: it has them, so the phone forgets them.
-	Sync.apply_response({"ok": true, "assignments": [], "adjustments": []}, [])
-	eq(Sync.adjust_done, [], "acknowledged adjustments are forgotten")
-	Sync.apply_response({"ok": true, "assignments": [], "adjustments": [{"id": "j9", "profile": "nada",
-		"kind": "coins", "amount": 9999}]}, [])
-	eq([Profiles.info("nada").coins, Profiles.info("nada").xp], [0, 0], "a deduction never goes below zero")
-	check(not Rewards.earned_badges({"badges": {}, "badges_revoked": {"perfect": true}, "rounds": 0},
-		{"perfect": true}).has("perfect"), "a cancelled badge is not earned again")
-	check(Rewards.earned_badges({"badges": {}, "rounds": 0}, {"family_goal": true}).has("family_goal"),
-		"family goal badge when the family reached the weekly goal")
-	Profiles.delete_save()
-	Sync.reset()
-
-
 ## Newest wins: the server's copy of a kid replaces this phone's only when it changed later.
 func _test_newest_state() -> void:
 	Profiles.delete_save()
@@ -325,16 +285,22 @@ func _test_newest_state() -> void:
 	var newer := Profiles.info("nada").duplicate(true)
 	newer.coins = 320
 	newer.changed_at = "2026-10-12T11:00:00"
-	Sync.apply_response({"ok": true, "assignments": [], "adjustments": [], "kids": {"nada": newer}}, [])
+	Sync.apply_response({"ok": true, "assignments": [], "kids": {"nada": newer}}, [])
 	eq(Profiles.coins("nada"), 320, "a newer state from the server replaces the phone's")
 	var older := Profiles.info("nada").duplicate(true)
 	older.coins = 5
 	older.changed_at = "2026-10-12T09:00:00"
-	Sync.apply_response({"ok": true, "assignments": [], "adjustments": [], "kids": {"nada": older}}, [])
+	Sync.apply_response({"ok": true, "assignments": [], "kids": {"nada": older}}, [])
 	eq(Profiles.coins("nada"), 320, "an older state from the server is ignored")
 	Profiles.info("nada").changed_at = "2026-10-13T08:00:00"
-	Sync.apply_response({"ok": true, "assignments": [], "adjustments": [], "kids": {"nada": older}}, [])
+	Sync.apply_response({"ok": true, "assignments": [], "kids": {"nada": older}}, [])
 	eq(Profiles.coins("nada"), 320, "the phone keeps its own state when that is the newer one")
+	var revoked := Profiles.info("nada").duplicate(true)
+	revoked.badges = {}
+	revoked.badges_revoked = {"perfect": true}
+	revoked.changed_at = "2099-01-01T00:00:00"
+	Sync.apply_response({"ok": true, "assignments": [], "kids": {"nada": revoked}}, [])
+	check(not Rewards.earned_badges(Profiles.info("nada")).has("perfect"), "a badge the parent took away is not earned again")
 	Profiles.delete_save()
 	Sync.reset()
 

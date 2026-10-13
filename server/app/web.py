@@ -241,6 +241,7 @@ def make_router(settings, content) -> APIRouter:
                 "INSERT INTO adjustments (profile, kind, target, amount, reason, created_at) VALUES (?,?,?,?,?,?)",
                 (pid, kind, target, amount, reason, db.now_str()),
             )
+            db.reapply_stored(c, pid)
         return RedirectResponse(f"/kid/{pid}", status_code=303)
 
     def content_badge_ids():

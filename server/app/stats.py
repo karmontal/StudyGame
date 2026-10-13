@@ -191,15 +191,16 @@ ADJUST_NAMES = {"coins": "خصم عملات", "lesson": "إلغاء درس", "ba
 
 
 def adjustments(conn, pid: str) -> list:
-    """The parent's decisions for one kid, newest first, with whether a phone has applied them yet."""
-    rows = conn.execute("SELECT a.*, (SELECT COUNT(*) FROM adjustment_acks k WHERE k.adjustment_id = a.id) AS acks "
-                        "FROM adjustments a WHERE a.profile=? ORDER BY a.id DESC LIMIT 30", (pid,)).fetchall()
+    """The parent's decisions for one kid, newest first. Applied once a stored state has them."""
+    row = db.kid_state(conn, pid)
+    have = set(json.loads(row["data"]).get("adjustments_applied", []) or []) if row else set()
+    rows = conn.execute("SELECT * FROM adjustments WHERE profile=? ORDER BY id DESC LIMIT 30", (pid,)).fetchall()
     out = []
     for r in rows:
         a = dict(r)
         a["name"] = ADJUST_NAMES.get(a["kind"], a["kind"])
         a["what"] = ("-%d عملة" % a["amount"]) if a["kind"] == "coins" else a["target"]
-        a["applied"] = a["acks"] > 0
+        a["applied"] = db.adjustment_key(a["id"]) in have
         out.append(a)
     return out
 

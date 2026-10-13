@@ -213,33 +213,6 @@ func family_week_coins() -> int:
 	return total
 
 
-## A parent's decision from the dashboard, applied once by the phone (see Sync.apply_response).
-## kind: "coins" (take away coins and xp, never below 0), "lesson" (remove the stars of a lesson),
-## "badge" (take a badge away for good), "sticker" (take a sticker away).
-func apply_adjustment(a: Dictionary) -> void:
-	var id := str(a.get("profile", ""))
-	if get_profile(id).is_empty():
-		return
-	var p := info(id)
-	_touch(p)
-	var target := str(a.get("target", ""))
-	match str(a.get("kind", "")):
-		"coins":
-			var amount := int(a.get("amount", 0))
-			p.coins = maxi(0, int(p.coins) - amount)
-			p.xp = maxi(0, int(p.xp) - amount)
-		"lesson":
-			p.stars.erase(target)
-		"badge":
-			p.badges.erase(target)
-			p.badges_revoked[target] = true
-		"sticker":
-			p.stickers.erase(target)
-		_:
-			return
-	save()
-
-
 ## Streak days, or 0 when the kid missed a day (the streak is broken until they play again).
 func live_streak(id: String = "") -> int:
 	var s: Dictionary = info(id).streak
