@@ -11,6 +11,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from . import db, stats
+from .content import BADGES as BADGE_NAMES
 
 TEMPLATES = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "templates"))
 TEMPLATES.env.globals["grade_label"] = lambda g: "الصف %d" % g if int(g) > 0 else "ألعاب الصغار"
@@ -116,6 +117,8 @@ def make_router(settings, content) -> APIRouter:
                 "badges": stats.badges(s), "stickers": stats.stickers(content, s),
                 "wrong": stats.most_wrong(c, content, pid),
                 "assignments": stats.assignments(c, content, pid),
+                "adjustments": stats.adjustments(c, pid), "lessons": stats.lesson_choices(content, s),
+                "badge_choices": stats.badge_choices(s), "sticker_choices": stats.sticker_choices(content, s),
             }
         return page(request, "kid.html", nav="home", **ctx)
 
@@ -200,5 +203,48 @@ def make_router(settings, content) -> APIRouter:
         with conn() as c:
             c.execute("DELETE FROM assignments WHERE id=?", (aid,))
         return RedirectResponse("/assignments", status_code=303)
+
+    # ----- parent adjustments: the phone applies them on its next sync -----
+
+    @router.post("/kid/{pid}/adjust")
+    async def adjust(request: Request, pid: str):
+        form = await request.form()
+        require_post(request, str(form.get("csrf", "")))
+        kind = str(form.get("kind", ""))
+        target = str(form.get("target", "")).strip()[:200]
+        reason = str(form.get("reason", "")).strip()[:200]
+        amount = 0
+        with conn() as c:
+            if not stats.profile(c, pid):
+                return RedirectResponse("/", status_code=303)
+            if kind == "coins":
+                try:
+                    amount = int(form.get("amount", 0))
+                except ValueError:
+                    amount = 0
+                if not 1 <= amount <= 500:
+                    return RedirectResponse(f"/kid/{pid}?error=amount", status_code=303)
+                target = ""
+            elif kind == "lesson":
+                found = content.find_lesson(target)
+                if not found or target.count("/") != 2:
+                    return RedirectResponse(f"/kid/{pid}?error=target", status_code=303)
+            elif kind == "badge":
+                if target not in content_badge_ids():
+                    return RedirectResponse(f"/kid/{pid}?error=target", status_code=303)
+            elif kind == "sticker":
+                if target not in content.stickers:
+                    return RedirectResponse(f"/kid/{pid}?error=target", status_code=303)
+            else:
+                return RedirectResponse(f"/kid/{pid}?error=kind", status_code=303)
+            c.execute(
+                "INSERT INTO adjustments (profile, kind, target, amount, reason, created_at) VALUES (?,?,?,?,?,?)",
+                (pid, kind, target, amount, reason, db.now_str()),
+            )
+            db.reapply_stored(c, pid)
+        return RedirectResponse(f"/kid/{pid}", status_code=303)
+
+    def content_badge_ids():
+        return set(BADGE_NAMES)
 
     return router

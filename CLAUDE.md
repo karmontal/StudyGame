@@ -27,8 +27,12 @@
   Shapes are drawn by `ToddlerArt`; voice goes through `ToddlerVoice.say(key)`, which plays
   `assets/toddler/voice/<key>.ogg|.mp3|.wav` when recorded, else the phone's TTS (keys in `ToddlerVoice.PHRASES`).
   After changing PHRASES run `python3 tools/aya_voice_list.py` (regenerates `docs/aya_voice.md` for Karam).
-- Dashboard summaries are stored per device and merged per kid (`server/app/stats.py merge_summaries`);
-  a phone only sends summaries for kids who played on it.
+- Parent adjustments (coins taken away, lesson/badge/sticker cancelled): server table `adjustments`, applied by
+  the server to every stored kid state that lacks them (`app/db.py apply_adjustments`), never by the phone;
+  contract in `docs/sync_api.md`. Levels follow `Rewards.level_cost` (server copy in `app/content.py`).
+- Kid state sync is newest-wins: the server keeps one state per kid (`kid_state` table); each phone stamps
+  `changed_at` when a kid's progress changes (`Profiles._touch`), sends its state on every sync, and adopts
+  the server's copy when that is newer (`Sync.apply_response`, `Profiles.adopt_state`).
 - Family contest (gatherings): rules in `scripts/game/family_contest.gd` (turn order, teams, one point per right
   answer, each kid's questions from their own grade, picture questions for the toddler); screens "family" and
   "family_play". Each school kid's answers go through `finish_round("family", ...)` at the end.

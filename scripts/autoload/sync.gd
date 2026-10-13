@@ -74,14 +74,8 @@ func build_body() -> Dictionary:
 	var summary := {}
 	for p in Profiles.profiles:
 		kids.append({"id": p.id, "name": p.name, "grade": int(p.grade)})
-		var info := Profiles.info(p.id)
-		# Only kids who played on this phone: the dashboard adds up each kid's phones.
-		if int(info.answered) == 0 and int(info.coins) == 0 and info.stars.is_empty():
-			continue
-		summary[p.id] = {"coins": int(info.coins), "xp": int(info.xp), "level": Rewards.level_for(int(info.xp)),
-			"streak": Profiles.live_streak(p.id), "speed_best": int(info.speed_best),
-			"badges": info.badges.keys(), "stickers": info.stickers.keys(), "stars": info.stars,
-			"answered": int(info.answered), "correct": int(info.correct)}
+		# The whole progress of each kid, with the time it last changed: the server keeps the newest one.
+		summary[p.id] = Profiles.info(p.id).duplicate(true)
 	# The server takes at most MAX_EVENTS per request; the rest go on the next sync.
 	return {"device": Settings.device_id(), "profiles": kids, "events": events.slice(0, MAX_EVENTS), "summary": summary}
 
@@ -113,11 +107,15 @@ func _on_sync_done(result: int, code: int, _headers_: PackedStringArray, body: P
 		sync_now.call_deferred()
 
 
-## Drops the rounds the server now has and keeps its list of assignments.
+## Drops the rounds the server now has, keeps its list of assignments and adopts newer kid states.
 func apply_response(data: Dictionary, sent_ids: Array) -> void:
 	events = events.filter(func(e): return not sent_ids.has(e.id))
 	assignments = data.get("assignments", [])
 	last_sync = Time.get_datetime_string_from_system()
+	# Newest wins: a kid's state from the server replaces this phone's only when it changed later.
+	for pid in data.get("kids", {}):
+		if str(data.kids[pid].get("changed_at", "")) > str(Profiles.info(pid).get("changed_at", "")):
+			Profiles.adopt_state(pid, data.kids[pid])
 	save_state()
 
 

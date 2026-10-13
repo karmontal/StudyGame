@@ -11,8 +11,28 @@ BADGES = {
     "streak7": "أسبوع كامل", "correct50": "50 إجابة", "correct200": "200 إجابة", "correct500": "500 إجابة",
     "daily1": "تحدي اليوم", "daily7": "بطل التحديات", "speed10": "سريع البرق", "speed20": "الصاروخ",
     "review10": "تعلّم من أخطائه", "unit_master": "نجم الوحدة", "level5": "متفوق", "stickers5": "صاحب الألبوم",
+    "family_goal": "هدف العيلة",
 }
-LEVEL_TITLES = ["مبتدئ", "مستكشف", "شاطر", "نبيه", "متفوق", "عبقري", "بطل", "أسطورة"]
+LEVEL_TITLES = ["مبتدئ", "مستكشف", "شاطر", "نبيه", "متفوق", "عبقري", "بطل", "أسطورة",
+                "خبير", "نجم", "حكيم", "ملك العلم"]
+# Same curve as scripts/game/rewards.gd (level_cost / level_for).
+XP_PER_LEVEL = 300
+STEEP_FROM_LEVEL = 10
+STEEP_STEP = 150
+
+
+def level_cost(level: int) -> int:
+    if level < STEEP_FROM_LEVEL:
+        return XP_PER_LEVEL
+    return XP_PER_LEVEL + STEEP_STEP * (level - STEEP_FROM_LEVEL + 1)
+
+
+def level_for(xp: int) -> int:
+    level, start = 1, 0
+    while xp >= start + level_cost(level):
+        start += level_cost(level)
+        level += 1
+    return level
 
 
 def level_title(level: int) -> str:

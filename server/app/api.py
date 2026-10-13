@@ -91,8 +91,11 @@ def make_router(settings) -> APIRouter:
         def work():
             with db.connect(settings.db_path) as conn:
                 db.apply_sync(conn, req)
-                return db.pending_assignments(conn)
+                sent = {pid: str(s.get("changed_at", "")) for pid, s in req.summary.items()}
+                sent.update({p.id: sent.get(p.id, "") for p in req.profiles})
+                return db.pending_assignments(conn), db.newer_kid_states(conn, sent)
 
-        return {"ok": True, "assignments": await run_in_threadpool(work)}
+        assignments, kids = await run_in_threadpool(work)
+        return {"ok": True, "assignments": assignments, "kids": kids}
 
     return router

@@ -37,7 +37,7 @@ def test_sync_wrong_key_401(client, settings):
 
 def test_sync_is_idempotent(client, settings):
     r = sync(client, [event("e1"), event("e2", stars=1)])
-    assert r.status_code == 200 and r.json() == {"ok": True, "assignments": []}
+    assert r.status_code == 200 and r.json() == {"ok": True, "assignments": [], "kids": {}}
     r = sync(client, [event("e1", stars=0, title="changed"), event("e3")])
     assert r.status_code == 200
     got = dict(rows(settings, "SELECT id, title FROM events"))
@@ -49,11 +49,25 @@ def test_duplicate_ids_in_one_request(client, settings):
     assert rows(settings, "SELECT COUNT(*) FROM events")[0][0] == 1
 
 
-def test_summary_replaces_previous(client, settings):  # same device: its summary is replaced
-    sync(client, summary={"nada": {"coins": 10, "level": 1, "badges": ["first_round"]}})
-    sync(client, summary={"nada": {"coins": 320, "level": 4}})
-    data = json.loads(rows(settings, "SELECT data FROM device_summaries WHERE profile='nada'")[0][0])
-    assert data == {"coins": 320, "level": 4}
+def test_newest_state_wins(client, settings):
+    sync(client, summary={"nada": {"coins": 10, "changed_at": "2026-10-12T10:00:00", "badges": {"first_round": True}}})
+    sync(client, summary={"nada": {"coins": 5, "changed_at": "2026-10-12T09:00:00"}})  # older: ignored
+    sync(client, summary={"nada": {"coins": 320, "changed_at": "2026-10-12T11:00:00"}})
+    data = json.loads(rows(settings, "SELECT data FROM kid_state WHERE profile='nada'")[0][0])
+    assert data["coins"] == 320
+    # A phone with no change yet (no changed_at) never overwrites a stored state.
+    sync(client, summary={"nada": {"coins": 0}})
+    assert json.loads(rows(settings, "SELECT data FROM kid_state WHERE profile='nada'")[0][0])["coins"] == 320
+
+
+def test_phone_gets_the_newer_stored_state(client):
+    sync(client, summary={"nada": {"coins": 320, "changed_at": "2026-10-12T11:00:00", "stars": {}}})
+    body = {"device": "phone-b", "profiles": [{"id": "nada", "name": "ندى", "grade": 3}], "events": [],
+            "summary": {"nada": {"coins": 5, "changed_at": "2026-10-12T09:00:00"}}}
+    got = client.post("/api/sync", json=body, headers={"X-Device-Key": KEY}).json()["kids"]
+    assert got["nada"]["coins"] == 320
+    body["summary"]["nada"]["changed_at"] = "2026-10-12T11:00:00"  # same state: nothing to send back
+    assert client.post("/api/sync", json=body, headers={"X-Device-Key": KEY}).json()["kids"] == {}
 
 
 def test_assignment_completion(client, settings):
@@ -126,45 +140,78 @@ def test_invalid_input(client):
     assert r.status_code == 422
 
 
-def test_summaries_from_two_devices_add_up(client, settings):
-    def send(device, summary):
-        body = {"device": device, "profiles": [{"id": "nada", "name": "ندى", "grade": 3}], "events": [],
-                "summary": summary}
-        assert client.post("/api/sync", json=body, headers={"X-Device-Key": KEY}).status_code == 200
-
-    send("phone-a", {"nada": {"coins": 100, "xp": 250, "answered": 10, "correct": 8, "streak": 2,
-                              "badges": ["first_round"], "stickers": [], "stars": {"g3_science/u1/l1": 3}}})
-    send("phone-b", {"nada": {"coins": 50, "xp": 100, "answered": 5, "correct": 5, "streak": 4,
-                              "badges": ["first_round", "perfect"], "stickers": ["lion"],
-                              "stars": {"g3_science/u1/l1": 1, "g3_science/u1/l2": 2}}})
-    # A phone where Nada never played must not wipe her numbers.
-    send("phone-c", {"nada": {"coins": 0, "xp": 0, "answered": 0, "correct": 0, "stars": {}}})
-    from app import db, stats
-    with db.connect(settings.db_path) as conn:
-        s = stats.summary(conn, "nada")
-    assert s["coins"] == 150 and s["answered"] == 15 and s["correct"] == 13
-    assert s["level"] == 2 and s["streak"] == 4
-    assert s["badges"] == ["first_round", "perfect"] and s["stickers"] == ["lion"]
-    assert s["stars"] == {"g3_science/u1/l1": 3, "g3_science/u1/l2": 2}
-    # The same phone syncing again replaces its own numbers, it doesn't add them twice.
-    send("phone-a", {"nada": {"coins": 120, "xp": 270, "answered": 12, "correct": 9, "stars": {}}})
-    with db.connect(settings.db_path) as conn:
-        assert stats.summary(conn, "nada")["coins"] == 170
+def add_adjustment(admin, kind, target="", amount=0, pid="nada"):
+    token = admin.get(f"/kid/{pid}").text.split('name="csrf" value="')[1].split('"')[0]
+    r = admin.post(f"/kid/{pid}/adjust", data={"csrf": token, "kind": kind, "target": target,
+                                              "amount": amount, "reason": "تجربة"}, follow_redirects=False)
+    assert r.status_code == 303
 
 
-def test_old_single_summary_table_is_migrated(tmp_path):
-    import json as _json
-    import sqlite3
-    from app import db, stats
-    path = str(tmp_path / "old.db")
-    raw = sqlite3.connect(path)
-    raw.execute("CREATE TABLE summaries (profile TEXT PRIMARY KEY, data TEXT NOT NULL, "
-                "device TEXT NOT NULL DEFAULT '', updated_at TEXT NOT NULL)")
-    raw.execute("INSERT INTO summaries VALUES (?,?,?,?)",
-                ("nada", _json.dumps({"coins": 42, "xp": 0, "answered": 3}), "phone-a", "2026-10-11T10:00:00"))
-    raw.commit()
-    raw.close()
-    db.init(path, [])
-    with db.connect(path) as conn:
-        assert stats.summary(conn, "nada")["coins"] == 42
-        assert not conn.execute("SELECT name FROM sqlite_master WHERE name='summaries'").fetchone()
+def push(client, device, state, pid="nada"):
+    """A phone sends the whole state of one kid; returns the kids the server sent back."""
+    body = {"device": device, "profiles": [{"id": pid, "name": pid, "grade": 3}], "events": [],
+            "summary": {pid: state}}
+    r = client.post("/api/sync", json=body, headers={"X-Device-Key": KEY})
+    assert r.status_code == 200, r.text
+    return r.json()["kids"]
+
+
+def stored(settings, pid="nada"):
+    return json.loads(rows(settings, "SELECT data FROM kid_state WHERE profile=?", pid)[0][0])
+
+
+def test_deduction_is_applied_to_the_stored_state(client, admin, settings):
+    push(client, "phone-a", {"coins": 100, "xp": 250, "changed_at": "2026-10-12T10:00:00"})
+    add_adjustment(admin, "coins", amount=30)
+    got = push(client, "phone-b", {"coins": 0, "changed_at": "2026-10-12T09:00:00"})  # phone-b is older
+    assert got["nada"]["coins"] == 70 and got["nada"]["xp"] == 220
+    assert got["nada"]["adjustments_applied"] == ["j1"]
+
+
+def test_newer_phone_state_that_lacks_a_deduction_still_gets_it(client, admin, settings):
+    # The race: phone-a applied the deduction, then phone-b sent a newer state without it.
+    push(client, "phone-a", {"coins": 100, "changed_at": "2026-10-12T10:00:00"})
+    add_adjustment(admin, "coins", amount=30)
+    # phone-b changed its state after the server stored the deduction (server time is later than phone time).
+    push(client, "phone-b", {"coins": 90, "changed_at": "2099-01-01T00:00:00"})
+    assert stored(settings)["coins"] == 60
+    # The same decision is never applied twice, even when the phone sends it back.
+    push(client, "phone-b", {"coins": 60, "changed_at": "2099-01-02T00:00:00", "adjustments_applied": ["j1"]})
+    assert stored(settings)["coins"] == 60
+
+
+def test_deduction_made_before_any_state_applies_to_the_first_one(client, admin, settings):
+    add_adjustment(admin, "coins", amount=20)
+    push(client, "phone-a", {"coins": 100, "changed_at": "2026-10-12T10:00:00"})
+    assert stored(settings)["coins"] == 80
+
+
+def test_cancelled_lesson_badge_and_sticker_stay_cancelled(client, admin, settings):
+    push(client, "phone-a", {"coins": 0, "stars": {"g3_science/u1/l2": 3}, "badges": {"perfect": True},
+                             "stickers": {"lion": True}, "changed_at": "2026-10-12T10:00:00"})
+    add_adjustment(admin, "lesson", target="g3_science/u1/l2")
+    add_adjustment(admin, "badge", target="perfect")
+    add_adjustment(admin, "sticker", target="lion")
+    # A phone that still has all three sends a newer state.
+    push(client, "phone-b", {"coins": 0, "stars": {"g3_science/u1/l2": 3}, "badges": {"perfect": True},
+                             "stickers": {"lion": True}, "changed_at": "2026-10-12T11:00:00"})
+    s = stored(settings)
+    assert s["stars"] == {} and s["badges"] == {} and s["stickers"] == {}
+    assert s["badges_revoked"] == {"perfect": True}
+
+
+def test_adjustment_form_validates(admin):
+    add_adjustment(admin, "coins", amount=9999)
+    add_adjustment(admin, "lesson", target="nope/u1/l1")
+    add_adjustment(admin, "badge", target="not_a_badge")
+    add_adjustment(admin, "sticker", target="not_a_sticker")
+    assert "ما انحفظ" in admin.get("/kid/nada?error=amount").text
+    assert "-9999" not in admin.get("/kid/nada").text  # nothing stored
+
+
+def test_adjustment_shows_on_dashboard(client, admin):
+    push(client, "phone-a", {"coins": 50, "changed_at": "2026-10-12T10:00:00"})
+    add_adjustment(admin, "coins", amount=20)
+    page = admin.get("/kid/nada").text
+    assert "خصم عملات" in page and "-20 عملة" in page and "اتطبّق" in page
+    assert "30" in admin.get("/kid/nada").text  # the coins shown are already the new total
