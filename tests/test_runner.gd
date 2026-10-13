@@ -30,6 +30,7 @@ func _ready() -> void:
 	await _test_sound()
 	await _test_sync_and_tasks()
 	_test_newest_state()
+	_test_first_sync_after_reinstall()
 	await _test_toddler()
 	await _test_family()
 	Profiles.delete_save()
@@ -279,6 +280,7 @@ func _test_reward_rules() -> void:
 func _test_newest_state() -> void:
 	Profiles.delete_save()
 	Sync.reset()
+	Sync.last_sync = "2026-10-12T12:00:00"  # not the first sync: newest wins applies
 	var p := Profiles.info("nada")
 	p.coins = 100
 	p.changed_at = "2026-10-12T10:00:00"
@@ -301,6 +303,28 @@ func _test_newest_state() -> void:
 	revoked.changed_at = "2099-01-01T00:00:00"
 	Sync.apply_response({"ok": true, "assignments": [], "kids": {"nada": revoked}}, [])
 	check(not Rewards.earned_badges(Profiles.info("nada")).has("perfect"), "a badge the parent took away is not earned again")
+	Profiles.delete_save()
+	Sync.reset()
+
+
+## A reinstalled phone (never synced) sends no change time and takes the server's copy, even if it played since.
+func _test_first_sync_after_reinstall() -> void:
+	Profiles.delete_save()
+	Sync.reset()
+	Sync.last_sync = ""
+	var p := Profiles.info("nada")
+	p.coins = 3
+	p.changed_at = "2026-10-13T21:50:00"
+	var body := Sync.build_body()
+	eq(str(body.summary["nada"].changed_at), "", "first sync sends no change time, so it can't overwrite the server")
+	var stored := Profiles.info("nada").duplicate(true)
+	stored.coins = 900
+	stored.changed_at = "2026-10-12T11:00:00"
+	Sync.apply_response({"ok": true, "assignments": [], "kids": {"nada": stored}}, [])
+	eq(Profiles.coins("nada"), 900, "first sync adopts the server's progress even when the phone changed later")
+	Sync.last_sync = "2026-10-13T22:00:00"
+	Profiles.info("nada").changed_at = "2026-10-13T23:00:00"
+	check(str(Sync.build_body().summary["nada"].changed_at) != "", "later syncs send the change time")
 	Profiles.delete_save()
 	Sync.reset()
 
@@ -526,6 +550,7 @@ func _test_sound() -> void:
 func _test_sync_and_tasks() -> void:
 	Profiles.delete_save()
 	Sync.reset()
+	Sync.last_sync = "2026-10-12T12:00:00"  # synced before: the change times are sent
 	check(not Sync.configured(), "sync is off until the parent sets a server")
 	var nada := "nada"
 	Profiles.select(nada)
