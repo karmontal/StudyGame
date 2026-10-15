@@ -141,9 +141,10 @@ func _card(p: Dictionary, leader: bool) -> Button:
 	var lvl := UI.label("المستوى %d" % level, 30, UI.MUTED)
 	lvl.autowrap_mode = TextServer.AUTOWRAP_OFF
 	stats.add_child(lvl)
-	var week := CoinIcon.with_amount(Profiles.week_coins(p.id), 32)
-	week.name = "Week"
-	stats.add_child(week)
+	# All the kid's coins, the same number as inside; the weekly board shows as the leader badge below.
+	var coins := CoinIcon.with_amount(Profiles.coins(p.id), 32)
+	coins.name = "Coins"
+	stats.add_child(coins)
 	v.add_child(stats)
 	if leader:
 		var crown := UI.label("الأول هالأسبوع", 28, Color.WHITE)

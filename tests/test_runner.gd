@@ -482,6 +482,8 @@ func _test_challenges_ui() -> void:
 	main.goto("profiles")
 	await get_tree().process_frame
 	check(main.find_child("Leader", true, false) != null, "weekly leader shown on the profile screen")
+	var card_coins: Label = main.find_child("Profile_lamees", true, false).find_child("Coins", true, false).get_node("Amount")
+	eq(card_coins.text, str(Profiles.coins("lamees")), "the profile card shows the kid's total coins")
 	main.queue_free()
 	Profiles.delete_save()
 
