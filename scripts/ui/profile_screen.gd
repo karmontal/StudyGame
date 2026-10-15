@@ -1,10 +1,17 @@
 extends Screen
 ## "Who is playing today?" — one big card per kid.
 
+var _content: VBoxContainer
+
 
 func build() -> void:
 	add_child(Backdrop.make(Color("#F7B500"), 430))
 	var content := page("مين بيلعب اليوم؟", UI.TEXT, false)
+	_content = content
+	if not Sync.update.is_empty():
+		content.add_child(_update_banner())
+	else:
+		Sync.update_found.connect(_on_update_found)
 	var grid := GridContainer.new()
 	grid.columns = 2
 	grid.add_theme_constant_override("h_separation", 32)
@@ -26,6 +33,22 @@ func build() -> void:
 	row.add_child(_sound_toggle())
 	row.add_child(_parents_button())
 	content.add_child(row)
+
+
+## The server answered after the screen was built: the banner goes on top.
+func _on_update_found(_info: Dictionary) -> void:
+	if _content.find_child("Update", false, false) == null:
+		var b := _update_banner()
+		_content.add_child(b)
+		_content.move_child(b, 0)
+
+
+## A newer version is on the server: tapping opens its download link (installing keeps the progress).
+func _update_banner() -> Button:
+	var b := UI.button("في نسخة جديدة من اللعبة، اضغط هون لتنزيلها", Color("#2980B9"), 36, 120)
+	b.name = "Update"
+	b.pressed.connect(func(): OS.shell_open(str(Sync.update.get("url", ""))))
+	return b
 
 
 ## Everyone together: the family contest for gatherings.

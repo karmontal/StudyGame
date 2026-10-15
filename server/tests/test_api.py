@@ -227,3 +227,42 @@ def test_adjustment_shows_on_dashboard(client, admin):
     page = admin.get("/kid/nada").text
     assert "خصم عملات" in page and "-20 عملة" in page and "اتطبّق" in page
     assert "30" in admin.get("/kid/nada").text  # the coins shown are already the new total
+
+
+def test_app_version_comes_from_the_release_feed(client, monkeypatch):
+    from app import updates
+    feed = {"code": 42, "name": "1.42", "url": "https://example.com/StudyGame.apk"}
+    monkeypatch.setattr(updates, "fetch_json", lambda url: feed)
+    assert client.get("/api/app").status_code == 401
+    r = client.get("/api/app", headers={"X-Device-Key": KEY})
+    assert r.status_code == 200
+    assert r.json() == feed
+
+
+def test_app_version_is_unknown_when_the_feed_fails(client, monkeypatch):
+    from app import updates
+
+    def broken(url):
+        raise OSError("offline")
+    monkeypatch.setattr(updates, "fetch_json", broken)
+    r = client.get("/api/app", headers={"X-Device-Key": KEY})
+    assert r.json() == {"code": 0, "name": "", "url": ""}
+
+
+def test_app_version_keeps_the_last_good_answer_and_own_download_address(settings):
+    from dataclasses import replace
+
+    from app.updates import Latest
+    answers = [{"code": 7, "name": "1.7", "url": "https://github.com/x/StudyGame.apk"}, None]
+
+    def fetch(url):
+        a = answers.pop(0)
+        if a is None:
+            raise OSError("offline")
+        return a
+    latest = Latest(replace(settings, apk_url="https://study.example.com/StudyGame.apk"), fetch=fetch)
+    assert latest.get() == {"code": 7, "name": "1.7", "url": "https://study.example.com/StudyGame.apk"}
+    latest._at = 0  # cache expired
+    assert latest.get()["code"] == 7
+    bad = Latest(settings, fetch=lambda url: {"code": 3, "url": "http://insecure/StudyGame.apk"})
+    assert bad.get()["code"] == 0

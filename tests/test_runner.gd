@@ -31,6 +31,7 @@ func _ready() -> void:
 	await _test_sync_and_tasks()
 	_test_newest_state()
 	_test_first_sync_after_reinstall()
+	await _test_update_banner()
 	await _test_toddler()
 	await _test_family()
 	Profiles.delete_save()
@@ -308,6 +309,35 @@ func _test_newest_state() -> void:
 
 
 ## A reinstalled phone (never synced) sends no change time and takes the server's copy, even if it played since.
+func _test_update_banner() -> void:
+	Profiles.delete_save()
+	Sync.reset()
+	var saved := Sync.version_code
+	Sync.version_code = 0
+	Sync.apply_update_info({"code": 50, "name": "1.50", "url": "https://example.com/StudyGame.apk"})
+	check(Sync.update.is_empty(), "a build without a version never asks to update")
+	Sync.version_code = 40
+	Sync.apply_update_info({"code": 40, "name": "1.40", "url": "https://example.com/StudyGame.apk"})
+	check(Sync.update.is_empty(), "the same version is not an update")
+	Sync.apply_update_info({"code": 50, "name": "1.50", "url": "http://example.com/StudyGame.apk"})
+	check(Sync.update.is_empty(), "only https download links")
+	var main: Node = MAIN_SCENE.instantiate()
+	add_child(main)
+	await get_tree().process_frame
+	check(main.find_child("Update", true, false) == null, "no update banner while nothing is newer")
+	Sync.apply_update_info({"code": 50, "name": "1.50", "url": "https://example.com/StudyGame.apk"})
+	eq(int(Sync.update.get("code", 0)), 50, "a newer version is kept")
+	check(main.find_child("Update", true, false) != null, "the banner appears when the server answers")
+	main.goto("parents")
+	main.goto("profiles")
+	await get_tree().process_frame
+	check(main.find_child("Update", true, false) != null, "the banner stays when coming back")
+	main.queue_free()
+	await get_tree().process_frame
+	Sync.update = {}
+	Sync.version_code = saved
+
+
 func _test_first_sync_after_reinstall() -> void:
 	Profiles.delete_save()
 	Sync.reset()

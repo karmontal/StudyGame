@@ -36,3 +36,6 @@
 - Family contest (gatherings): rules in `scripts/game/family_contest.gd` (turn order, teams, one point per right
   answer, each kid's questions from their own grade, picture questions for the toddler); screens "family" and
   "family_play". Each school kid's answers go through `finish_round("family", ...)` at the end.
+- App updates: CI stamps each APK with the run number (`data/build.json`, export preset version) and signs every
+  build with the same key (`tools/android/debug.keystore`, so updates install over the old app and keep progress).
+  The game asks `GET /api/app` on start (`Sync.check_update`) and the profiles screen shows an "Update" button.

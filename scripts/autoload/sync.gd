@@ -4,6 +4,8 @@ extends Node
 ## Contract: docs/sync_api.md. Server address and key are set on the parents screen (Settings).
 
 signal synced(ok: bool, message: String)
+## A newer version of the game is on the server (see check_update).
+signal update_found(info: Dictionary)
 
 const TIMEOUT := 15.0
 const MAX_EVENTS := 500
@@ -15,6 +17,9 @@ var last_sync := ""
 var busy := false
 var _http: HTTPRequest
 var _sent_ids: Array = []
+## The newest version the server announced, when it is newer than this one: {code, name, url}.
+var update := {}
+var version_code := 0
 
 
 func _ready() -> void:
@@ -23,8 +28,10 @@ func _ready() -> void:
 	add_child(_http)
 	_http.request_completed.connect(_on_sync_done)
 	load_state()
+	version_code = read_version_code()
 	if configured():
 		sync_now.call_deferred()
+		check_update.call_deferred()
 
 
 func configured() -> bool:
@@ -137,6 +144,37 @@ func ping(url: String, key: String, callback: Callable) -> void:
 	if err != OK:
 		http.queue_free()
 		callback.call(false, "العنوان غير صحيح")
+
+
+## This build's version number, written by CI into data/build.json (0 in the editor: never asks to update).
+func read_version_code() -> int:
+	var data = JSON.parse_string(FileAccess.get_file_as_string("res://data/build.json"))
+	return int(data.get("code", 0)) if typeof(data) == TYPE_DICTIONARY else 0
+
+
+## Asks the server for the newest version (GET /api/app); a newer one fills `update` and emits update_found.
+func check_update() -> void:
+	if not configured():
+		return
+	var http := HTTPRequest.new()
+	http.timeout = TIMEOUT
+	add_child(http)
+	http.request_completed.connect(func(result: int, code: int, _h: PackedStringArray, body: PackedByteArray):
+		http.queue_free()
+		if result == HTTPRequest.RESULT_SUCCESS and code == 200:
+			var data = JSON.parse_string(body.get_string_from_utf8())
+			if typeof(data) == TYPE_DICTIONARY:
+				apply_update_info(data))
+	if http.request(server_url() + "/api/app", _headers()) != OK:
+		http.queue_free()
+
+
+func apply_update_info(data: Dictionary) -> void:
+	var mine := version_code
+	var url := str(data.get("url", ""))
+	if mine > 0 and int(data.get("code", 0)) > mine and url.begins_with("https://"):
+		update = {"code": int(data.code), "name": str(data.get("name", "")), "url": url}
+		update_found.emit(update)
 
 
 func _headers() -> PackedStringArray:
