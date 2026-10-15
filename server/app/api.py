@@ -8,7 +8,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, ValidationError, field_validator
 
-from . import db
+from . import db, updates
 
 MAX_BODY = 1024 * 1024
 MAX_EVENTS = 500
@@ -58,8 +58,9 @@ class SyncRequest(BaseModel):
     summary: Annotated[dict[Id, dict[str, Any]], Field(max_length=20)] = {}
 
 
-def make_router(settings) -> APIRouter:
+def make_router(settings, latest=None) -> APIRouter:
     router = APIRouter(prefix="/api")
+    latest = latest or updates.Latest(settings)
 
     def check_key(request: Request) -> None:
         given = request.headers.get("x-device-key", "")
@@ -70,6 +71,12 @@ def make_router(settings) -> APIRouter:
     def ping(request: Request):
         check_key(request)
         return {"ok": True}
+
+    @router.get("/app")
+    async def app_version(request: Request):
+        """The newest game version and where to download it; code 0 when unknown."""
+        check_key(request)
+        return await run_in_threadpool(latest.get)
 
     @router.post("/sync")
     async def sync(request: Request):

@@ -74,3 +74,19 @@ Assignments whose reward the parent marked as given disappear from the response.
 ## GET /api/ping
 
 Header `X-Device-Key`. Returns `{"ok": true}`; the game's settings screen uses it to test the connection.
+
+## GET /api/app
+
+Header `X-Device-Key`. The newest game version and where to download it:
+
+```json
+{"code": 57, "name": "1.57", "url": "https://github.com/karmontal/studygame/releases/download/latest/StudyGame.apk"}
+```
+
+- `code` is the Android version code. CI sets it to the build's run number and writes it into the APK's
+  `data/build.json`; `0` means unknown (feed unreachable), and a build with code 0 (the editor) never asks.
+- The server reads `version.json` from the "latest" release (`STUDYGAME_APP_FEED`) and keeps the answer for
+  10 minutes; `STUDYGAME_APK_URL` replaces its `url` with a download address of the parent's own. Only `https://`.
+- The game asks on start (when a server is set). If `code` is higher than its own, the profiles screen shows an
+  update button that opens `url`. Installing over the old app keeps the progress, because every APK is signed
+  with the same key (`tools/android/debug.keystore`).
