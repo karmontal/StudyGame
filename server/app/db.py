@@ -3,7 +3,7 @@ import json
 import os
 import sqlite3
 from contextlib import contextmanager
-from datetime import datetime
+from datetime import datetime, timedelta
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS profiles (
@@ -19,15 +19,23 @@ CREATE TABLE IF NOT EXISTS events (
     at TEXT NOT NULL, device TEXT NOT NULL DEFAULT '', received_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS events_profile_at ON events(profile, at);
-CREATE TABLE IF NOT EXISTS device_summaries (
-    profile TEXT NOT NULL, device TEXT NOT NULL, data TEXT NOT NULL, updated_at TEXT NOT NULL,
-    PRIMARY KEY (profile, device)
+-- One state per kid: the phone's whole progress, kept only if its changed_at is newer than what is stored.
+CREATE TABLE IF NOT EXISTS kid_state (
+    profile TEXT PRIMARY KEY, data TEXT NOT NULL, changed_at TEXT NOT NULL, device TEXT NOT NULL,
+    updated_at TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS assignments (
     id INTEGER PRIMARY KEY AUTOINCREMENT, profile TEXT NOT NULL, title TEXT NOT NULL,
     note TEXT NOT NULL DEFAULT '', reward TEXT NOT NULL DEFAULT '', lesson_keys TEXT NOT NULL,
     count INTEGER NOT NULL, min_stars INTEGER NOT NULL, created_at TEXT NOT NULL,
     done_at TEXT, best_stars INTEGER NOT NULL DEFAULT 0, reward_given_at TEXT
+);
+-- Parent decisions (coins taken away, lesson/badge/sticker cancelled). The server applies them to each
+-- stored kid state that does not have them yet (see apply_adjustments); phones never apply them.
+CREATE TABLE IF NOT EXISTS adjustments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, profile TEXT NOT NULL, kind TEXT NOT NULL,
+    target TEXT NOT NULL DEFAULT '', amount INTEGER NOT NULL DEFAULT 0, reason TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL
 );
 """
 
@@ -37,12 +45,20 @@ def now_str() -> str:
     return datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
 
+def after(stamp: str) -> str:
+    """A change time later than `stamp` (a phone's) and than now, so the phone that sent `stamp` takes the stored state."""
+    try:
+        one_later = (datetime.fromisoformat(stamp) + timedelta(seconds=1)).strftime("%Y-%m-%dT%H:%M:%S")
+    except ValueError:
+        return now_str()
+    return max(now_str(), one_later)
+
+
 def init(path: str, default_profiles: list) -> None:
     folder = os.path.dirname(os.path.abspath(path))
     os.makedirs(folder, exist_ok=True)
     raw = sqlite3.connect(path)
     raw.executescript(SCHEMA)  # runs outside connect(): executescript commits on its own
-    _migrate(raw)
     raw.close()
     with connect(path) as conn:
         for p in default_profiles:
@@ -50,15 +66,6 @@ def init(path: str, default_profiles: list) -> None:
                 "INSERT OR IGNORE INTO profiles (id, name, grade, color, updated_at) VALUES (?,?,?,?,?)",
                 (p["id"], p["name"], int(p["grade"]), p.get("color", ""), now_str()),
             )
-
-
-def _migrate(raw) -> None:
-    """Version 1 kept one summary per kid, so each device overwrote the others; keep them per device now."""
-    if raw.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='summaries'").fetchone():
-        with raw:
-            raw.execute("INSERT OR IGNORE INTO device_summaries (profile, device, data, updated_at) "
-                        "SELECT profile, device, data, updated_at FROM summaries")
-            raw.execute("DROP TABLE summaries")
 
 
 @contextmanager
@@ -128,12 +135,38 @@ def apply_sync(conn, req) -> None:
         )
         if cur.rowcount == 1 and e.kind == "assignment":
             _apply_assignment_try(conn, e)
-    for profile, data in req.summary.items():
+    # Newest wins: a phone's state replaces the stored one only if it was changed later. Parent decisions
+    # the phone's state does not have yet are applied to it first, so a newer state can't undo them.
+    for profile, sent in req.summary.items():
+        changed = str(sent.get("changed_at", ""))
+        stored = kid_state(conn, profile)
+        if not changed or (stored and not changed > stored["changed_at"]):
+            continue
+        data = dict(sent)
+        if apply_adjustments(data, kid_adjustments(conn, profile)):
+            # The phone does not have this decision yet: store the state as newer, so the phone takes it back.
+            changed = after(changed)
         conn.execute(
-            "INSERT INTO device_summaries (profile, device, data, updated_at) VALUES (?,?,?,?) "
-            "ON CONFLICT(profile, device) DO UPDATE SET data=excluded.data, updated_at=excluded.updated_at",
-            (profile, req.device, json.dumps(data, ensure_ascii=False), now),
+            "INSERT INTO kid_state (profile, data, changed_at, device, updated_at) VALUES (?,?,?,?,?) "
+            "ON CONFLICT(profile) DO UPDATE SET data=excluded.data, changed_at=excluded.changed_at, "
+            "device=excluded.device, updated_at=excluded.updated_at",
+            (profile, json.dumps(data, ensure_ascii=False), changed, req.device, now),
         )
+
+
+def kid_state(conn, profile: str):
+    row = conn.execute("SELECT * FROM kid_state WHERE profile=?", (profile,)).fetchone()
+    return dict(row) if row else None
+
+
+def newer_kid_states(conn, sent: dict) -> dict:
+    """Stored states that are newer than the changed_at a phone sent for that kid (kid -> changed_at)."""
+    out = {}
+    for profile, changed in sent.items():
+        row = kid_state(conn, profile)
+        if row and row["changed_at"] > changed:
+            out[profile] = json.loads(row["data"])
+    return out
 
 
 def _apply_assignment_try(conn, e) -> None:
@@ -148,3 +181,54 @@ def _apply_assignment_try(conn, e) -> None:
     if done_at is None and e.stars >= row["min_stars"]:
         done_at = e.at
     conn.execute("UPDATE assignments SET best_stars=?, done_at=? WHERE id=?", (best, done_at, aid))
+
+
+# ---------- parent adjustments (coins taken away, lessons/badges/stickers cancelled) ----------
+
+def adjustment_key(row_id) -> str:
+    return f"j{row_id}"
+
+
+def kid_adjustments(conn, profile: str) -> list:
+    rows = conn.execute("SELECT * FROM adjustments WHERE profile=? ORDER BY id", (profile,)).fetchall()
+    return [dict(r) for r in rows]
+
+
+def apply_adjustments(data: dict, adjustments: list) -> bool:
+    """Applies the parent's decisions that `data` does not have yet (its adjustments_applied list).
+    Returns True when something changed. Coins and xp never go below 0."""
+    done = list(data.get("adjustments_applied", []) or [])
+    changed = False
+    for a in adjustments:
+        key = adjustment_key(a["id"])
+        if key in done:
+            continue
+        done.append(key)
+        changed = True
+        target = a["target"]
+        if a["kind"] == "coins":
+            data["coins"] = max(0, int(data.get("coins", 0) or 0) - a["amount"])
+            data["xp"] = max(0, int(data.get("xp", 0) or 0) - a["amount"])
+        elif a["kind"] == "lesson":
+            (data.setdefault("stars", {}) or {}).pop(target, None)
+        elif a["kind"] == "badge":
+            data.setdefault("badges", {}).pop(target, None)
+            data.setdefault("badges_revoked", {})[target] = True
+        elif a["kind"] == "sticker":
+            data.setdefault("stickers", {}).pop(target, None)
+    if changed:
+        data["adjustments_applied"] = done
+    return changed
+
+
+def reapply_stored(conn, profile: str) -> None:
+    """After the parent adds a decision: apply it to the stored state now and mark that state as newer,
+    so the phones take it on their next sync."""
+    row = kid_state(conn, profile)
+    if not row:
+        return  # no state yet: the first phone that sends one gets the decisions when it is stored
+    data = json.loads(row["data"])
+    if apply_adjustments(data, kid_adjustments(conn, profile)):
+        changed = after(row["changed_at"])
+        conn.execute("UPDATE kid_state SET data=?, changed_at=?, updated_at=? WHERE profile=?",
+                     (json.dumps(data, ensure_ascii=False), changed, now_str(), profile))

@@ -47,12 +47,15 @@ curl -H "X-Device-Key: <المفتاح>" http://127.0.0.1:8090/api/ping    # {"o
 | `STUDYGAME_SECURE_COOKIE` | خلّيها `1` لما يكون الموقع على HTTPS. |
 | `TZ` | المنطقة الزمنية (مثلاً `Asia/Gaza`) عشان "اليوم" و"هالأسبوع" يكونوا صح. |
 | `STUDYGAME_PORT` | البورت المحلي (افتراضي 8090). غيّره إذا في خدمة ثانية عليه: `sudo ss -tlnp \| grep 8090` |
+| `STUDYGAME_APK_URL` | اختياري: رابط تنزيل اللعبة من عندك (لازم يبلش بـ `https://`). إذا فاضي، الرابط من آخر نسخة على GitHub. |
 | `STUDYGAME_DOMAIN` | الدومين، بس إذا استخدمت Caddy اللي معنا (الخيار الثاني تحت). |
 
 السيرفر ما بيشتغل إذا المفتاح أو كلمة السر ناقصين أو أقصر من 8 أحرف (هذا مقصود).
 البيانات محفوظة في volume اسمه `studygame_studygame-db` وما بتضيع لما تحدّث أو تعيد التشغيل.
 
 للتحديث: `git pull && docker compose up -d --build`
+
+حدّث السيرفر كل ما تنزّل نسخة جديدة من اللعبة. إذا اللعبة أحدث من السيرفر، المزامنة بتعطي خطأ 422 (مثلاً آية بالصف 0 أو مسابقة العيلة ما كانوا موجودين بالنسخة القديمة).
 
 نسخة احتياطية من البيانات:
 `docker exec studygame-dashboard python -c "import sqlite3; s=sqlite3.connect('/app/data/studygame.db'); s.backup(sqlite3.connect('/app/data/backup.db'))" && docker cp studygame-dashboard:/app/data/backup.db ~/studygame-backup-$(date +%F).db`
@@ -121,6 +124,9 @@ Caddy بكونتينر بيطلع شهادة HTTPS لحاله. تأكد إن ا�
 - **صفحة الولد**: كل مادة بوحداتها ودروسها والنجوم وآخر مرة لعبها، آخر النشاطات، الأوسمة والملصقات،
   وأكثر الأسئلة اللي غلط فيها مع الإجابة الصحيحة.
 - **تقرير الأسبوع**: آخر 7 أيام (جولات، أسئلة، دقة، نجوم، دروس جديدة) بصفحة وحدة سهلة تاخدلها screenshot.
+- **العقوبات**: في صفحة كل ولد: خصم عملات (وبنفس المقدار نقاط، وما بتنزل تحت الصفر)، أو إلغاء نجوم درس، أو وسام، أو ملصق.
+  السيرفر بيطبّقها فوراً على آخر نسخة عنده، وبتوصل للجوال بالمزامنة الجاية (لازم يكون متّصل بالنت).
+  بتظهر "اتطبّق" لما تكون بالنسخة المحفوظة.
 - **الاختبارات**: اختار الولد، المادة، علّم على الدروس، واكتب اسم الاختبار ورسالة للولد والجائزة وأقل عدد نجوم.
   لما يجيب النجوم المطلوبة بيصير الاختبار "أنجزه"، وبعد ما تعطيه الجائزة اضغط **سلّمت الجائزة**.
 
@@ -141,10 +147,11 @@ STUDYGAME_DEVICE_KEY=devkey123 STUDYGAME_ADMIN_PASSWORD=devpass123 \
 
 Env: `STUDYGAME_DEVICE_KEY`, `STUDYGAME_ADMIN_PASSWORD` (both required, >= 8 chars),
 `STUDYGAME_DB` (default `./data/studygame.db`), `STUDYGAME_CONTENT` (repo `data/` folder, default `../data`),
-`STUDYGAME_SECURE_COOKIE` (`1` = https-only cookie).
+`STUDYGAME_SECURE_COOKIE` (`1` = https-only cookie), `STUDYGAME_APP_FEED` (newest version's `version.json`,
+default the GitHub "latest" release), `STUDYGAME_APK_URL` (own download address instead of the feed's).
 
 Layout:
-- `app/api.py`: `/api/ping`, `/api/sync` (key check with `hmac.compare_digest`, 1 MB body cap, max 500 events, pydantic validation).
+- `app/api.py`: `/api/ping`, `/api/app` (newest version, via `app/updates.py`), `/api/sync` (key check with `hmac.compare_digest`, 1 MB body cap, max 500 events, pydantic validation).
 - `app/db.py`: schema, `apply_sync()` (`INSERT OR IGNORE` on event id; assignment rules only run for newly stored events; summary upsert).
 - `app/stats.py`: read queries for the pages. `app/content.py`: curriculum lookup (`book/unit/lesson[/index]`), badge names copied from `scripts/game/rewards.gd`.
 - `app/web.py` + `app/templates/`: dashboard; signed session cookie (Starlette `SessionMiddleware`, key derived from the admin password), CSRF token on every POST form.

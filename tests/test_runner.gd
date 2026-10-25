@@ -29,6 +29,9 @@ func _ready() -> void:
 	await _test_challenges_ui()
 	await _test_sound()
 	await _test_sync_and_tasks()
+	_test_newest_state()
+	_test_first_sync_after_reinstall()
+	await _test_update_banner()
 	await _test_toddler()
 	await _test_family()
 	Profiles.delete_save()
@@ -261,10 +264,99 @@ func _test_reward_rules() -> void:
 	eq(Rewards.level_for(0), 1, "level 1 at 0 xp")
 	eq(Rewards.level_for(Rewards.XP_PER_LEVEL - 1), 1, "still level 1 just below the threshold")
 	eq(Rewards.level_for(Rewards.XP_PER_LEVEL), 2, "level 2 at the threshold")
+	eq(Rewards.level_for(2699), 9, "level 9 just below 2700 xp")
+	eq(Rewards.level_for(2700), 10, "level 10 at 2700 xp (same as before)")
+	eq(Rewards.level_for(3149), 10, "level 10 still just below 3150")
+	eq(Rewards.level_for(3150), 11, "level 11 needs 450 xp more: the top levels get harder")
+	eq(Rewards.xp_to_next(0), 300, "first level needs 300 xp")
+	check(Rewards.level_progress(150) > 0.4 and Rewards.level_progress(150) < 0.6, "progress is half-way at 150 xp")
+	eq(Rewards.level_title(12), "ملك العلم", "the last title is the top one")
 	eq(Rewards.streak_bonus(2), 20, "streak bonus grows per day")
 	eq(Rewards.streak_bonus(30), Rewards.STREAK_BONUS_MAX, "streak bonus is capped")
 	for b in Rewards.BADGES:
 		check(Rewards.badge(b.id).name != "", "badge %s has a name" % b.id)
+
+
+## Newest wins: the server's copy of a kid replaces this phone's only when it changed later.
+func _test_newest_state() -> void:
+	Profiles.delete_save()
+	Sync.reset()
+	Sync.last_sync = "2026-10-12T12:00:00"  # not the first sync: newest wins applies
+	var p := Profiles.info("nada")
+	p.coins = 100
+	p.changed_at = "2026-10-12T10:00:00"
+	var newer := Profiles.info("nada").duplicate(true)
+	newer.coins = 320
+	newer.changed_at = "2026-10-12T11:00:00"
+	Sync.apply_response({"ok": true, "assignments": [], "kids": {"nada": newer}}, [])
+	eq(Profiles.coins("nada"), 320, "a newer state from the server replaces the phone's")
+	var older := Profiles.info("nada").duplicate(true)
+	older.coins = 5
+	older.changed_at = "2026-10-12T09:00:00"
+	Sync.apply_response({"ok": true, "assignments": [], "kids": {"nada": older}}, [])
+	eq(Profiles.coins("nada"), 320, "an older state from the server is ignored")
+	Profiles.info("nada").changed_at = "2026-10-13T08:00:00"
+	Sync.apply_response({"ok": true, "assignments": [], "kids": {"nada": older}}, [])
+	eq(Profiles.coins("nada"), 320, "the phone keeps its own state when that is the newer one")
+	var revoked := Profiles.info("nada").duplicate(true)
+	revoked.badges = {}
+	revoked.badges_revoked = {"perfect": true}
+	revoked.changed_at = "2099-01-01T00:00:00"
+	Sync.apply_response({"ok": true, "assignments": [], "kids": {"nada": revoked}}, [])
+	check(not Rewards.earned_badges(Profiles.info("nada")).has("perfect"), "a badge the parent took away is not earned again")
+	Profiles.delete_save()
+	Sync.reset()
+
+
+## A reinstalled phone (never synced) sends no change time and takes the server's copy, even if it played since.
+func _test_update_banner() -> void:
+	Profiles.delete_save()
+	Sync.reset()
+	var saved := Sync.version_code
+	Sync.version_code = 0
+	Sync.apply_update_info({"code": 50, "name": "1.50", "url": "https://example.com/StudyGame.apk"})
+	check(Sync.update.is_empty(), "a build without a version never asks to update")
+	Sync.version_code = 40
+	Sync.apply_update_info({"code": 40, "name": "1.40", "url": "https://example.com/StudyGame.apk"})
+	check(Sync.update.is_empty(), "the same version is not an update")
+	Sync.apply_update_info({"code": 50, "name": "1.50", "url": "http://example.com/StudyGame.apk"})
+	check(Sync.update.is_empty(), "only https download links")
+	var main: Node = MAIN_SCENE.instantiate()
+	add_child(main)
+	await get_tree().process_frame
+	check(main.find_child("Update", true, false) == null, "no update banner while nothing is newer")
+	Sync.apply_update_info({"code": 50, "name": "1.50", "url": "https://example.com/StudyGame.apk"})
+	eq(int(Sync.update.get("code", 0)), 50, "a newer version is kept")
+	check(main.find_child("Update", true, false) != null, "the banner appears when the server answers")
+	main.goto("parents")
+	main.goto("profiles")
+	await get_tree().process_frame
+	check(main.find_child("Update", true, false) != null, "the banner stays when coming back")
+	main.queue_free()
+	await get_tree().process_frame
+	Sync.update = {}
+	Sync.version_code = saved
+
+
+func _test_first_sync_after_reinstall() -> void:
+	Profiles.delete_save()
+	Sync.reset()
+	Sync.last_sync = ""
+	var p := Profiles.info("nada")
+	p.coins = 3
+	p.changed_at = "2026-10-13T21:50:00"
+	var body := Sync.build_body()
+	eq(str(body.summary["nada"].changed_at), "", "first sync sends no change time, so it can't overwrite the server")
+	var stored := Profiles.info("nada").duplicate(true)
+	stored.coins = 900
+	stored.changed_at = "2026-10-12T11:00:00"
+	Sync.apply_response({"ok": true, "assignments": [], "kids": {"nada": stored}}, [])
+	eq(Profiles.coins("nada"), 900, "first sync adopts the server's progress even when the phone changed later")
+	Sync.last_sync = "2026-10-13T22:00:00"
+	Profiles.info("nada").changed_at = "2026-10-13T23:00:00"
+	check(str(Sync.build_body().summary["nada"].changed_at) != "", "later syncs send the change time")
+	Profiles.delete_save()
+	Sync.reset()
 
 
 func _test_finish_round() -> void:
@@ -297,6 +389,7 @@ func _test_finish_round() -> void:
 	check(s.new_best and s.speed_best == 12, "speed best saved")
 	check(s.new_badges.has("speed10"), "speed badge")
 	check(not Profiles.finish_round("speed", "", 0, _results("11")).new_best, "lower speed score is not a record")
+	check(Profiles.speed_done(), "speed challenge is locked for the rest of the day")
 	check(Profiles.week_coins("lamees") > 0, "coins count for this week")
 	eq(Profiles.week_coins("nada"), 0, "other kids start the week at 0")
 	Profiles.today_override = "2026-10-19"  # next Monday
@@ -419,6 +512,8 @@ func _test_challenges_ui() -> void:
 	main.goto("profiles")
 	await get_tree().process_frame
 	check(main.find_child("Leader", true, false) != null, "weekly leader shown on the profile screen")
+	var card_coins: Label = main.find_child("Profile_lamees", true, false).find_child("Coins", true, false).get_node("Amount")
+	eq(card_coins.text, str(Profiles.coins("lamees")), "the profile card shows the kid's total coins")
 	main.queue_free()
 	Profiles.delete_save()
 
@@ -487,6 +582,7 @@ func _test_sound() -> void:
 func _test_sync_and_tasks() -> void:
 	Profiles.delete_save()
 	Sync.reset()
+	Sync.last_sync = "2026-10-12T12:00:00"  # synced before: the change times are sent
 	check(not Sync.configured(), "sync is off until the parent sets a server")
 	var nada := "nada"
 	Profiles.select(nada)
@@ -507,7 +603,9 @@ func _test_sync_and_tasks() -> void:
 	var body := Sync.build_body()
 	eq(body.profiles.size(), Profiles.profiles.size(), "sync body has every kid")
 	eq(int(body.summary[nada].stars[key]), 2, "sync summary has stars")
-	eq(body.summary.keys(), [nada], "only kids who played on this phone send a summary")
+	eq(body.summary.size(), Profiles.profiles.size(), "every kid's state is sent (newest change wins on the server)")
+	check(str(body.summary[nada].changed_at) != "", "a kid who played has a change time")
+	check(str(body.summary["lamees"].changed_at) == "", "a kid who did not play has no change time")
 	check(str(body.device).begins_with("dev-"), "sync body has a device id")
 	# The server answers with an assignment for Nada.
 	Sync.apply_response({"ok": true, "assignments": [{"id": "a1", "profile": nada, "title": "اختبار بابا",

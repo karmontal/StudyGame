@@ -30,8 +30,9 @@ def test_pages_render_with_data(admin):
     sync(admin, [event("p1", wrong=["g3_science/u1/l2/0", "g3_science/u1/l2/0"]),
                  event("p2", wrong=["g3_science/u1/l2/0"], at=ago(days=2), stars=1),
                  event("p3", kind="speed", lesson_key="", title="", at=ago(days=20))],
-         summary={"nada": {"coins": 320, "xp": 900, "level": 4, "streak": 3, "badges": ["first_round", "perfect"],
-                           "stickers": ["lion"], "stars": {"g3_science/u1/l2": 3}, "answered": 40, "correct": 33}})
+         summary={"nada": {"coins": 320, "xp": 900, "changed_at": "2026-10-12T12:00:00", "streak": {"days": 3},
+                           "badges": {"first_round": True, "perfect": True}, "stickers": {"lion": True},
+                           "stars": {"g3_science/u1/l2": 3}, "answered": 40, "correct": 33}})
     home = admin.get("/").text
     for text in ["ندى", "لميس", "مفيد", "لجين", "320", "83%"]:
         assert text in home

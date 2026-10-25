@@ -3,6 +3,7 @@ import os
 from dataclasses import dataclass
 
 MIN_SECRET = 8
+DEFAULT_APP_FEED = "https://github.com/karmontal/studygame/releases/download/latest/version.json"
 
 
 class ConfigError(RuntimeError):
@@ -16,6 +17,10 @@ class Settings:
     db_path: str = "./data/studygame.db"
     content_dir: str = "../data"
     secure_cookie: bool = False
+    # Where the newest game version is announced (version.json of the "latest" release), and an optional
+    # download address of your own that replaces the one in it. See docs/sync_api.md, GET /api/app.
+    app_feed: str = DEFAULT_APP_FEED
+    apk_url: str = ""
 
 
 def load_settings(env=None) -> Settings:
@@ -32,4 +37,6 @@ def load_settings(env=None) -> Settings:
         db_path=env.get("STUDYGAME_DB") or "./data/studygame.db",
         content_dir=env.get("STUDYGAME_CONTENT") or "../data",
         secure_cookie=env.get("STUDYGAME_SECURE_COOKIE", "0").lower() in ("1", "true", "yes"),
+        app_feed=env.get("STUDYGAME_APP_FEED", DEFAULT_APP_FEED),
+        apk_url=env.get("STUDYGAME_APK_URL", ""),
     )

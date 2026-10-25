@@ -82,6 +82,7 @@ func unit_stars(book_id: String, unit_data: Dictionary, id: String = "") -> int:
 ## right answers leave it.
 func record_quiz(lesson_key_: String, earned_stars: int, results: Array) -> void:
 	var p := _progress(current_id)
+	_touch(p)
 	if lesson_key_ != "":
 		p.stars[lesson_key_] = maxi(int(p.stars.get(lesson_key_, 0)), earned_stars)
 	p.rounds = int(p.rounds) + 1
@@ -117,6 +118,8 @@ func finish_round(kind: String, lesson_key_: String, earned_stars: int, results:
 	if kind == "daily":
 		p.daily.last = day
 		p.daily.count = int(p.daily.count) + 1
+	if kind == "speed":
+		p.speed_last = day
 	var correct := 0
 	for r in results:
 		if r.correct:
@@ -137,7 +140,8 @@ func finish_round(kind: String, lesson_key_: String, earned_stars: int, results:
 		pay.lines.append(["أوسمة جديدة × %d" % new_badges.size(), new_badges.size() * BADGE_COINS])
 		pay.total += new_badges.size() * BADGE_COINS
 	_add_coins(p, int(pay.total))
-	# A level-5 badge can only be checked after the coins land.
+	# Level and family badges can only be checked after the coins land.
+	extra["family_goal"] = family_week_coins() >= Rewards.FAMILY_WEEK_GOAL
 	for id in Rewards.earned_badges(p, extra):
 		if not p.badges.has(id):
 			p.badges[id] = true
@@ -149,7 +153,13 @@ func finish_round(kind: String, lesson_key_: String, earned_stars: int, results:
 		"speed_best": int(p.speed_best), "new_best": new_best}
 
 
+## Stamps a change so the parent sync knows this state is newer than the one on the server.
+static func _touch(p: Dictionary) -> void:
+	p.changed_at = Time.get_datetime_string_from_system()
+
+
 func _add_coins(p: Dictionary, amount: int) -> void:
+	_touch(p)
 	p.coins = int(p.coins) + amount
 	p.xp = int(p.xp) + amount
 	var week := week_number(today())
@@ -184,10 +194,23 @@ func daily_done(id: String = "") -> bool:
 	return info(id).daily.last == today()
 
 
+## The speed challenge is once a day, like the daily challenge.
+func speed_done(id: String = "") -> bool:
+	return str(info(id).speed_last) == today()
+
+
 ## Coins earned this week (the brothers-and-sisters board on the profile screen).
 func week_coins(id: String) -> int:
 	var w: Dictionary = info(id).week
 	return int(w.coins) if int(w.id) == week_number(today()) else 0
+
+
+## Coins all the kids earned together this week (the family goal).
+func family_week_coins() -> int:
+	var total := 0
+	for p in profiles:
+		total += week_coins(p.id)
+	return total
 
 
 ## Streak days, or 0 when the kid missed a day (the streak is broken until they play again).
@@ -217,6 +240,9 @@ func buy_sticker(id: String) -> Variant:
 		return null
 	p.coins = int(p.coins) - int(st.price)
 	p.stickers[id] = true
+	_touch(p)
+	# Buying happens between rounds, so send it now; otherwise the dashboard only sees it after the next round.
+	Sync.sync_now.call_deferred()
 	var new_badges: Array[String] = []
 	for b in Rewards.earned_badges(p):
 		if not p.badges.has(b):
@@ -243,7 +269,7 @@ func _progress(id: String) -> Dictionary:
 
 ## Older saves miss the newer fields; JSON also turns ints into floats.
 static func _fill_defaults(p: Dictionary) -> void:
-	for k in ["stars", "review", "badges", "stickers"]:
+	for k in ["stars", "review", "badges", "stickers", "badges_revoked"]:
 		if typeof(p.get(k)) != TYPE_DICTIONARY:
 			p[k] = {}
 	for k in ["answered", "correct", "rounds", "fixed", "coins", "xp", "speed_best"]:
@@ -254,9 +280,23 @@ static func _fill_defaults(p: Dictionary) -> void:
 	if typeof(p.get("daily")) != TYPE_DICTIONARY:
 		p.daily = {}
 	p.daily = {"last": str(p.daily.get("last", "")), "count": int(p.daily.get("count", 0))}
+	p.speed_last = str(p.get("speed_last", ""))
 	if typeof(p.get("week")) != TYPE_DICTIONARY:
 		p.week = {}
 	p.week = {"id": int(p.week.get("id", 0)), "coins": int(p.week.get("coins", 0))}
+	# Saves from before the newest-wins sync have no change time: give them one, so they reach the dashboard.
+	p.changed_at = str(p.get("changed_at", ""))
+	if p.changed_at == "" and (int(p.answered) > 0 or int(p.coins) > 0 or not p.stars.is_empty()):
+		p.changed_at = "2000-01-01T00:00:00"
+
+
+## Replaces a kid's progress with the state the server holds, when that state is newer (see Sync).
+func adopt_state(id: String, state: Dictionary) -> void:
+	if get_profile(id).is_empty():
+		return
+	progress[id] = state
+	_fill_defaults(progress[id])
+	save()
 
 
 func save() -> void:

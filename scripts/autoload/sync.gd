@@ -4,6 +4,8 @@ extends Node
 ## Contract: docs/sync_api.md. Server address and key are set on the parents screen (Settings).
 
 signal synced(ok: bool, message: String)
+## A newer version of the game is on the server (see check_update).
+signal update_found(info: Dictionary)
 
 const TIMEOUT := 15.0
 const MAX_EVENTS := 500
@@ -15,6 +17,9 @@ var last_sync := ""
 var busy := false
 var _http: HTTPRequest
 var _sent_ids: Array = []
+## The newest version the server announced, when it is newer than this one: {code, name, url}.
+var update := {}
+var version_code := 0
 
 
 func _ready() -> void:
@@ -23,8 +28,10 @@ func _ready() -> void:
 	add_child(_http)
 	_http.request_completed.connect(_on_sync_done)
 	load_state()
+	version_code = read_version_code()
 	if configured():
 		sync_now.call_deferred()
+		check_update.call_deferred()
 
 
 func configured() -> bool:
@@ -74,14 +81,12 @@ func build_body() -> Dictionary:
 	var summary := {}
 	for p in Profiles.profiles:
 		kids.append({"id": p.id, "name": p.name, "grade": int(p.grade)})
-		var info := Profiles.info(p.id)
-		# Only kids who played on this phone: the dashboard adds up each kid's phones.
-		if int(info.answered) == 0 and int(info.coins) == 0 and info.stars.is_empty():
-			continue
-		summary[p.id] = {"coins": int(info.coins), "xp": int(info.xp), "level": Rewards.level_for(int(info.xp)),
-			"streak": Profiles.live_streak(p.id), "speed_best": int(info.speed_best),
-			"badges": info.badges.keys(), "stickers": info.stickers.keys(), "stars": info.stars,
-			"answered": int(info.answered), "correct": int(info.correct)}
+		# The whole progress of each kid, with the time it last changed: the server keeps the newest one.
+		summary[p.id] = Profiles.info(p.id).duplicate(true)
+		# First sync on this phone (fresh install, or never synced): its progress may be empty or only
+		# partial, so it claims no change time and the server's copy is adopted instead.
+		if last_sync == "":
+			summary[p.id].changed_at = ""
 	# The server takes at most MAX_EVENTS per request; the rest go on the next sync.
 	return {"device": Settings.device_id(), "profiles": kids, "events": events.slice(0, MAX_EVENTS), "summary": summary}
 
@@ -113,11 +118,17 @@ func _on_sync_done(result: int, code: int, _headers_: PackedStringArray, body: P
 		sync_now.call_deferred()
 
 
-## Drops the rounds the server now has and keeps its list of assignments.
+## Drops the rounds the server now has, keeps its list of assignments and adopts newer kid states.
 func apply_response(data: Dictionary, sent_ids: Array) -> void:
 	events = events.filter(func(e): return not sent_ids.has(e.id))
 	assignments = data.get("assignments", [])
+	var first_sync := last_sync == ""
 	last_sync = Time.get_datetime_string_from_system()
+	# Newest wins: a kid's state from the server replaces this phone's only when it changed later.
+	# On the first sync the server's copy always wins, so a reinstalled phone gets its kids' progress back.
+	for pid in data.get("kids", {}):
+		if first_sync or str(data.kids[pid].get("changed_at", "")) > str(Profiles.info(pid).get("changed_at", "")):
+			Profiles.adopt_state(pid, data.kids[pid])
 	save_state()
 
 
@@ -135,6 +146,37 @@ func ping(url: String, key: String, callback: Callable) -> void:
 		callback.call(false, "العنوان غير صحيح")
 
 
+## This build's version number, written by CI into data/build.json (0 in the editor: never asks to update).
+func read_version_code() -> int:
+	var data = JSON.parse_string(FileAccess.get_file_as_string("res://data/build.json"))
+	return int(data.get("code", 0)) if typeof(data) == TYPE_DICTIONARY else 0
+
+
+## Asks the server for the newest version (GET /api/app); a newer one fills `update` and emits update_found.
+func check_update() -> void:
+	if not configured():
+		return
+	var http := HTTPRequest.new()
+	http.timeout = TIMEOUT
+	add_child(http)
+	http.request_completed.connect(func(result: int, code: int, _h: PackedStringArray, body: PackedByteArray):
+		http.queue_free()
+		if result == HTTPRequest.RESULT_SUCCESS and code == 200:
+			var data = JSON.parse_string(body.get_string_from_utf8())
+			if typeof(data) == TYPE_DICTIONARY:
+				apply_update_info(data))
+	if http.request(server_url() + "/api/app", _headers()) != OK:
+		http.queue_free()
+
+
+func apply_update_info(data: Dictionary) -> void:
+	var mine := version_code
+	var url := str(data.get("url", ""))
+	if mine > 0 and int(data.get("code", 0)) > mine and url.begins_with("https://"):
+		update = {"code": int(data.code), "name": str(data.get("name", "")), "url": url}
+		update_found.emit(update)
+
+
 func _headers() -> PackedStringArray:
 	return ["Content-Type: application/json", "X-Device-Key: " + str(Settings.get_value("device_key", "")).strip_edges()]
 
@@ -146,6 +188,9 @@ func _error_text(result: int, code: int) -> String:
 		return "مفتاح الجهاز غلط"
 	if code == 200:
 		return "الاتصال شغّال"
+	if code == 422:
+		# The server rejected the data: almost always a dashboard older than the game (new kinds or fields).
+		return "نسخة السيرفر أقدم من اللعبة: حدّث السيرفر (422)"
 	return "خطأ من السيرفر (%d)" % code
 
 

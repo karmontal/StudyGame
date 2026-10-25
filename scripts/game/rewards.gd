@@ -10,9 +10,13 @@ const PERFECT_BONUS := 20       # every answer right
 const DAILY_BONUS := 50         # finishing the daily challenge
 const STREAK_BONUS_PER_DAY := 10  # first round of the day: 10 coins per streak day, up to 70
 const STREAK_BONUS_MAX := 70
-const XP_PER_LEVEL := 300
+const XP_PER_LEVEL := 300       # levels 1 to 9 cost this much each (level 10 is reached at 2700 xp)
+const STEEP_FROM_LEVEL := 10    # from here each level costs more than the one before
+const STEEP_STEP := 150         # extra xp per level from STEEP_FROM_LEVEL on
+const FAMILY_WEEK_GOAL := 1500  # coins the whole family earns together in one week
 
-const LEVEL_TITLES := ["مبتدئ", "مستكشف", "شاطر", "نبيه", "متفوق", "عبقري", "بطل", "أسطورة"]
+const LEVEL_TITLES := ["مبتدئ", "مستكشف", "شاطر", "نبيه", "متفوق", "عبقري", "بطل", "أسطورة",
+	"خبير", "نجم", "حكيم", "ملك العلم"]
 
 ## id, name, how to earn it, color. Checked after every round by earned_badges().
 const BADGES := [
@@ -32,6 +36,7 @@ const BADGES := [
 	{"id": "unit_master", "name": "نجم الوحدة", "desc": "3 نجوم في كل دروس وحدة", "color": "#F7B500"},
 	{"id": "level5", "name": "متفوق", "desc": "وصّل المستوى 5", "color": "#8E44AD"},
 	{"id": "stickers5", "name": "صاحب الألبوم", "desc": "اجمع 5 ملصقات", "color": "#E74C3C"},
+	{"id": "family_goal", "name": "هدف العيلة", "desc": "العيلة كلها وصلت هدف الأسبوع", "color": "#16A085"},
 ]
 
 
@@ -80,13 +85,37 @@ static func streak_bonus(days: int) -> int:
 	return mini(days * STREAK_BONUS_PER_DAY, STREAK_BONUS_MAX)
 
 
+## Xp a level costs to reach the next one.
+static func level_cost(level: int) -> int:
+	if level < STEEP_FROM_LEVEL:
+		return XP_PER_LEVEL
+	return XP_PER_LEVEL + STEEP_STEP * (level - STEEP_FROM_LEVEL + 1)
+
+
+## Total xp needed to reach a level (level 1 starts at 0).
+static func level_start(level: int) -> int:
+	var total := 0
+	for l in range(1, level):
+		total += level_cost(l)
+	return total
+
+
 static func level_for(xp: int) -> int:
-	return xp / XP_PER_LEVEL + 1
+	var level := 1
+	while xp >= level_start(level + 1):
+		level += 1
+	return level
 
 
 ## 0..1 progress inside the current level.
 static func level_progress(xp: int) -> float:
-	return float(xp % XP_PER_LEVEL) / XP_PER_LEVEL
+	var level := level_for(xp)
+	return float(xp - level_start(level)) / level_cost(level)
+
+
+## Xp still missing for the next level.
+static func xp_to_next(xp: int) -> int:
+	return level_start(level_for(xp) + 1) - xp
 
 
 static func level_title(level: int) -> String:
@@ -101,9 +130,10 @@ static func badge(id: String) -> Dictionary:
 
 
 ## Badge ids a kid's progress qualifies for. `extra` carries facts about the round just played:
-## perfect (bool), combo (int), unit_master (bool).
+## perfect (bool), combo (int), unit_master (bool), family_goal (bool).
 static func earned_badges(p: Dictionary, extra: Dictionary = {}) -> Array[String]:
 	var owned: Dictionary = p.get("badges", {})
+	var revoked: Dictionary = p.get("badges_revoked", {})
 	var best_streak := int(p.get("streak", {}).get("best", 0))
 	var correct := int(p.get("correct", 0))
 	var daily := int(p.get("daily", {}).get("count", 0))
@@ -125,9 +155,11 @@ static func earned_badges(p: Dictionary, extra: Dictionary = {}) -> Array[String
 		"unit_master": extra.get("unit_master", false),
 		"level5": level_for(int(p.get("xp", 0))) >= 5,
 		"stickers5": p.get("stickers", {}).size() >= 5,
+		"family_goal": extra.get("family_goal", false),
 	}
 	var out: Array[String] = []
 	for b in BADGES:
-		if checks.get(b.id, false) or owned.has(b.id):
+		# A badge the parent took away is not earned again.
+		if (checks.get(b.id, false) or owned.has(b.id)) and not revoked.has(b.id):
 			out.append(b.id)
 	return out

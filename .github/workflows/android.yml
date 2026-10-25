@@ -52,9 +52,9 @@ jobs:
 
       - name: Debug keystore and editor settings
         run: |
-          keytool -genkeypair -v -keystore "$HOME/debug.keystore" -storepass android -alias androiddebugkey \
-            -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
-          echo "GODOT_ANDROID_KEYSTORE_DEBUG_PATH=$HOME/debug.keystore" >> "$GITHUB_ENV"
+          # Always the same key (tools/android/debug.keystore): Android installs a new version over the old
+          # one, keeping the kids' progress, only when both are signed with the same key.
+          echo "GODOT_ANDROID_KEYSTORE_DEBUG_PATH=$GITHUB_WORKSPACE/tools/android/debug.keystore" >> "$GITHUB_ENV"
           echo "GODOT_ANDROID_KEYSTORE_DEBUG_USER=androiddebugkey" >> "$GITHUB_ENV"
           echo "GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD=android" >> "$GITHUB_ENV"
           # Point the editor at the runner's Android SDK and JDK.
@@ -71,6 +71,19 @@ jobs:
             sed -i 's/^          //' "$HOME/.config/godot/$f"
           done
           cat "$HOME/.config/godot/editor_settings-${major}.tres"
+
+      - name: Version number
+        run: |
+          # Every build gets a higher version: the run number. The game reads it from data/build.json and
+          # compares it with GET /api/app on the parent's server (docs/sync_api.md).
+          code="${GITHUB_RUN_NUMBER}"
+          name="1.${GITHUB_RUN_NUMBER}"
+          printf '{"code": %s, "name": "%s"}\n' "$code" "$name" > data/build.json
+          sed -i "s/^version\/code=.*/version\/code=${code}/; s/^version\/name=.*/version\/name=\"${name}\"/" export_presets.cfg
+          grep -n "^version/" export_presets.cfg
+          url="https://github.com/${GITHUB_REPOSITORY}/releases/download/latest/StudyGame.apk"
+          printf '{"code": %s, "name": "%s", "url": "%s"}\n' "$code" "$name" "$url" > version.json
+          cat data/build.json version.json
 
       - name: Import and test
         run: |
@@ -96,4 +109,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete latest --yes --cleanup-tag || true
-          gh release create latest build/android/StudyGame.apk --title "أحدث نسخة" --notes "نسخة تجريبية من ${GITHUB_SHA::7}" --prerelease
+          gh release create latest build/android/StudyGame.apk version.json --title "أحدث نسخة" --notes "نسخة تجريبية من ${GITHUB_SHA::7}" --prerelease

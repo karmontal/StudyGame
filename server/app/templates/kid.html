@@ -54,6 +54,45 @@
   {% endfor %}
 </section>
 
+
+<section>
+  <h2>عقوبات وإلغاء إنجازات</h2>
+  <p class="muted">تنطبّق على جوال الولد بالمزامنة الجاية (لازم يكون الجوال متّصل بالنت).</p>
+  {% if request.query_params.get('error') %}<p class="error">ما انحفظ: تأكد من القيمة المختارة.</p>{% endif %}
+  <div class="card">
+    <form method="post" action="/kid/{{ kid.id }}/adjust" class="adjust">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <label>النوع
+        <select name="kind" id="adjust-kind">
+          <option value="coins">خصم عملات (حد أقصى 500، ما بنزل تحت الصفر)</option>
+          <option value="lesson">إلغاء نجوم درس</option>
+          <option value="badge">إلغاء وسام</option>
+          <option value="sticker">إلغاء ملصق</option>
+        </select></label>
+      <label>العدد (للعملات)
+        <input type="number" name="amount" min="1" max="500" value="10"></label>
+      <label>الدرس / الوسام / الملصق
+        <select name="target">
+          <option value="">— اختار —</option>
+          {% for l in lessons %}<option value="{{ l.key }}">درس: {{ l.title }} ({{ l.stars }} نجوم)</option>{% endfor %}
+          {% for b in badge_choices %}<option value="{{ b.id }}">وسام: {{ b.name }}</option>{% endfor %}
+          {% for x in sticker_choices %}<option value="{{ x.id }}">ملصق: {{ x.name }}</option>{% endfor %}
+        </select></label>
+      <label>السبب (للتذكير عندك)
+        <input type="text" name="reason" maxlength="200"></label>
+      <button class="btn" type="submit">طبّق</button>
+    </form>
+  </div>
+  {% if adjustments %}
+  <ul class="list card">
+  {% for a in adjustments %}
+    <li><div><strong>{{ a.name }}</strong> {{ a.what }}<br><span class="muted">{{ a.reason }} · {{ a.created_at | fmt_time }}</span></div>
+      <div class="end"><span class="pill">{{ 'اتطبّق' if a.applied else 'بانتظار الجوال' }}</span></div></li>
+  {% endfor %}
+  </ul>
+  {% endif %}
+</section>
+
 <section>
   <h2>آخر النشاطات</h2>
   {% if events %}
